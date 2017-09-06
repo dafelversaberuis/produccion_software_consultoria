@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirTotalEstadosDiagnostico" language="groovy" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a16677e8-f139-4414-b95d-19686009cd21">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="estado" class="java.lang.Object"/>
+	<field name="tNumeroVeces" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="225" splitType="Stretch">
+			<bar3DChart>
+				<chart>
+					<reportElement uuid="14c02013-487d-4d28-a1a5-b057e25a044a" x="0" y="13" width="572" height="200"/>
+					<chartTitle>
+						<titleExpression><![CDATA["Num veces/estado"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Num. veces"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{estado}.nombre]]></categoryExpression>
+						<valueExpression><![CDATA[$F{tNumeroVeces}]]></valueExpression>
+						<labelExpression><![CDATA[""+$F{tNumeroVeces}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot labelRotation="-45.0"/>
+					<itemLabel/>
+					<categoryAxisLabelExpression><![CDATA["Estados"]]></categoryAxisLabelExpression>
+					<valueAxisLabelExpression><![CDATA["Num. veces"]]></valueAxisLabelExpression>
+				</bar3DPlot>
+			</bar3DChart>
+		</band>
+	</summary>
+</jasperReport>

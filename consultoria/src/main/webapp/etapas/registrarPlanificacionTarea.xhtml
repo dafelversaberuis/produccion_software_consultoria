@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formTareaPlanificada">
+
+		<p:dialog header="#{mensaje.registrarCambiosTarea}" height="400"
+			width="900" widgetVar="panelTareaPlanificada" resizable="true"
+			closable="false" responsive="true">
+
+			<p:dataTable var="loc" id="dtlRegistros"
+				value="#{administrarEtapa.registroPlanificacion.tHistoricosRegistroPlanificacion}"
+				reflow="true" rows="5" paginator="true" paginatorPosition="bottom"
+				draggableColumns="true" rowIndexVar="indice"
+				emptyMessage="#{mensaje.noExistenciaCambios}">
+
+				<f:facet name="header">
+					<p:outputLabel value="#{mensaje.historialCambios}"
+						style="font-weight:normal" />
+				</f:facet>
+
+
+				<p:column headerText="#{mensaje.fechaRegistro}"
+					sortBy="#{loc.fechaHora}" style="font-size:14px">
+					<p:outputLabel
+						value="#{consultarFuncionesAPI.getFechaHoraColombia(loc.fechaHora)}"
+						style="font-weight:normal" />
+				</p:column>
+
+				<p:column headerText="#{mensaje.comentarios}"
+					sortBy="#{loc.comentarios}" style="font-size:14px">
+					<p:outputLabel value="#{loc.comentarios}"
+						style="font-weight:normal" />
+
+
+
+				</p:column>
+
+				<p:column headerText="#{mensaje.autor}" sortBy="#{loc.responsable}"
+					style="font-size:14px">
+					<p:outputLabel value="#{mensaje.reviso} #{mensaje.consultor}"
+						rendered="#{loc.responsable=='CO' and loc.aprobadaConsultor=='N'}"
+						style="font-weight:normal" />
+					<p:outputLabel value="#{mensaje.elaboro} #{mensaje.labelCliente}"
+						rendered="#{loc.responsable=='C' and loc.aprobadaConsultor=='N'}"
+						style="font-weight:normal" />
+
+					<p:outputLabel value="#{mensaje.aprobo} #{mensaje.consultor}"
+						rendered="#{loc.responsable=='CO' and loc.aprobadaConsultor=='S'}"
+						style="font-weight:normal" />
+
+					<p:outputLabel value="#{mensaje.aprobo} #{mensaje.cliente}"
+						rendered="#{loc.responsable=='C' and loc.aprobadaConsultor=='S'}"
+						style="font-weight:normal" />
+
+
+				</p:column>
+
+
+				<p:column headerText="#{mensaje.compromisos}"
+					style="font-size:14px; text-align:center;">
+
+					<p:commandButton id="btnVerCompromisos"
+						style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+						action="#{administrarEtapa.verCompromiso(loc)}"
+						rendered="#{loc.tCompromisos!=null and loc.tCompromisos.size() > 0}"
+						value="" process="@this" update=":formVerCompromisos" />
+
+
+
+
+					<p:tooltip for="btnVerCompromisos" value="#{mensaje.verCompromisosRegistro}"
+						rendered="#{loc.tCompromisos!=null and loc.tCompromisos.size() > 0}"
+						trackMouse="true" />
+
+
+					<p:outputLabel value="#{mensaje.sinCompromisosAsociados}"
+						rendered="#{!(loc.tCompromisos!=null and loc.tCompromisos.size() > 0)}"
+						style="font-weight:normal" />
+
+
+				</p:column>
+
+
+			</p:dataTable>
+			<p:spacer height="20" />
+
+			<p:panel id="pnlTareaPlanificada">
+				<div align="left">
+
+
+					<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+						style="width:100%" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel value="#{mensaje.tarea}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel
+							value="#{administrarEtapa.registroPlanificacion.tareaProyecto.tarea}"
+							style="font-size:14px" />
+
+						<p:outputLabel value="#{mensaje.fechaRevision}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel
+							value="#{consultarFuncionesAPI.getFechaHoraColombia(administrarEtapa.historicoTareaPlanificada.fechaHora)}"
+							style="font-size:14px">
+
+						</p:outputLabel>
+
+						<p:outputLabel value="#{mensaje.comentarios}" for="txtComentarios"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel value="#{mensaje.comentarios}"
+							for="txtComentarios2"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C'}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:inputTextarea rows="5" style="width:100%" required="true"
+							value="#{administrarEtapa.historicoTareaPlanificada.comentarios}"
+							id="txtComentarios" placeholder="#{mensaje.escribaAlusion}"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}" />
+						<p:inputTextarea rows="3" style="width:100%" required="true"
+							id="txtComentarios2"
+							value="#{administrarEtapa.historicoTareaPlanificada.comentarios}"
+							placeholder="#{mensaje.escribaAlusionCliente}"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C'}" />
+
+						<p:spacer width="1" />
+						<p:message for="txtComentarios"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}" />
+						<p:message for="txtComentarios2"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C'}" />
+
+						<p:outputLabel value="#{mensaje.queDeseaConsultor}"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}"
+							style="font-weight:bold; font-size:14px" for="lstDeseaConsultor" />
+
+						<p:selectOneMenu id="lstDeseaConsultor" required="true"
+							style="font-size:12px; width:100%"
+							value="#{administrarEtapa.historicoTareaPlanificada.aprobadaConsultor}"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}">
+							<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+							<f:selectItem itemValue="S" itemLabel="#{mensaje.aprobarTarea}" />
+							<f:selectItem itemValue="N"
+								itemLabel="#{mensaje.dejarClienteVerifique}" />
+
+							<p:ajax process="@this" event="change"
+								update="pnlAprobada1,pnlAprobada2,pnlAprobada3,pnlAprobada4" />
+
+						</p:selectOneMenu>
+
+						<p:spacer width="1"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}" />
+						<p:message for="lstDeseaConsultor"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO'}" />
+
+
+
+						<p:outputLabel value="#{mensaje.queDeseaCliente}"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion=='C'}"
+							style="font-weight:bold; font-size:14px" for="lstDeseaCliente" />
+
+						<p:selectOneMenu id="lstDeseaCliente" required="true"
+							style="font-size:12px; width:100%"
+							value="#{administrarEtapa.historicoTareaPlanificada.aprobadaCliente}"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion=='C'}">
+							<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+							<f:selectItem itemValue="S"
+								itemLabel="#{mensaje.aprobarCerrarla}" />
+							<f:selectItem itemValue="N"
+								itemLabel="#{mensaje.continuarProcesoPeticionCliente}" />
+
+							<p:ajax process="@this" event="change"
+								update="pnlAprobada1,pnlAprobada2,pnlAprobada3,pnlAprobada4" />
+
+						</p:selectOneMenu>
+
+						<p:spacer width="1"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion=='C'}" />
+						<p:message for="lstDeseaCliente"
+							rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion=='C'}" />
+
+
+
+
+						<p:outputPanel id="pnlAprobada1">
+							<p:outputLabel value="#{mensaje.necesitaAprobacionCliente}"
+								rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='S'}"
+								style="font-weight:bold; font-size:14px"
+								for="lstNecesitaAprobacion" />
+
+							<p:outputLabel value="#{mensaje.compromisos}"
+								rendered="#{(administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion!='C') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.historicoTareaPlanificada.aprobadaCliente=='N') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='N')}"
+								style="font-weight:bold; font-size:14px" />
+
+						</p:outputPanel>
+						<p:outputPanel id="pnlAprobada2">
+							<p:selectOneMenu id="lstNecesitaAprobacion" required="true"
+								style="font-size:12px; width:100%"
+								value="#{administrarEtapa.registroPlanificacion.indicativoAprobacion}"
+								rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='S'}">
+								<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+								<f:selectItem itemValue="C" itemLabel="#{mensaje.SI}" />
+								<f:selectItem itemValue="CO" itemLabel="#{mensaje.NO}" />
+
+							</p:selectOneMenu>
+							<p:panelGrid columns="3" style="width:100%"
+								styleClass="ui-panelgrid-blank" layout="grid">
+								<p:outputLabel
+									value="(#{administrarEtapa.historicoTareaPlanificada.tCompromisos.size()} #{mensaje.agregados})"
+									rendered="#{(administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion!='C') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.historicoTareaPlanificada.aprobadaCliente=='N') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='N')}"
+									style="font-size:14px" />
+
+
+
+
+								<p:commandButton id="btnCompromisos"
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.agregarQuitarCompromiso()}"
+									rendered="#{(administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion!='C') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.historicoTareaPlanificada.aprobadaCliente=='N') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='N')}"
+									value="" process="@this" update=":formCompromisos" />
+
+
+
+
+								<p:tooltip for="btnCompromisos" value="#{mensaje.agregarQuitar}"
+									rendered="#{(administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.registroPlanificacion.indicativoAprobacion!='C') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='C' and administrarEtapa.historicoTareaPlanificada.aprobadaCliente=='N') or (administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='N')}"
+									trackMouse="true" />
+
+
+
+							</p:panelGrid>
+
+						</p:outputPanel>
+						<p:outputPanel id="pnlAprobada3">
+							<p:spacer width="1"
+								rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='S'}" />
+
+
+						</p:outputPanel>
+						<p:outputPanel id="pnlAprobada4">
+
+							<p:message for="lstNecesitaAprobacion"
+								rendered="#{administrarEtapa.historicoTareaPlanificada.tResponsable=='CO' and administrarEtapa.historicoTareaPlanificada.aprobadaConsultor=='S'}" />
+						</p:outputPanel>
+
+
+
+
+
+					</p:panelGrid>
+
+
+
+
+				</div>
+				<br />
+				<br />
+
+
+				<div align="center">
+
+
+					<p:commandButton id="btnRegistrarTarea" style="font-size:14px"
+						action="#{administrarEtapa.actualizarTareaPlanificada()}"
+						value="#{mensaje.guardar}"
+						process=":formTareaPlanificada:pnlTareaPlanificada"
+						update=":formTareaPlanificada:pnlTareaPlanificada, :form" />
+
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarTarea" style="font-size:14px"
+						action="#{administrarEtapa.cancelarCambioTarea()}"
+						value="#{mensaje.cancelar}" process="@this"
+						update=":formTareaPlanificada:pnlTareaPlanificada, :form">
+
+						<p:resetInput target=":formTareaPlanificada:pnlTareaPlanificada" />
+
+					</p:commandButton>
+
+
+
+
+				</div>
+
+				<p:outputLabel value="#{mensaje.informacionRequerida}"
+					style="font-size:10px" />
+
+				<p:blockUI block=":formTareaPlanificada:pnlTareaPlanificada"
+					trigger="btnRegistrarTarea, btnCancelarTarea">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

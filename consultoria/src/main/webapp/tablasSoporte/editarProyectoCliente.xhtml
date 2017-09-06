@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEditar">
+
+		<p:dialog header="#{mensaje.editarProyectoCliente}" height="400"
+			widgetVar="panelEdicion" resizable="true" closable="false"
+			responsive="true">
+			<p:panel id="pnlEditar">
+				<div align="center">
+
+
+					<p:panelGrid columns="3" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+
+
+						<p:outputLabel for="txtCliente" value="#{mensaje.labelCliente}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:autoComplete id="txtCliente" required="true"
+							placeholder="#{mensaje.escribaTresLetras}"
+							style="font-size:14px; width:100%; height:20px"
+							forceSelection="true" minQueryLength="3"
+							label="#{mensaje.labelCliente}"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.cliente.cliente}"
+							completeMethod="#{hacerMantenimiento.usarAutocompletarEditarCliente}">
+
+							<p:ajax event="itemSelect"
+								listener="#{hacerMantenimiento.onItemSelectEditarCliente}"
+								update="txtCliente" process="@this" />
+
+						</p:autoComplete>
+
+
+						<p:message for="txtCliente" />
+
+						<p:spacer width="1" />
+						<p:spacer width="1" />
+						<p:spacer width="1" />
+
+
+						<p:outputLabel for="lstProyecto" value="#{mensaje.proyectoSimple}"
+							style="font-weight:bold; font-size:14px" />
+
+
+
+						<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+							style="width:100%; font-size:14px; height:20px" id="lstProyecto"
+							required="true"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.proyecto.id}">
+
+
+							<f:selectItems
+								value="#{hacerMantenimiento.itemsProyectosEdicion}" />
+
+
+
+						</p:selectOneMenu>
+
+						<p:message for="lstProyecto" />
+
+
+						<p:outputLabel for="lstConsultor" value="#{mensaje.consultor}"
+							style="font-weight:bold; font-size:14px" />
+
+
+
+						<p:selectOneMenu label="#{mensaje.consultor}"
+							style="width:100%; font-size:14px; height:20px" id="lstConsultor"
+							required="true"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.consultor.id}">
+
+
+							<f:selectItems
+								value="#{hacerMantenimiento.itemsConsultoresEdicion}" />
+
+
+
+						</p:selectOneMenu>
+
+
+						<p:message for="lstConsultor" />
+
+						<p:outputLabel for="calFechaDesde"
+							value="#{mensaje.fechaDesdeConsultoria}"
+							style="font-weight:bold; font-size:14px" />
+
+
+						<p:calendar id="calFechaDesde"
+							label="#{mensaje.fechaDesdeConsultoria}" required="true"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.fechaInicio}"
+							pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" />
+
+						<p:message for="calFechaDesde" />
+
+
+						<p:outputLabel for="calFechaFin"
+							value="#{mensaje.fechaFinConsultoria}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:calendar id="calFechaFin"
+							label="#{mensaje.fechaFinConsultoria}" required="true"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.fechaFin}"
+							pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" />
+
+						<p:message for="calFechaFin" />
+
+
+						<p:outputLabel for="calFechaCertifico" rendered="1==2"
+							value="#{mensaje.fechaCertifico}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:calendar id="calFechaCertifico" rendered="1==2"
+							label="#{mensaje.fechaCertifico}" 
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.fechaCertificacion}"
+							pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" />
+
+						<p:message for="calFechaCertifico" />
+
+
+					</p:panelGrid>
+
+
+
+				</div>
+				<br />
+				<br />
+				<div align="center">
+					<p:commandButton id="btnEditar" style="font-size:14px"
+						action="#{hacerMantenimiento.editarProyectoCliente()}"
+						value="#{mensaje.editar}" process=":formEditar:pnlEditar"
+						update=":formEditar:pnlEditar, :form" />
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEdicion"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{hacerMantenimiento.cancelarProyectoClienteTransaccion('MODAL_EDITAR')}"
+						process="@this" value="#{mensaje.cancelar}" update=":form">
+						<p:resetInput target=":formEditar, :form:pnlCasoUso" />
+					</p:commandButton>
+
+				</div>
+
+				<p:outputLabel value="#{mensaje.informacionRequerida}"
+					style="font-size:10px" />
+				<p:blockUI block=":formEditar:pnlEditar"
+					trigger="btnEditar, btnCancelarEdicion">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

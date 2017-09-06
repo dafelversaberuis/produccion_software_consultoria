@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 30px
+}
+
+.columna2 {
+	
+}
+</style>
+
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('TODO_PERSONAL')}"
+				autoRun="true" />
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloPersonal}:
+						#{mensaje.administrarConsultores}</h2>
+
+
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+
+			<p:outputPanel id="pnlConsultor">
+
+				<p:spacer height="10" />
+
+				<p:accordionPanel id="pnlCrear" activeIndex="1">
+					<p:tab title="#{mensaje.crearConsultor}"
+						titleStyle="font-size:16px" closable="true">
+						<div align="left">
+							<p:panelGrid columns="6" cellpadding="0" cellspacing="0"
+								style="width:100%" styleClass="ui-panelgrid-blank" layout="grid">
+
+								<p:outputLabel for="txtNombres" value="#{mensaje.nombres}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtNombres"
+									value="#{administrarPersonal.consultor.nombres}"
+									required="true" label="#{mensaje.nombres}"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:outputLabel for="txtApellidos" value="#{mensaje.apellidos}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtApellidos"
+									value="#{administrarPersonal.consultor.apellidos}"
+									required="true" label="#{mensaje.apellidos}"
+									style="width:100%; font-size:14px; " />
+
+
+
+								<p:outputLabel for="txtCorreo" value="#{mensaje.correo}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtCorreo"
+									value="#{administrarPersonal.consultor.correoElectronico}"
+									required="true" label="#{mensaje.correo}"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:spacer width="1" />
+								<p:message for="txtNombres" />
+								<p:spacer width="1" />
+								<p:message for="txtApellidos" />
+								<p:spacer width="1" />
+								<p:message for="txtCorreo" />
+
+
+								<p:outputLabel for="txtTelefono" value="#{mensaje.telefonos}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtTelefono"
+									value="#{administrarPersonal.consultor.telefono}"
+									required="true" label="#{mensaje.telefonos}"
+									style="width:100%; font-size:14px; " />
+
+
+
+
+								<p:outputLabel for="lstTipoVigencia"
+									value="#{mensaje.tipoVigencia}"
+									style="font-weight:bold; font-size:14px" />
+								<p:selectOneMenu id="lstTipoVigencia"
+									value="#{administrarPersonal.consultor.tTipoEstado}"
+									style="width:100%; font-size:14px" required="true">
+									<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+									<f:selectItem itemValue="M" itemLabel="#{mensaje.manual}" />
+									<f:selectItem itemValue="F" itemLabel="#{mensaje.porFechas}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlVigencia1, pnlVigencia2, pnlVigencia3, pnlVigencia4, pnlVigencia5, pnlVigencia6, @this" />
+
+								</p:selectOneMenu>
+
+
+								<p:outputPanel id="pnlVigencia1">
+									<p:outputLabel for="lstEstadoVigencia"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='M'}"
+										value="#{mensaje.estadoVigencia}"
+										style="font-weight:bold; font-size:14px" />
+
+									<p:outputLabel for="calFechaDesde"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='F'}"
+										value="#{mensaje.fechaDesde}"
+										style="font-weight:bold; font-size:14px" />
+
+								</p:outputPanel>
+								<p:outputPanel id="pnlVigencia2">
+									<p:selectOneMenu id="lstEstadoVigencia"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='M'}"
+										value="#{administrarPersonal.consultor.estadoVigencia}"
+										style="width:100%; font-size:14px" required="true">
+										<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+										<f:selectItem itemValue="A"
+											itemLabel="#{mensaje.ESTADO_ACTIVO}" />
+										<f:selectItem itemValue="F"
+											itemLabel="#{mensaje.ESTADO_INACTIVO}" />
+
+									</p:selectOneMenu>
+
+									<p:calendar id="calFechaDesde" label="#{mensaje.fechaDesde}"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='F'}"
+										required="true"
+										value="#{administrarPersonal.consultor.fechaInicio}"
+										pattern="dd/MM/yyyy" mask="true"
+										style="font-size:14px;  " />
+
+								</p:outputPanel>
+
+								<p:spacer width="1" />
+								<p:message for="txtTelefono" />
+								<p:spacer width="1" />
+								<p:message for="lstTipoVigencia" />
+								<p:spacer width="1" />
+								<p:outputPanel id="pnlVigencia5">
+									<p:message for="lstEstadoVigencia"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='M'}" />
+									<p:message for="calFechaDesde"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='F'}" />
+								</p:outputPanel>
+
+
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:outputPanel id="pnlVigencia3">
+									<p:outputLabel for="calFechaHasta"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='F'}"
+										value="#{mensaje.fechaHasta}"
+										style="font-weight:bold; font-size:14px" />
+
+								</p:outputPanel>
+								<p:outputPanel id="pnlVigencia4">
+
+									<p:calendar id="calFechaHasta" label="#{mensaje.fechaHasta}"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='F'}"
+										required="true"
+										value="#{administrarPersonal.consultor.fechaFin}"
+										pattern="dd/MM/yyyy" mask="true"
+										style="font-size:14px;  " />
+
+								</p:outputPanel>
+
+
+
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+
+
+
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:outputPanel id="pnlVigencia6">
+									<p:message for="calFechaHasta"
+										rendered="#{administrarPersonal.consultor.tTipoEstado!=null and administrarPersonal.consultor.tTipoEstado=='F'}" />
+								</p:outputPanel>
+
+
+							</p:panelGrid>
+							<div align="center">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="vertical-align:top">
+
+									<p:outputLabel for="txtPerfil" value="#{mensaje.perfil}"
+										style="font-weight:bold; font-size:14px" />
+
+
+
+									<p:editor value="#{administrarPersonal.consultor.perfil}"
+										height="150" id="txtPerfil" />
+
+
+								</p:panelGrid>
+							</div>
+						</div>
+
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrear" style="font-size:14px;"
+								action="#{administrarPersonal.crearConsultor()}"
+								value="#{mensaje.guardar}" update=":form" />
+
+							<p:spacer width="10" />
+							<p:commandButton id="btnBorrar"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{administrarPersonal.cancelarConsultor()}"
+								process="@this" value="#{mensaje.cancelar}" update=":form">
+
+								<p:resetInput target=":form:pnlConsultor" />
+
+							</p:commandButton>
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":form:pnlCrear" trigger="btnCrear, btnBorrar">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+					</p:tab>
+				</p:accordionPanel>
+
+				<p:spacer height="30" />
+				<p:accordionPanel id="pnlDtlConsultores">
+					<p:tab title="#{mensaje.listadoConsultores}"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="loc" id="dtlConsultores"
+							widgetVar="dtlRegistros"
+							value="#{administrarPersonal.consultores}" reflow="true"
+							rows="10" paginator="true" paginatorPosition="bottom"
+							draggableColumns="true"
+							emptyMessage="#{mensaje.noExistenciaConsultores}">
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align:right">
+									<p:inputText id="globalFilter" immediate="true"
+										onkeyup="PF('dtlRegistros').filter()"
+										style="width:300px; height:35px"
+										placeholder="#{mensaje.palabrasClave}" />
+								</p:outputPanel>
+							</f:facet>
+
+
+
+							<p:column headerText="#{mensaje.consultor}"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.nombres} #{loc.apellidos}"
+								filterBy="#{loc.nombres} #{loc.apellidos}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.nombres} #{loc.apellidos}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.correo}"
+								filterStyle="display:none" filterMatchMode="contains"
+								filterBy="#{loc.correoElectronico}"
+								sortBy="#{loc.correoElectronico}" style="font-size:14px">
+								<p:outputLabel value="#{loc.correoElectronico}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+							<p:column headerText="#{mensaje.telefonos}"
+								filterStyle="display:none" filterMatchMode="contains"
+								filterBy="#{loc.telefono}" sortBy="#{loc.telefono}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.telefono}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+							<p:column headerText="#{mensaje.perfil}" visible="false"
+								filterStyle="display:none" filterMatchMode="contains"
+								filterBy="#{loc.perfil}" sortBy="#{loc.perfil}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.perfil}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.estadoVigencia}"
+								sortBy="#{loc.estadoVigencia} #{loc.fechaInicio} #{loc.fechaFin}"
+								filterStyle="display:none" filterMatchMode="contains"
+								filterBy="#{loc.estadoVigencia} #{loc.fechaInicio} #{loc.fechaFin}"
+								style="font-size:14px">
+								<div align="ui-fluid">
+									<p:panelGrid columns="2" style="width:100%;"
+										columnClasses="columna1,columna2"
+										styleClass="ui-panelgrid-blank">
+										<p:commandButton
+											rendered="#{administrarPersonal.isConsultorVigente(loc)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{!administrarPersonal.isConsultorVigente(loc)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+
+										<p:outputLabel
+											value="#{administrarPersonal.getTextoVigenciaConsultor(loc)}"
+											style="font-weight:normal; font-size:12px" />
+									</p:panelGrid>
+								</div>
+
+							</p:column>
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+								<p:commandButton id="btnIrEditar"
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarPersonal.asignarConsultor(loc,'MODAL_EDITAR_CONSULTOR')}"
+									value="" process=":form:pnlDtlConsultores" update=":formEditar" />
+
+
+								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrEliminar"
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{administrarPersonal.asignarConsultor(loc,'MODAL_ELIMINAR_CONSULTOR')}"
+									process=":form:pnlDtlConsultores" update=":formEliminar" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrDeatalle"
+									style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{administrarPersonal.asignarConsultor(loc,'MODAL_VER_CONSULTOR')}"
+									process=":form:pnlDtlConsultores" update=":formVer" />
+
+
+								<p:tooltip for="btnIrDeatalle"
+									value="#{mensaje.verInformacionCompleta}" trackMouse="true" />
+
+
+								<p:commandButton id="btnIrClave"
+									style="background-origin: content-box; background-image: url('../imagenes/c_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{administrarPersonal.asignarConsultor(loc,'MODAL_CLAVE_CONSULTOR')}"
+									process=":form:pnlDtlConsultores" update=":formClave" />
+
+								<p:tooltip for="btnIrClave"
+									value="#{mensaje.generarClaveAdministrador}" trackMouse="true" />
+
+							</p:column>
+
+
+						</p:dataTable>
+
+					</p:tab>
+				</p:accordionPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+		<ui:include src="/personal/editarConsultor.xhtml" />
+		<ui:include src="/personal/eliminarConsultor.xhtml" />
+		<ui:include src="/personal/verConsultor.xhtml" />
+		<ui:include src="/personal/cambiarClaveConsultor.xhtml" />
+
+
+		<p:spacer height="800" />
+
+	</ui:define>
+</ui:composition>

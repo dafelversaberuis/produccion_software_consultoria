@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 60%;
+	vertical-align: top;
+}
+
+.columna2 {
+	width: 40%;
+	vertical-align: top;
+}
+
+.columnaI {
+	width: 50%;
+	vertical-align: top;
+}
+</style>
+		<style type="text/css">
+.selectOneMenuGrouped.ui-selectonemenu-list, .ui-selectonemenu-panel {
+	max-height: 50% !important;
+	overflow: scroll;
+}
+
+.selectOneMenuGrouped .ui-selectonemenu-items-wrapper {
+	height: 100% !important;
+	overflow: scroll;
+}
+</style>
+
+		<h:form id="form">
+
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('DIAGNOSTICO')}"
+				autoRun="true" />
+			<f:metadata>
+				<f:viewParam id="c" name="c"
+					value="#{administrarEtapa.parametroCliente}" />
+
+				<f:viewParam id="p" name="p"
+					value="#{administrarEtapa.parametroProyecto}" />
+
+			</f:metadata>
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloEtapas}: Auditoría</h2>
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+			<p:outputPanel id="pnlCasoUso">
+				<p:spacer height="10" />
+
+				<p:panel>
+					<p:outputPanel id="pnlCriteriosConsulta">
+						<div align="left">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid" cellpadding="0">
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.labelCliente}" filter="true"
+									filterMatchMode="contains" style="width:100%; font-size:14px;"
+									id="lstCliente" value="#{administrarEtapa.cliente.id}">
+
+
+									<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+									<p:ajax event="change" process="@this"
+										listener="#{administrarEtapa.setProyectoCliente(null)}"
+										update=":form:pnlCriteriosConsulta, :form:pnlEstructuraDiagnostico" />
+
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="#{mensaje.proyectoSimple}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+									style="width:100%; font-size:14px;" id="lstProyecto"
+									value="#{administrarEtapa.proyectoCliente.id}">
+
+
+									<f:selectItems
+										value="#{administrarEtapa.itemsProyectosCliente}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraDiagnostico"
+										listener="#{administrarEtapa.consultarDatosCompletosConsultoria()}" />
+
+
+
+								</p:selectOneMenu>
+								<p:outputPanel id="pnlProyectoCliente1">
+									<p:outputLabel value="#{mensaje.consultor}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente2">
+									<p:outputLabel
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+										style="font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente3">
+
+									<p:outputLabel value="Vigencia proyecto"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente4">
+
+									<p:panelGrid columns="2" style="width:100%;">
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:outputLabel
+											value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+											style="font-weight:normal; font-size:14px" />
+									</p:panelGrid>
+								</p:outputPanel>
+							</p:panelGrid>
+						</div>
+
+
+
+
+					</p:outputPanel>
+				</p:panel>
+				<p:outputPanel id="pnlEstructuraDiagnostico">
+
+
+					<p:dataTable var="loc" id="dtlRegistros" widgetVar="dtlRegistros"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+						value="#{administrarEtapa.diagnostico}" reflow="true" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						draggableColumns="true" rowIndexVar="indice"
+						emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+
+						<p:column headerText="#" style="font-size:14px; width:50px">
+							<p:outputLabel value="#{(indice+1)}"
+								style="font-size:14px; vertical-align:middle" />
+						</p:column>
+
+						<p:column headerText="Pregunta" style="font-size:14px;">
+							<p:inputTextarea value="#{loc.preguntaProyecto.pregunta}"
+								rows="3" readonly="true" autoResize="false"
+								style="font-size:14px; width:100%; background-color:#D3D3D3" />
+						</p:column>
+
+
+						<p:column headerText="Posible evidencia" style="font-size:14px;">
+							<p:inputTextarea value="#{loc.preguntaProyecto.posibleEvidencia}"
+								rows="3" readonly="true" autoResize="false"
+								style="font-size:14px; width:100%; background-color:#D3D3D3" />
+						</p:column>
+
+						<p:column headerText="Hallazgo*" width="18%"
+							style="font-size:14px; vertical-align: top;">
+							<ui:repeat var="e" value="#{loc.tEstadosDiagnostico}">
+								<p:selectBooleanButton id="booleanBtn"
+									disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+									style="width:100%;text-align:left" onLabel="#{e.estado.nombre}"
+									offLabel="#{e.estado.nombre}" onIcon="ui-icon-check"
+									offIcon="ui-icon-close" value="#{e.tSeleccionado}">
+									<p:ajax event="change"
+										listener="#{administrarEtapa.vaidarNoAplica(loc.tEstadosDiagnostico,e,loc)}"
+										process="@this"
+										update=":form:pnlEstructuraDiagnostico, :formGraficoDiagnostico:chartEstados" />
+								</p:selectBooleanButton>
+
+							</ui:repeat>
+						</p:column>
+
+						<p:column headerText="Descripción hallazgo*"
+							style="font-size:14px;">
+							<p:inputTextarea value="#{loc.evidenciaEncontrada}" rows="3"
+								disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+								autoResize="false" id="txtEvidenciaEncontrada"
+								style="font-size:14px; width:100%">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputTextarea>
+
+
+
+							<p:message for="txtEvidenciaEncontrada" />
+						</p:column>
+						<p:column
+							headerText="Archivos soporte (Fotos, audios, documentos, etc)"
+							style="font-size:13px; vertical-align:middle !important"
+							width="15%;">
+
+							<div align="center">
+								<p:outputPanel>
+									<p:commandButton title="VER/AGREGAR ARCHIVOS SOPORTE"
+										style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:18px; height:18px; vertical-align:bottom; border:0; background-color:transparent"
+										action="#{administrarEtapa.asignarDocumentoDiagnostico(loc)}"
+										value="" process="@this"
+										update=":formDocumento, :form:messages" />
+								</p:outputPanel>
+
+								<p:outputLabel value="Sin archivos"
+									rendered="#{!(loc.tDocumentos!=null and loc.tDocumentos.size()>0)}"
+									style="font-weight:bold; font-size:14px; color:red" />
+
+								<p:outputLabel
+									value="#{loc.tDocumentos.size()} archivo(s) agregado(s)"
+									rendered="#{loc.tDocumentos!=null and loc.tDocumentos.size()>0}"
+									style="font-weight:bold; font-size:14px; color:green" />
+							</div>
+
+
+						</p:column>
+
+
+
+
+					</p:dataTable>
+					<br />
+					<div align="center">
+						<p:panelGrid columns="3" style="width:60%; vertical-align:top;"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							rendered="#{1==2 and administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}">
+
+							<p:outputLabel value="Persona entrevistada:" for="txtPersona"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:outputLabel value="Cargo persona entevistada:" for="txtCargo"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:outputLabel value="Firma entrevistado:" for="sigFirma"
+								style="font-weight:bold; font-size:14px" />
+
+
+
+							<p:inputText label="Persona entrevistada " id="txtPersona"
+								style="width:100%; font-size:14px;" required="true"
+								value="#{administrarEtapa.personaDiagnostico.personaEntrevistada}">
+
+								<p:ajax event="change" process="@this" />
+
+							</p:inputText>
+
+							<p:inputText label="Cargo persona entrevistada" id="txtCargo"
+								style="width:100%; font-size:14px;" required="true"
+								value="#{administrarEtapa.personaDiagnostico.cargoEntrevistado}">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputText>
+
+							<p:message for="txtPersona" />
+							<p:message for="txtCargo" />
+
+
+
+						</p:panelGrid>
+					</div>
+
+					<p:outputLabel value="#{mensaje.informacionRequerida}"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+						style="font-size:10px" />
+
+
+					<p:spacer height="10" />
+					<div align="center">
+
+
+						<p:commandButton id="btnCrear" style="font-size:14px;"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							process=":form"
+							action="#{administrarEtapa.actualizarValidarDiagnostico()}"
+							value="Guardar e imprimir"
+							update=":form, :formDiagnosticoCompleto, :formDiagnosticoIncompleto" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnBorrar"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.diagnosticoExistente}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
+							process="@this"
+							value="Eliminar auditoría proyecto/cliente guardada"
+							update=":form" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnVerGraficoEstados"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							process="@this"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							action="#{consultarFuncionesAPI.abrirModal('panelGrafico')}"
+							value="Ver gráfico hallazgos" update=":formGraficoDiagnostico" />
+
+						<p:spacer width="10" rendered="1==2" />
+						<p:commandButton id="btnImprimir"
+							rendered="#{1==2 and administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.isDiagnosticoCompleto()}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelImprimir')}"
+							value="Imprimir Diagnóstico" update=":form" />
+						<p:spacer width="10" rendered="1==2" />
+						<p:commandButton id="btnCorreo"
+							rendered="#{1==2 and administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.diagnosticoExistente}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{administrarEtapa.enviarCorreoDiagnostico()}"
+							process="@this"
+							value="Enviar correo informativo sobre diagnóstico"
+							update=":form" />
+
+						<p:spacer width="10" rendered="1==2" />
+
+
+						<p:blockUI
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							block=":form" trigger="btnCrear, btnBorrar, btnCorreo">
+							<p:graphicImage value="../imagenes/cargando.gif" />
+						</p:blockUI>
+					</div>
+
+
+				</p:outputPanel>
+			</p:outputPanel>
+		</h:form>
+		<ui:include src="/etapas/verGraficoDiagnostico.xhtml" />
+		<ui:include src="/etapas/guardarDianosticoIncompleto.xhtml" />
+		<ui:include src="/etapas/guardarDianosticoCompleto.xhtml" />
+		<ui:include src="/etapas/eliminarDiagnostico.xhtml" />
+		<ui:include src="/etapas/mostrarResumenGuardadoDiagnostico.xhtml" />
+
+
+		<ui:include src="/etapas/crearDocumento.xhtml" />
+		<ui:include src="/etapas/eliminarDocumentoDiagnostico.xhtml" />
+
+
+	</ui:define>
+</ui:composition>

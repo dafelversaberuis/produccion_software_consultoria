@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="formEliminar">
+		<p:dialog header="#{mensaje.eliminarProyecto} del cliente" closable="false"
+			widgetVar="panelEliminacion" resizable="true" responsive="true">
+			<p:outputPanel id="outputpanelEliminacion">
+
+				<div align="center">
+					<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="txtCliente" value="#{mensaje.labelCliente}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:inputText id="txtCliente" disabled="true"
+							style="font-size:14px; width:100%; "
+							label="#{mensaje.labelCliente}"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.cliente.cliente}" />
+
+
+
+
+
+
+
+
+						<p:outputLabel for="lstProyecto" value="#{mensaje.proyectoSimple}"
+							style="font-weight:bold; font-size:14px" />
+
+
+
+						<p:selectOneMenu label="#{mensaje.proyectoSimple}" disabled="true"
+							style="width:100%; font-size:14px; " id="lstProyecto"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.proyecto.id}">
+
+
+							<f:selectItems
+								value="#{hacerMantenimiento.itemsProyectosEdicion}" />
+
+
+
+						</p:selectOneMenu>
+
+
+
+
+						<p:outputLabel for="lstConsultor" value="#{mensaje.consultor}"
+							style="font-weight:bold; font-size:14px" />
+
+
+
+						<p:selectOneMenu label="#{mensaje.consultor}" disabled="true"
+							style="width:100%; font-size:14px; " id="lstConsultor"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.consultor.id}">
+
+
+							<f:selectItems
+								value="#{hacerMantenimiento.itemsConsultoresEdicion}" />
+
+
+
+						</p:selectOneMenu>
+
+
+
+
+						<p:outputLabel for="calFechaDesde"
+							value="#{mensaje.fechaDesdeConsultoria}"
+							style="font-weight:bold; font-size:14px" />
+
+
+						<p:calendar id="calFechaDesde" disabled="true"
+							label="#{mensaje.fechaDesdeConsultoria}"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.fechaInicio}"
+							pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" />
+
+
+
+
+						<p:outputLabel for="calFechaFin"
+							value="#{mensaje.fechaFinConsultoria}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:calendar id="calFechaFin" disabled="true"
+							label="#{mensaje.fechaFinConsultoria}"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.fechaFin}"
+							pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" />
+
+						<p:outputLabel for="calFechaCertifico" rendered="1==2"
+							value="#{mensaje.fechaCertifico}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:calendar id="calFechaCertifico"
+							label="#{mensaje.fechaCertifico}" disabled="true" rendered="1==2"
+							value="#{hacerMantenimiento.proyectoClienteTransaccion.fechaCertificacion}"
+							pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" />
+
+					
+
+
+
+
+					</p:panelGrid>
+
+				</div>
+				<div align="center">
+					<p:commandButton value="#{mensaje.eliminar}" style="font-size:14px"
+						action="#{hacerMantenimiento.eliminarProyectoCliente()}"
+						update=":form, :formEliminar" />
+
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEliminar"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{hacerMantenimiento.cancelarProyectoClienteTransaccion('MODAL_ELIMINAR')}"
+						process="@this" value="#{mensaje.cancelar}" update=":form">
+
+					</p:commandButton>
+
+				</div>
+			</p:outputPanel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

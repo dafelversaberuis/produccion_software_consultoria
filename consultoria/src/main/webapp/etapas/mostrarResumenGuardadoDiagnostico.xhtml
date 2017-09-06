@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formResumen">
+
+		<p:dialog header="Información guardada, tome una decisión"
+			widgetVar="panelResumen" resizable="true" closable="false"
+			responsive="true">
+			<p:panel id="pnlResumen">
+
+				<p:panelGrid styleClass="ui-panelgrid-blank" layout="grid"
+					style="width:100%" cellpadding="0" columns="1">
+
+
+
+					<p:commandButton id="btnResumen1" process="@this" ajax="false"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('G')}"
+						value="IMPRIMIR INFORME DE HALLAZGOS" />
+
+					<p:commandButton id="btnResumen4" process="@this" ajax="false"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('N')}"
+						value="IMPRIMIR INFORME LISTA CHEQUEO SIN PREGUNTAS NO APLICA" />
+
+					<p:commandButton id="btnResumen5" process="@this" ajax="false"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('S')}"
+						value="IMPRIMIR INFORME LISTA CHEQUEO CON PREGUNTAS NO APLICA" />
+
+					<p:commandButton id="btnResumen2" process="@this"
+						update=":form, :formResumen:pnlResumen"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.elaborarNuevamenteDiagnostico()}"
+						value="Cerrar ventana y eleaborar un nuevo Diagnóstico " />
+
+					<p:commandButton id="btnResumen3" process="@this"  
+						update=":form, :formResumen:pnlResumen"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{consultarFuncionesAPI.cerrarModal('panelResumen')}"
+						value="Cerrar ventana y continuar trabajando en este Diagnóstico" />
+
+
+				</p:panelGrid>
+
+				<p:blockUI block=":formResumen:pnlResumen"
+					trigger="btnResumen1, btnResumen2, btnResumen3, btnResumen4, btnResumen5">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloEtapas}:
+						#{mensaje.planificacion}</h2>
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+			<p:outputPanel id="pnlCasoUso">
+				<p:spacer height="10" />
+
+				<p:panel>
+					<p:outputPanel id="pnlCriteriosConsulta">
+						<div align="left">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid" cellpadding="0">
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.labelCliente}"
+									style="width:100%; font-size:14px;" id="lstCliente"
+									value="#{administrarEtapa.cliente.id}">
+
+
+									<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+									<p:ajax event="change" process="@this"
+										listener="#{administrarEtapa.setProyectoCliente(null)}"
+										update=":form:pnlCriteriosConsulta, :form:pnlEstructuraPlanificacion" />
+
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="#{mensaje.proyectoSimple}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+									style="width:100%; font-size:14px;" id="lstProyecto"
+									value="#{administrarEtapa.proyectoCliente.id}">
+
+
+									<f:selectItems
+										value="#{administrarEtapa.itemsProyectosCliente}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraPlanificacion"
+										listener="#{administrarEtapa.consultarDatosParaPlanificacion()}" />
+
+
+
+								</p:selectOneMenu>
+								<p:outputPanel id="pnlProyectoCliente1">
+									<p:outputLabel value="#{mensaje.consultor}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente2">
+									<p:outputLabel
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+										style="font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente3">
+
+									<p:outputLabel value="#{mensaje.fechasConsultoria}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente4">
+
+									<p:panelGrid columns="2" style="width:100%;">
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:outputLabel
+											value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+											style="font-weight:normal; font-size:14px" />
+									</p:panelGrid>
+								</p:outputPanel>
+							</p:panelGrid>
+						</div>
+					</p:outputPanel>
+				</p:panel>
+
+				<p:spacer height="30" />
+				<p:outputPanel id="pnlEstructuraPlanificacion">
+					<p:accordionPanel id="pnlDltRegistros"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}">
+						<p:tab title="#{mensaje.tareas}" titleStyle="font-size:16px"
+							closable="true">
+
+
+							<p:dataTable var="loc" id="dtlRegistros" widgetVar="dtlRegistros"
+								value="#{administrarEtapa.planificacion}" reflow="true"
+								rows="10" paginator="true" paginatorPosition="bottom"
+								draggableColumns="true" rowIndexVar="indice"
+								emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+								<p:column headerText="#" sortBy="#{indice}"
+									style="font-size:14px; width:50px; ">
+									<p:outputLabel value="#{indice+1}" style="font-weight:normal" />
+								</p:column>
+
+								<p:column headerText="#{mensaje.tarea}"
+									sortBy="#{loc.tareaProyecto.tarea}" style="font-size:14px">
+									<p:outputLabel value="#{loc.tareaProyecto.tarea}"
+										style="font-weight:normal" />
+								</p:column>
+
+								<p:column headerText="#{mensaje.estadoTarea}"
+									sortBy="#{loc.indicativo}" style="font-size:14px">
+									<p:outputLabel value="#{mensaje.abierta}"
+										rendered="#{loc.indicativo=='A'}" style="font-weight:normal" />
+									<p:outputLabel value="#{mensaje.cerrada}"
+										rendered="#{loc.indicativo=='C'}" style="font-weight:normal" />
+
+									<p:outputLabel value="#{mensaje.aprobadaAmbos}"
+										rendered="#{loc.indicativo=='C' and loc.aprobadaCliente=='S' and loc.aprobadaConsultor=='S'}"
+										style="font-weight:normal" />
+
+
+
+									<p:outputLabel value="#{mensaje.aprobadaConsultor}"
+										rendered="#{loc.aprobadaCliente=='N' and loc.aprobadaConsultor=='S'}"
+										style="font-weight:normal" />
+
+
+								</p:column>
+
+
+								<p:column headerText="#{mensaje.acciones}"
+									style="font-size:14px; text-align:center;">
+
+
+
+									<p:commandButton id="btnRevisar" value=""
+										style="background-origin: content-box; background-image: url('../imagenes/r_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+										action="#{administrarEtapa.asignarNuevoHistorico(loc,'CO')}"
+										process=":form:pnlEstructuraPlanificacion"
+										rendered="#{loc.indicativo=='A'}"
+										update=":formTareaPlanificada" />
+
+
+									<p:tooltip for="btnRevisar" value="#{mensaje.revisar}"
+										rendered="#{loc.indicativo=='A'}" trackMouse="true" />
+
+									<p:commandButton id="btnElaborar" value=""
+										rendered="#{loc.indicativo=='A'}"
+										style="background-origin: content-box; background-image: url('../imagenes/e_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+										action="#{administrarEtapa.asignarNuevoHistorico(loc,'C')}"
+										process=":form:pnlEstructuraPlanificacion"
+										update=":formTareaPlanificada" />
+
+
+									<p:tooltip for="btnElaborar" value="#{mensaje.elaborarCambios}"
+										rendered="#{loc.indicativo=='A'}" trackMouse="true" />
+
+
+									<p:commandButton id="btnVerHistorico2" value=""
+										rendered="#{loc.indicativo=='C'}"
+										style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+										action="#{administrarEtapa.verHistorico(loc)}"
+										process=":form:pnlEstructuraPlanificacion"
+										update=":formVerHistorico" />
+
+
+									<p:tooltip for="btnVerHistorico2"
+										value="#{mensaje.verHistoricoTarea}"
+										rendered="#{loc.indicativo=='C'}" trackMouse="true" />
+
+
+
+								</p:column>
+
+
+
+
+							</p:dataTable>
+
+
+						</p:tab>
+					</p:accordionPanel>
+					<p:spacer height="10" />
+					<div align="center">
+						<p:commandButton id="btnBorrar"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.existentePlanificacion}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
+							process="@this" value="#{mensaje.eliminar}" update=":form" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnImprimir"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{administrarEtapa.imprimirEstadosTareas()}" ajax="false"
+							value="#{mensaje.imprimirInformeTareas}" update=":form" />
+
+					</div>
+
+				</p:outputPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+		<ui:include src="/etapas/registrarPlanificacionTarea.xhtml" />
+		<ui:include src="/etapas/eliminarPlanificacion.xhtml" />
+		<ui:include src="/etapas/agregarCompromisos.xhtml" />
+		<ui:include src="/etapas/verHistoricoTarea.xhtml" />
+		<ui:include src="/etapas/verCompromisos.xhtml" />
+
+	</ui:define>
+</ui:composition>

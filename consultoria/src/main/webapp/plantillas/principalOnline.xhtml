@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+
+	<meta name="author" content="Quimerapps" />
+	<title>Isoluciones - Consulting Software</title>
+	<meta name="description" content="Isoluciones - Consulting Software" />
+	<meta name="keywords" content="Isoluciones - Consulting Software" />
+	<link
+		href='http://fonts.googleapis.com/css?family=Roboto:100,300,300italic,400,700|Julius+Sans+One|Roboto+Condensed:300,400'
+		rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" href="/consultoria/plantillas/css/style.css" />
+	<link rel="stylesheet" href="/consultoria/plantillas/css/grid.css" />
+	<link rel="stylesheet" href="/consultoria/plantillas/css/layout.css" />
+	<link rel="stylesheet" href="/consultoria/plantillas/css/fontello.css" />
+	<link rel="stylesheet" href="/consultoria/plantillas/css/animation.css" />
+	<link rel="stylesheet"
+		href="/consultoria/plantillas/js/fancybox/jquery.fancybox.css" />
+	<script src="/consultoria/plantillas/js/jquery.modernizr.js"></script>
+	<style type="text/css">
+.ui-growl-title {
+	font: 14px "Lucida Console", Monaco, monospace;
+}
+
+.ui-growl-message p {
+	font: 16px "Lucida Console", Monaco, monospace;
+}
+</style>
+</h:head>
+
+<body data-spy="scroll" data-target="#navigation" class="page-template">
+	<div class="loader"></div>
+	<header id="header"> <h:form id="formCliente">
+
+		<div class="header-in">
+
+			<h1 id="logo" style="font-size: 0 !important;">
+				<a href="/consultoria/home.jsf"><img
+					src="/consultoria/imagenes/iconsulting_software.png"
+					alt="Isoluciones - Consulting Software"
+					style="height: 80px; width: auto" /> </a>
+			</h1>
+
+			<a id="responsive-nav-button" class="responsive-nav-button" href="#"></a>
+
+			<nav id="navigation" class="navigation">
+
+			<ul>
+
+
+				<li class=""><a href="#" class="">#{mensaje.etapas}</a>
+					<ul class="">
+
+
+
+						<li><p:commandLink value="#{mensaje.diagnostico}"
+								title="#{mensaje.diagnostico}"
+								action="/etapas/realizarDiagnosticoInicial.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+						<li><p:commandLink value="#{mensaje.planificacion}"
+								title="#{mensaje.planificacion}"
+								action="/etapas/realizarPlanificacionProyecto.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+						<li><p:commandLink value="#{mensaje.documentacion}"
+								title="#{mensaje.documentacion}"
+								action="/etapas/consultarDocumentacion.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+
+
+					</ul></li>
+
+				<li class=""><a href="#" class="">#{mensaje.parametrosGenerales}</a>
+					<ul class="">
+
+
+
+						<li><p:commandLink
+								value="#{mensaje.clienteProyectoConsultor}"
+								title="#{mensaje.clienteProyectoConsultor}"
+								action="/tablasSoporte/crearProyectoCliente.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+
+						<li><p:commandLink value="#{mensaje.proyectoCertificacion}"
+								title="#{mensaje.proyectoCertificacion}"
+								action="/tablasSoporte/crearProyecto.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+						<li><p:commandLink
+								value="#{mensaje.estadosPreguntasDiagnostico}"
+								title="#{mensaje.administradoresSoftware}"
+								action="/tablasSoporte/crearEstado.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+
+					</ul></li>
+
+
+				<li class=""><a href="#" class="">#{mensaje.personal}</a>
+					<ul class="">
+
+						<li><p:commandLink value="#{mensaje.administradoresSoftware}"
+								title="#{mensaje.administradoresSoftware}"
+								action="/personal/crearAdministrador.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+						<li><p:commandLink value="#{mensaje.consultores}"
+								title="#{mensaje.consultores}"
+								action="/personal/crearConsultor.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+						<li><p:commandLink value="#{mensaje.clientesNormales}"
+								title="#{mensaje.clientesNormales}"
+								action="/personal/crearCliente.xhtml?faces-redirect=true"
+								ajax="false" /></li>
+
+
+
+					</ul></li>
+
+
+
+
+
+
+				<li class="current-menu-item"><p:commandLink
+						value="#{mensaje.cerrarSesion}" ajax="false"
+						title="#{mensaje.cerrarSesion}" action="rfrfrtgegeerge" /></li>
+
+
+			</ul>
+
+			</nav>
+		</div>
+	</h:form> </header>
+	<div id="wrapper" align="center">
+
+		<div style="width: 90%;" align="left">
+			<br /> <br /> <br /> <br />
+			<ui:insert name="body" />
+			<br /> <br /> <br />
+
+		</div>
+		<footer id="footer"> <section class="section parallax ">
+
+		#{mensaje.mpiSoftware} - #{mensaje.disenadoPor}
+		<div class="container">
+			<div class="row"></div>
+
+		</div>
+
+		</section> </footer>
+	</div>
+
+
+
+	<script src="/consultoria/plantillas/js/jquery.queryloader2.js"></script>
+	<script src="/consultoria/plantillas/js/jquery.easing.1.3.min.js"></script>
+	<script src="/consultoria/plantillas/js/jquery.cycle.all.min.js"></script>
+	<script src="/consultoria/plantillas/js/jquery.smoothscroll.js"></script>
+	<script src="/consultoria/plantillas/js/waypoints.min.js"></script>
+
+
+	<script
+		src="/consultoria/plantillas/js/fancybox/jquery.fancybox.pack.js"></script>
+	<script src="/consultoria/plantillas/js/config.js"></script>
+	<script src="/consultoria/plantillas/js/custom.js"></script>
+
+
+</body>
+</html>

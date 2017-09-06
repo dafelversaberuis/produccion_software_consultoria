@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formResumen">
+
+		<p:dialog header="Información guardada, tome una decisión" widgetVar="panelResumen"
+			resizable="true" closable="false" responsive="true">
+			<p:panel id="pnlResumen">
+
+				<p:panelGrid styleClass="ui-panelgrid-blank" layout="grid" rendered="#{administrarEtapa.planificacionGeneral!=null and administrarEtapa.planificacionGeneral.estadoActual!=null}"
+					style="width:100%" cellpadding="0" columns="1">
+
+					<p:commandButton id="btnResumen1" process="@this"
+						update=":form, :formResumen:pnlResumen" rendered="#{administrarEtapa.planificacionGeneral.estadoActual=='P'}"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirPostGuardado('APROBAR_PLANIFICACION')}"
+						value="Aprobar Plan de Trabajo" />
+
+					
+						
+					<p:commandButton id="btnResumen3" process="@this" rendered="#{administrarEtapa.planificacionGeneral.estadoActual=='A' and 1==2}"
+						update=":form, :formResumen:pnlResumen"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirPostGuardado('AVISAR_CAMBIOS_CLIENTE')}"
+						value="Enviar correo/constancia a cliente informando de ejecución de plan de trabajo" />	
+
+					<p:commandButton id="btnResumen4" process="@this" ajax="false"  rendered="#{administrarEtapa.planificacionGeneral.estadoActual=='A' }"
+						update=":form, :formResumen:pnlResumen"  immediate="true" disabled="true"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirPostGuardado('IMPRIMIR')}"
+						value="Imprimir plan de trabajo" />
+						
+					<p:commandButton id="btnResumen2" process="@this" ajax="false"  rendered="#{administrarEtapa.planificacionGeneral.estadoActual=='A' and 1==2}"
+						update=":form, :formResumen:pnlResumen"  immediate="true"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirPostGuardado('IMPRIMIR')}"
+						value="Imprimir plan de trabajo ejecutado" />	
+
+					<p:commandButton id="btnResumen5" process="@this"
+						update=":form, :formResumen:pnlResumen"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirPostGuardado('CERRAR_ELABORAR_NUEVO')}"
+						value="Cerrar ventana y revisar otra planificación " />
+
+					<p:commandButton id="btnResumen6" process="@this"
+						update=":form, :formResumen:pnlResumen"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirPostGuardado('CERRAR')}"
+						value="Cerrar ventana y continuar trabajando en este plan de trabajo" />
+
+
+				</p:panelGrid>
+
+				<p:blockUI block=":formResumen:pnlResumen"
+					trigger="btnResumen1, btnResumen2, btnResumen3, btnResumen4, btnResumen5">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

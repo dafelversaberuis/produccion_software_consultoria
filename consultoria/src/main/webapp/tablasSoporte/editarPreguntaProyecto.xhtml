@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEditarHijo">
+
+		<p:dialog header="#{mensaje.editarPreguntaProyecto}" height="400" width="600"
+			widgetVar="panelEdicionHijo" resizable="true" closable="false"
+			responsive="true">
+			<p:panel id="pnlEditar">
+				<div align="center">
+
+
+					<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="txtNombrePregunta" value="#{mensaje.pregunta}"
+							style="font-weight:bold; font-size:14px;" />
+						<p:inputText id="txtNombrePregunta"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.pregunta}"
+							required="true" label="#{mensaje.pregunta}"
+							style="font-size:14px; width:100%" />
+						<p:spacer width="1" />
+						<p:message for="txtNombrePregunta" />
+
+
+						<p:outputLabel for="txtPosibleEvidencia"
+							value="#{mensaje.posibleEvidencia}"
+							style="font-weight:bold; font-size:14px" />
+						
+							
+						<p:inputTextarea cols="3" style="font-size:14px; width:100%" id="txtPosibleEvidencia" required="true"
+								value="#{hacerMantenimiento.preguntaProyectoTransaccion.posibleEvidencia}" />
+								
+									
+						<p:spacer width="1" />
+						<p:message for="txtPosibleEvidencia" />
+
+
+						<p:outputLabel for="lstEstado" value="#{mensaje.estado}"
+							style="font-weight:bold; font-size:14px" />
+						<p:selectOneMenu id="lstEstado" required="true"
+							style="font-size:14px; width:120px"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.estado}"
+							label="#{mensaje.estado}">
+							<f:selectItems value="#{consultarFuncionesAPI.itemsEstados}" />
+						</p:selectOneMenu>
+						<p:spacer width="1" />
+						<p:message for="lstEstado" />
+
+
+
+					</p:panelGrid>
+
+
+
+				</div>
+				<br />
+				<br />
+				<div align="center">
+
+
+					<p:commandButton id="btnEditarHijo" style="font-size:14px"
+						action="#{hacerMantenimiento.editarPreguntaProyecto()}"
+						value="#{mensaje.editar}" process=":formEditarHijo:pnlEditar"
+						update=":formEditarHijo:pnlEditar, :formAsignarPregunta:dtlPreguntas, :form" />
+
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEditar" style="font-size:14px"
+						action="#{hacerMantenimiento.cancelarPreguntaTransaccion('MODAL_EDITAR_PREGUNTA')}"
+						value="#{mensaje.cancelar}" process="@this"
+						update=":formAsignarPregunta:dtlPreguntas, :form, :formEditarHijo:pnlEditar">
+
+						<p:resetInput target=":formEditarHijo:pnlEditar" />
+
+					</p:commandButton>
+
+
+
+
+				</div>
+
+				<p:outputLabel value="#{mensaje.informacionRequerida}"
+					style="font-size:10px" />
+				<p:blockUI block=":formEditarHijo:pnlEditar"
+					trigger="btnEditarHijo, btnCancelarEditar">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirListadoDocumentos" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="42db267a-539a-4225-906e-a1d6f19077cf">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="informeMantenimiento" class="java.lang.Object"/>
+	<parameter name="pPersonaDiagnostico" class="java.lang.Object"/>
+	<parameter name="pParametroAuditoria" class="java.lang.Object"/>
+	<parameter name="pCliente" class="java.lang.Object"/>
+	<parameter name="pNombreCompletoConsultor" class="java.lang.String"/>
+	<parameter name="pProyectoCliente" class="java.lang.Object"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="fecha" class="java.util.Date"/>
+	<detail>
+		<band height="14">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="06256744-027a-4d1c-9a41-361d1051d6f1" positionType="Float" x="3" y="1" width="132" height="12"/>
+				<textElement markup="none">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["* "+ $F{nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<noData>
+		<band height="18">
+			<staticText>
+				<reportElement uuid="b0442649-5904-4925-98ee-8c9600545d47" x="3" y="2" width="132" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[No disponibles]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formCompromisos">
+
+		<p:dialog header="#{mensaje.agregarQuitarCompromisos}" height="450"
+			width="750" widgetVar="panelCompromisos" resizable="true"
+			closable="false" responsive="true">
+
+			<p:outputPanel id="pnlCasoUso2">
+				<p:spacer height="10" />
+				<p:accordionPanel id="pnlCrearCasoUso2">
+					<p:tab title="#{mensaje.agregarComprmiso}"
+						titleStyle="font-size:16px" closable="true">
+						<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+							style="width:100%" styleClass="ui-panelgrid-blank" layout="grid">
+							<p:outputLabel for="txtNombre" value="#{mensaje.compromiso}"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputText id="txtNombre"
+								value="#{administrarEtapa.compromiso.compromiso}"
+								required="true" label="#{mensaje.compromiso}"
+								style="width:100%; font-size:14px" />
+							<p:spacer width="1" />
+							<p:message for="txtNombre" />
+
+							<p:outputLabel for="lstResponsableCompromiso"
+								value="#{mensaje.responsableCompromiso}"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:selectOneMenu id="lstResponsableCompromiso" required="true"
+								style="font-size:14px; width:100%"
+								label="#{mensaje.responsableCompromiso}"
+								value="#{administrarEtapa.compromiso.responsable}">
+								<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+								<f:selectItem itemValue="CO" itemLabel="#{mensaje.consultor}" />
+								<f:selectItem itemValue="C" itemLabel="#{mensaje.labelCliente}" />
+							</p:selectOneMenu>
+							<p:spacer width="1" />
+							<p:message for="lstResponsableCompromiso" />
+
+
+							<p:outputLabel for="calFecha"
+								value="#{mensaje.fechaMaximaCumplimiento}"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:calendar id="calFecha"
+								label="#{mensaje.fechaMaximaCumplimiento}" required="true"
+								value="#{administrarEtapa.compromiso.fecha}"
+								pattern="dd/MM/yyyy" mask="true"
+								style="font-size:14px;  height:10px" />
+							<p:spacer width="1" />
+							<p:message for="calFecha" />
+
+
+
+
+						</p:panelGrid>
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnAgregar"
+								action="#{administrarEtapa.agregarCompromiso()}"
+								style="font-size:14px" process=":formCompromisos"
+								value="#{mensaje.agregar}"
+								update=":formCompromisos:pnlCasoUso2, :formTareaPlanificada:pnlAprobada2" />
+							<p:spacer width="10" />
+							<p:commandButton id="btnRegresar"
+								action="#{consultarFuncionesAPI.cerrarModal('panelCompromisos')}"
+								style="font-size:14px; font-weight: normal !important;"
+								process="@this" value="#{mensaje.regresar}"
+								update=":formCompromisos, :formTareaPlanificada:pnlAprobada2">
+								<p:resetInput target=":formCompromisos:pnlCasoUso2" />
+							</p:commandButton>
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+						<p:blockUI block=":formCompromisos:pnlCrearCasoUso2"
+							trigger="btnAgregar, btnRegresar">
+							<p:graphicImage value="../imagenes/cargando.gif" />
+						</p:blockUI>
+					</p:tab>
+				</p:accordionPanel>
+
+				<p:spacer height="30" />
+				<p:accordionPanel id="pnlDltRegistros">
+					<p:tab title="#{mensaje.compromisosAgregados}"
+						titleStyle="font-size:16px" closable="true">
+
+
+						<p:dataTable var="loc" id="dtlRegistros" widgetVar="dtlRegistros"
+							value="#{administrarEtapa.historicoTareaPlanificada.tCompromisos}"
+							reflow="true" rows="10" paginator="true"
+							paginatorPosition="bottom" draggableColumns="true"
+							emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+
+
+							<p:column headerText="#{mensaje.compromiso}"
+								sortBy="#{loc.compromiso}" style="font-size:14px">
+								<p:outputLabel value="#{loc.compromiso}"
+									style="font-weight:normal" />
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.responsableCompromiso}"
+								sortBy="#{loc.indicativoVigencia}" style="font-size:14px;">
+
+								<p:outputLabel value="#{mensaje.consultor}"
+									style="font-weight:normal" rendered="#{loc.responsable=='CO'}" />
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:normal" rendered="#{loc.responsable=='C'}" />
+
+
+							</p:column>
+
+							<p:column headerText="#{mensaje.fechaMaximaCumplimiento}"
+								sortBy="#{loc.fecha}" style="font-size:14px;">
+
+								<p:outputLabel
+									value="#{consultarFuncionesAPI.getFechaColombia(loc.fecha)}"
+									style="font-weight:normal" />
+
+
+
+							</p:column>
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+
+
+
+
+								<p:commandButton id="btnRemover"
+									style="background-origin: content-box; background-image: url('../imagenes/restringido.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.removerCompromiso(loc)}" value=""
+									process=":formCompromisos:pnlDltRegistros"
+									title="#{mensaje.remover}"
+									update=":formCompromisos:pnlDltRegistros, :formTareaPlanificada:pnlAprobada2" />
+
+
+
+
+
+
+
+
+
+
+
+							</p:column>
+
+
+
+
+						</p:dataTable>
+
+
+					</p:tab>
+				</p:accordionPanel>
+
+
+
+			</p:outputPanel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

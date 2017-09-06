@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEditar">
+
+		<p:dialog header="#{mensaje.editarCliente}" width="600" height="400"
+			widgetVar="panelEdicionCliente" resizable="true" closable="false"
+			responsive="true">
+			<p:panel id="pnlEditarCliente">
+
+
+
+				<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+					styleClass="ui-panelgrid-blank" layout="grid">
+
+					<p:outputLabel for="txtNit" value="#{mensaje.nit}"
+						style="font-weight:bold; font-size:14px" />
+					<p:inputText id="txtNit" value="#{administrarPersonal.clienteTransaccion.nit}"
+						required="true" label="#{mensaje.nit}"
+						style="width:100%; font-size:14px;" />
+					<p:spacer width="1" />
+					<p:message for="txtNit" />
+
+
+					<p:outputLabel for="txtCliente" value="#{mensaje.cliente}"
+						style="font-weight:bold; font-size:14px" />
+					<p:inputText id="txtCliente"
+						value="#{administrarPersonal.clienteTransaccion.cliente}" required="true"
+						label="#{mensaje.cliente}"
+						style="width:100%; font-size:14px;" />
+					<p:spacer width="1" />
+					<p:message for="txtCliente" />
+
+
+					<p:outputLabel for="txtCorreo" value="#{mensaje.correo}"
+						style="font-weight:bold; font-size:14px" />
+					<p:inputText id="txtCorreo"
+						value="#{administrarPersonal.clienteTransaccion.correoElectronico}"
+						required="true" label="#{mensaje.correo}"
+						style="width:100%; font-size:14px;" />
+
+
+					<p:spacer width="1" />
+					<p:message for="txtCorreo" />
+
+
+					<p:outputLabel for="txtRepresentante"
+						value="Líder Sostenibilidad"
+						style="font-weight:bold; font-size:14px" />
+					<p:inputText id="txtRepresentante"
+						value="#{administrarPersonal.clienteTransaccion.representante}"
+						required="true" label="Líder Sostenibilidad"
+						style="width:100%; font-size:14px;" />
+					<p:spacer width="1" />
+					<p:message for="txtRepresentante" />
+
+
+					<p:outputLabel for="txtTelefono" value="#{mensaje.telefonos}"
+						style="font-weight:bold; font-size:14px" />
+					<p:inputText id="txtTelefono"
+						value="#{administrarPersonal.clienteTransaccion.telefono}" 
+						label="#{mensaje.telefonos}"
+						style="width:100%; font-size:14px;" />
+
+
+					<p:spacer width="1" />
+					<p:message for="txtTelefono" />
+
+
+
+
+
+				</p:panelGrid>
+
+				<br />
+				<br />
+				<div align="center">
+					<p:commandButton id="btnEditarCliente" style="font-size:14px"
+						action="#{administrarPersonal.editarCliente()}"
+						value="#{mensaje.editar}" process=":formEditar:pnlEditarCliente"
+						update=":formEditar:pnlEditarCliente, :form" />
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEdicionCliente"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{administrarPersonal.cancelarClienteTransaccion('MODAL_EDITAR_CLIENTE')}"
+						process="@this" value="#{mensaje.cancelar}" update=":form">
+						<p:resetInput target=":formEditar, :form" />
+					</p:commandButton>
+
+				</div>
+
+				<p:outputLabel value="#{mensaje.informacionRequerida}"
+					style="font-size:10px" />
+				<p:blockUI block=":formEditar:pnlEditarCliente"
+					trigger="btnEditarCliente, btnCancelarEdicionCliente">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

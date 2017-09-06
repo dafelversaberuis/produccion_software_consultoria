@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:form id="formAsignarTarea">
+		<p:outputPanel id="pnlTareas"
+			rendered="#{hacerMantenimiento.vistaActual == 'VISTA_TAREAS'}">
+			<p:spacer height="5" />
+			<p:panel>
+				<div align="left">
+					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+						cellpadding="5">
+						<p:outputLabel value="#{mensaje.proyectoSimple}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel style="font-weight:normal; font-size:14px"
+							value="#{hacerMantenimiento.proyectoTransaccion.nombre}" />
+
+
+						<p:outputLabel value="#{mensaje.indicativo}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel value="#{mensaje.ESTADO_ACTIVO}"
+							style="font-weight:normal; font-size:14px"
+							rendered="#{hacerMantenimiento.proyectoTransaccion.indicativoVigencia=='A'}" />
+						<p:outputLabel value="#{mensaje.ESTADO_INACTIVO}"
+							style="font-weight:normal; font-size:14px"
+							rendered="#{hacerMantenimiento.proyectoTransaccion.indicativoVigencia=='I'}" />
+
+					</p:panelGrid>
+				</div>
+			</p:panel>
+
+			<p:spacer height="5" />
+
+
+
+			<p:outputPanel id="pnlCrearTarea">
+				<p:accordionPanel activeIndex="1">
+					<p:tab title="Crear información de la actividad" id="tabTarea"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							style="width:100%">
+
+
+
+
+							<p:outputLabel for="txtNombreTarea" value="Actividad"
+								style="font-weight:bold; font-size:14px;" />
+
+
+							<p:inputTextarea label="Actividad"
+								value="#{hacerMantenimiento.tareaProyecto.tarea}" rows="2"
+								id="txtNombreTarea" autoResize="false" required="true"
+								style="font-size:14px; width:100%; min-height:50px" />
+
+
+
+
+
+
+							<p:outputLabel for="txtProductoGeneral" value="Entregables"
+								style="font-weight:bold; font-size:14px;" />
+
+
+							<p:inputTextarea label="Entregables"
+								value="#{hacerMantenimiento.tareaProyecto.producto}" rows="2"
+								id="txtProductoGeneral" autoResize="false" required="true"
+								style="font-size:14px; width:100%; min-height:50px" />
+
+
+							<p:spacer width="1" />
+							<p:message for="txtNombreTarea" />
+
+							<p:spacer width="1" />
+							<p:message for="txtProductoGeneral" />
+
+
+
+							<p:outputLabel for="lstResponsable" value="Responsables"
+								style="font-weight:bold; font-size:14px;" />
+
+							<p:selectOneMenu label="Responsable" required="true"
+								style="width:100%; font-size:14px;" id="lstResponsable"
+								value="#{hacerMantenimiento.tareaProyecto.responsable}">
+
+
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItem itemLabel="Isoluciones (Consultor)" itemValue="CO" />
+								<f:selectItem itemLabel="Cliente" itemValue="CL" />
+								<f:selectItem itemLabel="Isoluciones y Cliente" itemValue="A" />
+
+
+							</p:selectOneMenu>
+
+							<p:outputLabel for="txtRequisitos" value="Requisitos"
+								style="font-weight:bold; font-size:14px;" />
+
+
+							<p:inputTextarea label="Requisito(s)"
+								value="#{hacerMantenimiento.tareaProyecto.requisito}" rows="2"
+								id="txtRequisitos" autoResize="false"
+								style="font-size:14px; width:100%; min-height:50px" />
+
+							<p:spacer width="1" />
+							<p:message for="lstResponsable" />
+
+
+							<p:spacer width="1" />
+							<p:message for="txtRequisitos" />
+
+
+
+
+						</p:panelGrid>
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrearTarea"
+								style="font-size:14px; font-weight: normal !important;"
+								action="#{hacerMantenimiento.crearTareaProyecto()}"
+								process=":formAsignarTarea" value="#{mensaje.guardar}"
+								update=":formAsignarTarea, :form" />
+
+						</div>
+
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formAsignarTarea:pnlCrearTarea"
+							trigger="btnCrearTarea">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+
+			<p:spacer height="5" />
+
+			<p:outputPanel id="dtlTareas">
+				<p:accordionPanel>
+					<p:tab title="Listado de actividades del proyecto"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="det" value="#{hacerMantenimiento.tareas}"
+							reflow="true" rows="5" paginator="true" id="dtlRegistros3"
+							widgetVar="dtlRegistros3" rowIndexVar="indice"
+							paginatorPosition="bottom" draggableColumns="true"
+							emptyMessage="No existen actividades generales creadas">
+
+							<p:column headerText="Requisito(s)" sortBy="#{det.requisito}"
+								style="font-size:14px">
+								<p:outputLabel value="#{det.requisito}"
+									style="font-weight:normal" />
+
+
+
+
+							</p:column>
+
+
+
+							<p:column headerText="Actividad" sortBy="#{det.tarea}"
+								style="font-size:14px">
+								<p:outputLabel value="#{det.tarea}" style="font-weight:normal"
+									title="#{hacerMantenimiento.getEtapaAplicada(det)}" />
+
+
+
+
+							</p:column>
+
+
+							<p:column headerText="Responsable" style="font-size:14px"
+								sortBy="#{det.responsable}">
+								<p:outputLabel rendered="#{det.responsable == 'A'}"
+									style="font-weight:normal" value="Consultor y Cliente" />
+
+								<p:outputLabel rendered="#{det.responsable == 'CO'}"
+									style="font-weight:normal" value="Consultor" />
+
+								<p:outputLabel rendered="#{det.responsable == 'CL'}"
+									style="font-weight:normal" value="Cliente" />
+
+							</p:column>
+
+
+							<p:column headerText="Entregables" style="font-size:14px; "
+								sortBy="#{det.producto}">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{det.producto}" />
+							</p:column>
+
+							<p:column headerText="Posee ejemplos documentación"
+								style="font-size:14px; width:120px; text-align:center;">
+
+								<p:commandButton id="btnPepaVerde"
+									rendered="#{hacerMantenimiento.isHabilitadaDocumentacion(det)}"
+									style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+									value="" />
+
+								<p:tooltip for="btnPepaVerde"
+									rendered="#{hacerMantenimiento.isHabilitadaDocumentacion(det)}"
+									value="Actividad habilitada para documentos etapa documentación"
+									trackMouse="true" />
+
+
+
+
+
+
+								<p:commandButton id="btnPepaRoja"
+									rendered="#{!hacerMantenimiento.isHabilitadaDocumentacion(det)}"
+									style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+									value=""
+									title="Actividad NO HABILITADA para etapa documentación pues para ello es necesario que tenga diligenciada la explicación y por lo menos un documento" />
+
+
+
+
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+
+
+
+								<p:commandButton id="btnIrEditar" value=""
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarTareaProyecto(det,'MODAL_EDICION_TAREA')}"
+									process=":formAsignarTarea:dtlTareas"
+									update=":formEditarHijoTarea" />
+
+
+								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrEliminar" value=""
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarTareaProyecto(det,'MODAL_ELIMINACION_TAREA')}"
+									process=":formAsignarTarea:dtlTareas"
+									update=":formEliminarHijoTarea" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrDocumentos"
+									style="background-origin: content-box; background-image: url('../imagenes/d_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarTareaProyecto(det,'MODAL_VER_DOCUMENTOS')}"
+									value="" process=":formAsignarTarea:dtlTareas"
+									update=":formDocumento" />
+
+
+								<p:tooltip for="btnIrDocumentos"
+									value="Documentos para etapa de documentación"
+									trackMouse="true" />
+
+
+
+							</p:column>
+
+
+						</p:dataTable>
+
+						<p:spacer height="10" />
+						<div align="center">
+
+							<p:commandButton id="btnRegresarAProyecto2"
+								style="font-size:14px; font-weight: normal !important;"
+								action="#{hacerMantenimiento.cancelarProyectoTransaccion(null)}"
+								process="@this" value="#{mensaje.regresar}"
+								update=":formAsignarTarea, :form">
+
+								<p:resetInput target=":formAsignarTarea:pnlCrearTarea" />
+							</p:commandButton>
+						</div>
+
+
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+		</p:outputPanel>
+	</h:form>
+</ui:composition>

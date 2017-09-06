@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formCronogramaCompleto">
+
+		<p:dialog
+			header="INFORME DE PLANIFICACIÓN/CRONOGRAMA DETALLADO COMPLETO!..."
+			width="600" height="400" widgetVar="panelCronogramaCompleto"
+			modal="false" resizable="true" closable="false" responsive="true">
+			<p:panel id="pnlCronogramaCompleto">
+				<div align="center">
+
+
+					<p:panelGrid columns="1" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel
+							value="INFORME DE PLANIFICACIÓN/CRONOGRAMA DETALLADO COMPLETO (Luego de esta acción puede imprimirlo) ?"
+							style="font-size:12px; font-weight:bold" />
+
+
+						<p:outputLabel for="txtConclusiones" value="Conclusiones"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:inputTextarea id="txtConclusiones" label="Conclusiones"
+							required="true"
+							value="#{administrarEtapa.cronogramaGeneral.observaciones}"
+							style="width:100%; font-size:14px; height:10px" cols="3" />
+
+						<p:message for="txtConclusiones" id="msgConclusiones" />
+
+
+						<p:outputLabel for="lstRequiereFirma"
+							value="¿Desea que se genere en el informe un espacio para la firma?"
+							style="font-weight:bold; font-size:14px" />
+
+
+						<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+							style="width:100%; font-size:14px; height:20px" id="lstRequiereFirma"
+							required="true"
+							value="#{administrarEtapa.cronogramaGeneral.requiereFirma}">
+
+
+							<f:selectItem itemValue="S" itemLabel="SI" />
+							<f:selectItem itemValue="N" itemLabel="NO" />
+
+							<p:ajax process="@this" update="pnlFirma1, pnlFirma2" />
+
+
+
+						</p:selectOneMenu>
+
+
+						<p:outputPanel id="pnlFirma1">
+							<p:outputLabel rendered="#{administrarEtapa.cronogramaGeneral.requiereFirma==null or administrarEtapa.cronogramaGeneral.requiereFirma == 'S'}"
+								value="Puede agregar en el espacio de aqbajo la firma del consultor, se guardará en base de datos y saldrá en el reporte pdf(Para ello mantenga el clic izquierdo presionado sobre el cuadro y haga la firma respectiva)"
+								style="font-size:12px" />
+						</p:outputPanel>
+
+
+
+
+						<p:outputPanel id="pnlFirma2">
+
+							<p:panelGrid columns="2" style="width:100%" rendered="#{administrarEtapa.cronogramaGeneral.requiereFirma==null or administrarEtapa.cronogramaGeneral.requiereFirma == 'S'}"
+								styleClass="ui-panelgrid-blank">
+
+								<p:signature id="sigFirma" style="width:450px; height:200px"
+									readonly="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+									widgetVar="firma"
+									value="#{administrarEtapa.cronogramaGeneral.firma}"
+									label="#{mensaje.firma}" guideline="true">
+
+
+
+								</p:signature>
+
+
+
+								<p:commandButton
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value="" onclick="PF('firma').clear()" process="@this"
+									id="btnFirma" update="sigFirma" title="Limpiar Firma"
+									action="#{administrarEtapa.limpiarFirmaCronograma()}" />
+
+
+
+
+							</p:panelGrid>
+
+
+						</p:outputPanel>
+
+					</p:panelGrid>
+				</div>
+				<br />
+				<br />
+				<div align="center">
+					<p:commandButton id="btnGuardarCompleto" style="font-size:14px"
+						action="#{administrarEtapa.guardarFormaCompletaCronograma()}"
+						value="Guardar"
+						process="@this, sigFirma, txtConclusiones, msgConclusiones"
+						update=":form, :formCronogramaCompleto:pnlCronogramaCompleto, :formResumen" />
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarCompleto"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{consultarFuncionesAPI.cerrarModal('panelCronogramaCompleto')}"
+						process="@this" value="#{mensaje.cancelar}" update="@this">
+
+					</p:commandButton>
+
+				</div>
+
+
+				<p:blockUI block=":formCronogramaCompleto:pnlCronogramaCompleto"
+					trigger="btnGuardarCompleto, btnCancelarCompleto">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

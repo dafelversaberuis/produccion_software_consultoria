@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formDocumento">
+
+		<p:dialog header="Documentos/archivos soporte" width="750"
+			height="400" widgetVar="panelVerDocumento" resizable="true"
+			closable="false" responsive="true">
+
+			<p:outputPanel id="pnlDocumento">
+				<p:panelGrid columns="1" cellpadding="0" cellspacing="0"
+					style="width:100%" styleClass="ui-panelgrid-blank">
+					<p:inputTextarea
+						value="PREGUNTA: #{administrarEtapa.diagnosicoTransaccion.preguntaProyecto.pregunta}"
+						rows="3" readonly="true" autoResize="false"
+						style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px !important" />
+
+				</p:panelGrid>
+
+				<p:accordionPanel id="pnlCrear" activeIndex="1"
+					rendered="#{!(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and administrarSesionCliente!=null) and administrarSesionCliente.personalSesion!=null  and (administrarSesionCliente.personalSesion.tipoUsuario=='A' or administrarSesionCliente.personalSesion.tipoUsuario=='CO')}">
+					<p:tab
+						title="Agregar nuevo archivo(pdf, word, foto, audio, video, comprimidos, etc)"
+						titleStyle="font-size:16px" closable="true">
+						<div align="left">
+							<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+								style="width:100%" styleClass="ui-panelgrid-blank" layout="grid">
+
+
+								<p:outputLabel for="txtNombre" value="Nombre o título archivo"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtNombre"
+									value="#{administrarEtapa.documentoDiagnostico.nombre}"
+									required="true" label="Nombre o título archivo"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:spacer width="1" />
+								<p:message for="txtNombre" />
+
+
+
+
+
+								<p:outputPanel id="pnlCargado2">
+
+									<p:outputLabel for="fileCrear" value="#{mensaje.archivo}"
+										style="font-weight:bold; font-size:14px" />
+
+								</p:outputPanel>
+
+
+							</p:panelGrid>
+
+
+							<p:outputPanel id="pnlCargado">
+								<p:panelGrid columns="5" style="width:100%;"
+									styleClass="ui-panelgrid-blank">
+									<p:fileUpload id="fileCrear" cancelLabel="true"
+										dragDropSupport="true" style="width:100%;"
+										rendered="#{administrarEtapa.documentoDiagnostico.tFile==null}"
+										fileUploadListener="#{administrarEtapa.recibirArchivoDiagnostico}"
+										multiple="false" fileLimit="1"
+										fileLimitMessage="Sólo 1 archivo"
+										label="#{mensaje.busqueArchivo}" required="true"
+										mode="advanced" update=":form:messages, pnlCargado"
+										auto="true" sizeLimit="10000000"
+										requiredMessage="Información requerida"
+										invalidSizeMessage="Excede el tamaño  permitido de 1024KB!"
+										invalidFileMessage="Extensión de archivo incorrecta, solo archivos multimedia, comprimidos, archivos office"
+										allowTypes="/(\.|\/)(JPG|PNG|JPEG|PDF|amr|opus|jpg|jp?g|gif|png|pdf|doc|docx|xls|xlsx|ppt|pps|pptx|ppsx|zip|rar|7z|mp4|mov|avi|3gp)$/" />
+
+
+									<p:outputLabel
+										value="#{administrarEtapa.documentoDiagnostico.tFile.fileName}"
+										rendered="#{administrarEtapa.documentoDiagnostico.archivo != null}" />
+
+									<p:commandLink value="#{mensaje.limpiar}"
+										style="font-weight:bold; font-size:14px"
+										action="#{administrarEtapa.limpiarArchivoCargadoDiagnostico()}"
+										process="@this" update="pnlCargado"
+										rendered="#{administrarEtapa.documentoDiagnostico.archivo != null}" />
+
+									<p:graphicImage value="../imagenes/ayuda.png"
+										id="ayudaCargarArchivo" />
+									<p:tooltip value="#{mensaje.ayudaCargarArchivo}"
+										trackMouse="true" for="ayudaCargarArchivo" />
+								</p:panelGrid>
+
+
+							</p:outputPanel>
+
+						</div>
+
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrear" style="font-size:14px;"
+								action="#{administrarEtapa.crearDocumentoDiagnostico()}"
+								value="#{mensaje.guardar}"
+								update=":formDocumento:pnlDocumento, :form:messages, :form:pnlEstructuraDiagnostico" />
+
+							<p:spacer width="10" />
+							<p:commandButton id="btnBorrar"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{administrarEtapa.cancelarDocumentoDiagnostico()}"
+								process="@this" value="#{mensaje.regresar}"
+								update=":formDocumento:pnlDocumento">
+
+								<p:resetInput
+									target=":formDocumento:pnlDocumento, :form:messages" />
+
+							</p:commandButton>
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formDocumento:pnlDocumento"
+							trigger="btnCrear, btnBorrar">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+					</p:tab>
+				</p:accordionPanel>
+
+				<p:spacer height="30" />
+				<p:accordionPanel id="pnlDtlDocumentos">
+					<p:tab title="Listado de archivos agregados"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="loc" id="dtlDocumentos"
+							value="#{administrarEtapa.documentosDiagnostico}" reflow="true"
+							rows="10" paginator="true" paginatorPosition="bottom"
+							draggableColumns="true"
+							emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+
+							<p:column headerText="Nombre/título del archivo"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.nombre}" filterBy="#{loc.nombre}"
+								style="font-size:12px">
+								<p:outputLabel value="#{loc.nombre}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+							<p:column headerText="Extensión/tipo archivo"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.extensionArchivo}"
+								filterBy="#{loc.extensionArchivo}" style="font-size:12px">
+								<p:outputLabel value="#{loc.extensionArchivo}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:12px; text-align:center;">
+
+
+								<p:commandButton id="btnIrDescargar"
+									style="background-origin: content-box; background-image: url('../imagenes/flecha_abajo.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.descargarDocumentoDiagnostico(loc)}"
+									ajax="false" immediate="true" value="" />
+
+
+								<p:tooltip for="btnIrDescargar"
+									value="#{mensaje.descargarArchivo}" trackMouse="true" />
+
+
+
+								<p:commandButton id="btnIrEliminar"
+									rendered="#{!(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and administrarSesionCliente!=null) and administrarSesionCliente.personalSesion!=null  and (administrarSesionCliente.personalSesion.tipoUsuario=='A' or administrarSesionCliente.personalSesion.tipoUsuario=='CO')}"
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.asignarDocumentoDiagnostico(loc,'MODAL_ELIMINAR_DOCUMENTO')}"
+									value="" process=":formDocumento:pnlDtlDocumentos"
+									update=":formEliminarDocumento" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									rendered="#{!(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and administrarSesionCliente!=null) and administrarSesionCliente.personalSesion!=null  and (administrarSesionCliente.personalSesion.tipoUsuario=='A' or administrarSesionCliente.personalSesion.tipoUsuario=='CO')}"
+									trackMouse="true" />
+
+							</p:column>
+
+
+						</p:dataTable>
+
+
+
+					</p:tab>
+				</p:accordionPanel>
+
+				<div align="center">
+
+					<p:commandButton id="btnBorrar2"
+						style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+						action="#{administrarEtapa.cancelarDocumentoDiagnostico()}"
+						process="@this" value="Regresar"
+						update=":formDocumento:pnlDocumento">
+
+						<p:resetInput target=":formDocumento:pnlDocumento, :form:messages" />
+
+					</p:commandButton>
+
+				</div>
+
+			</p:outputPanel>
+
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

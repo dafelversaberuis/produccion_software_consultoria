@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formDocumento">
+
+		<p:dialog header="Ejemplos de documentos actividad para etapa documentación"
+			width="1024" height="400" widgetVar="panelDocumento" resizable="true"
+			closable="false" responsive="true">
+
+			<p:outputPanel id="pnlDocumento">
+<p:panel>
+
+					<p:panelGrid columns="4" cellpadding="0" cellspacing="0"
+						style="width:100%" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel value="Actividad/Exigencia:"   
+							style="font-weight:bold; font-size:14px" />
+
+						<p:inputTextarea
+							value="#{hacerMantenimiento.tareaProyectoTransaccion.tarea}"
+							rows="2" readonly="true" autoResize="false"
+							style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+						<p:outputLabel value="Producto/Entregables"
+							style="font-weight:bold; font-size:14px" />
+
+                    
+
+
+						<p:inputTextarea rows="2"
+							value="#{hacerMantenimiento.tareaProyectoTransaccion.producto}"
+							readonly="true" autoResize="false"
+							style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+
+
+
+						
+
+					</p:panelGrid>
+				</p:panel>
+
+				<p:accordionPanel activeIndex="0" id="pnlCrearExplicacion">
+					<p:tab
+						title="Explicación de los ejemplos para la actividad en la etapa de documentación"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:panelGrid columns="1" cellpadding="0" cellspacing="0"
+							style="width:100%" styleClass="ui-panelgrid-blank">
+
+							<p:outputLabel for="txtExplicacion" value="Explicación"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:inputTextarea
+								value="#{hacerMantenimiento.tareaProyectoTransaccion.explicacionDocumentacion}"
+								rows="3" id="txtExplicacion" required="true" autoResize="false"
+								style="font-size:14px; width:100%; min-height:50px" />
+
+							<p:message for="txtExplicacion" />
+
+						</p:panelGrid>
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrear2" style="font-size:14px;"
+								action="#{hacerMantenimiento.editarExplicacion()}"
+								value="Guardar explicación"
+								process=":formDocumento:pnlCrearExplicacion"
+								update=":formDocumento:pnlCrearExplicacion, formAsignarTarea:dtlTareas,  :form:messages" />
+
+
+
+						</div>
+
+						<p:blockUI block=":formDocumento:pnlDocumento" trigger="btnCrear2">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+
+					</p:tab>
+
+				</p:accordionPanel>
+
+				<p:spacer height="5" />
+
+				<p:accordionPanel id="pnlCrear" activeIndex="-1">
+					<p:tab title="Crear/cargar nuevo documento ejemplo"
+						titleStyle="font-size:16px" closable="true">
+						<div align="left">
+							<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+								style="width:100%" styleClass="ui-panelgrid-blank" layout="grid">
+
+
+								<p:outputLabel for="txtNombre" value="Nombre/Título documento"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtNombre"
+									value="#{hacerMantenimiento.documentoActividad.nombre}"
+									required="true" label="Nombre/Título documento"
+									style="width:100%; font-size:14px; height:10px" />
+
+
+								<p:spacer width="1" />
+								<p:message for="txtNombre" />
+
+
+
+
+
+
+								<p:outputLabel for="lstDescargable"
+									value="Archivo de solo lectura"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:selectOneMenu
+									label="Archivo de solo lectura"
+									style="width:100%; font-size:14px;" id="lstDescargable"
+									required="true"
+									value="#{hacerMantenimiento.documentoActividad.descargable}">
+									<f:selectItem itemValue="" itemLabel="#{mensaje.comboVacio}" />
+									<f:selectItem itemValue="S" itemLabel="#{mensaje.SI}" />
+									<f:selectItem itemValue="N" itemLabel="#{mensaje.NO}" />
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputPanel id="pnlCargado2">
+
+									<p:outputLabel for="fileCrear" value="Archivo"
+										style="font-weight:bold; font-size:14px" />
+
+								</p:outputPanel>
+
+
+							</p:panelGrid>
+
+
+							<p:outputPanel id="pnlCargado">
+								<p:panelGrid columns="5" style="width:100%;"
+									styleClass="ui-panelgrid-blank">
+									<p:fileUpload id="fileCrear" cancelLabel="true"
+										dragDropSupport="true" style="width:100%;"
+										rendered="#{hacerMantenimiento.documentoActividad.tFile==null}"
+										fileUploadListener="#{hacerMantenimiento.recibirArchivo}"
+										multiple="false" fileLimit="1"
+										fileLimitMessage="Sólo 1 archivo"
+										label="Busque aquí un pdf o arrástrelo" required="true"
+										mode="advanced" update=":form:messages, pnlCargado"
+										auto="true" sizeLimit="1000000"
+										requiredMessage="Información requerida"
+										invalidSizeMessage="Excede el tamaño  permitido de 1024KB!"
+										invalidFileMessage="Extensión de archivo incorrecta, solo archivos pdf"
+										allowTypes="/(\.|\/)(pdf)$/" />
+
+
+									<p:outputLabel
+										value="#{hacerMantenimiento.documentoActividad.tFile.fileName}"
+										rendered="#{hacerMantenimiento.documentoActividad.archivo != null}" />
+
+									<p:commandLink value="Limpiar"
+										style="font-weight:bold; font-size:14px"
+										action="#{hacerMantenimiento.limpiarArchivoCargado()}"
+										process="@this" update="pnlCargado"
+										rendered="#{hacerMantenimiento.documentoActividad.archivo != null}" />
+
+									<p:graphicImage value="../imagenes/ayuda.png"
+										id="ayudaCargarArchivo" />
+									<p:tooltip
+										value="Sólo se permite archivos adjuntar archivos pdf, al indicarle o no restricción el software se encargará de éstas"
+										trackMouse="true" for="ayudaCargarArchivo" />
+								</p:panelGrid>
+
+
+							</p:outputPanel>
+
+						</div>
+
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrear" style="font-size:14px;"
+								action="#{hacerMantenimiento.crearDocumento()}"
+								value="#{mensaje.guardar}" process=":formDocumento:pnlCrear"
+								update=":formDocumento:pnlCrear, :form:messages, formAsignarTarea:dtlTareas, :formDocumento:pnlDtlDocumentos" />
+
+
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formDocumento:pnlDocumento" trigger="btnCrear">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+					</p:tab>
+				</p:accordionPanel>
+
+				<p:spacer height="30" />
+				<p:accordionPanel id="pnlDtlDocumentos">
+					<p:tab
+						title="Ejemplos de documentos existentes en la etapa de documentación para la actividad"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="loc" id="dtlDocumentos"
+							value="#{hacerMantenimiento.documentos}" reflow="true" rows="5"
+							paginator="true" paginatorPosition="bottom"
+							draggableColumns="true"
+							emptyMessage="No existen documentos cargados">
+
+
+							<p:column headerText="#{mensaje.nombre}"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.nombre}" filterBy="#{loc.nombre}"
+								style="font-size:12px">
+								<p:outputLabel value="#{loc.nombre}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+
+
+							<p:column headerText="Archivo de solo lectura" filterMatchMode="contains"
+								filterStyle="display:none" sortBy="#{loc.descargable}"
+								filterBy="#{loc.descargable}" style="font-size:12px">
+								<p:outputLabel value="#{mensaje.SI}"
+									rendered="#{loc.descargable=='S'}"
+									style="font-weight:normal; font-size:12px" />
+								<p:outputLabel value="#{mensaje.NO}"
+									rendered="#{loc.descargable=='N'}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+								<p:commandButton id="btnIrDescargar"
+									style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.descargarDocumento(loc)}"
+									process=":formDocumento:pnlDtlDocumentos"
+									update=":formVerDocumento" value="" />
+
+
+								<p:tooltip for="btnIrDescargar" value="Ver documento"
+									trackMouse="true" />
+
+								<p:commandButton id="btnIrEditar"
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarDocumento(loc,'MODAL_EDITAR_DOCUMENTO')}"
+									value="" process=":formDocumento:pnlDtlDocumentos"
+									update=":formEditarDocumento" />
+
+
+								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrEliminar"
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarDocumento(loc,'MODAL_ELIMINAR_DOCUMENTO')}"
+									value="" process=":formDocumento:pnlDtlDocumentos"
+									update=":formEliminarDocumento" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+							</p:column>
+
+
+						</p:dataTable>
+						<p:spacer width="10" />
+						<div align="center">
+
+							<p:commandButton id="btnBorrar"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{hacerMantenimiento.cancelarDocumento()}"
+								process="@this" value="#{mensaje.regresar}"
+								update=":formDocumento:pnlDocumento, formAsignarTarea:dtlTareas">
+
+								<p:resetInput
+									target=":formDocumento:pnlDocumento, :form:messages" />
+
+							</p:commandButton>
+
+						</div>
+
+
+
+					</p:tab>
+				</p:accordionPanel>
+
+			</p:outputPanel>
+
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

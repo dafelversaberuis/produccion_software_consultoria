@@ -1,0 +1,848 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formResultadosIndicador">
+
+		<p:dialog header="Resultados Indicador" width="1100" height="500"
+			widgetVar="panelResultadosIndicador" resizable="true"
+			closable="false" responsive="true">
+
+
+			<div class="ui-message-warn ui-corner-all" align="left">
+				<span class="ui-message-warn-detail"
+					style="font-size: 12px; width: 100%; font-weight: bold;"> <b><span
+						style="font-size: 14px">Información importante:</span></b><br />-Los
+					resultados alcanzados son en téminos de porcentaje(%) por tanto el
+					resultado numerador/denominador debe ser en términos de % <br />-Si
+					desea modificar la frecuencia en la otra pantalla, todos los
+					resultados alcanzados de este indicador deben estar vacíos(Si están
+					llenos significa que ya se pactó antes su periodicidad)<br />-En
+					caso que un periodo o el ponderado total sea menor o igual a la
+					meta mínima se debe tomar un plan de acción(se activa)
+				</span>
+			</div>
+
+			<br />
+
+			<p:fieldset legend="Resumen información general del indicador"
+				toggleable="true" collapsed="true" toggleSpeed="500">
+
+
+
+				<p:panelGrid columns="4" cellpadding="0" cellspacing="0"
+					styleClass="ui-panelgrid-blank" layout="grid">
+
+
+					<p:outputLabel value="Objetivo"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.objetivo.objetivo}"
+						label="Objetivo" rows="2" autoResize="false" readonly="true"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+
+					<p:outputLabel value="Objetivos relacionado(s)"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.objetivo.objetivoRelacionado}"
+						label="Objetivo(s) relacionado(s)" rows="2" autoResize="false"
+						readonly="true"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+
+
+					<p:outputLabel value="Nombre indicador"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.nombreIndicador}"
+						label="Nombre indicador" rows="2" autoResize="false"
+						readonly="true"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+
+					<p:outputLabel value="Fórmula"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.formula}"
+						label="Fórmula" rows="2" autoResize="false" readonly="true"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+					<p:outputLabel value="Responsable decisión"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.responsableDecision}"
+						label="Responsable decisión" rows="2" autoResize="false"
+						readonly="true"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+					<p:outputLabel value="Responsable cálculo"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.responsableCalculo}"
+						label="Responsable cálculo" rows="2" autoResize="false"
+						readonly="true"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+					<p:outputLabel value="Sistema de información"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.indicadorTransaccion.sistemaInformacion}"
+						label="Sistema de información" rows="2" autoResize="false"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+					<p:outputLabel value="Frecuencia de revisión"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:inputTextarea value="#{administrarEtapa.getTextoFrecuencia()}"
+						label="Frecuencia de revisión" rows="2" autoResize="false"
+						style="font-size:14px; width:100%; min-height:50px; background-color: #D3D3D3" />
+
+					<p:outputLabel value="Indicativos de Meta"
+						style="font-weight:bold; font-size:14px" />
+
+
+
+
+					<p:outputLabel id="outputInferior"
+						value="Inferior (#{administrarEtapa.indicadorTransaccion.metaInferior} %)"
+						style="color:red; font-weight:bold; font-size:14px" />
+
+
+					<p:outputLabel id="outputIntermedia"
+						value="Intermedia (#{administrarEtapa.indicadorTransaccion.metaIntermedia} %)"
+						style="color:orange; font-weight:bold; font-size:14px" />
+
+
+
+					<p:outputLabel id="outputSuperior"
+						value="Superior (#{administrarEtapa.indicadorTransaccion.metaSuperior} %)"
+						style="color:green; font-weight:bold; font-size:14px" />
+
+
+
+
+
+
+				</p:panelGrid>
+
+
+			</p:fieldset>
+			<br />
+			<p:outputPanel id="tablaDatos">
+				<p:panelGrid columns="5" style="width:100%" cellpadding="0"
+					cellspacing="0">
+					<f:facet name="header">
+						<p:row>
+							<p:column colspan="5">
+								<p:outputLabel value="Tabla de datos" style="font-weight:bold" />
+							</p:column>
+
+
+						</p:row>
+					</f:facet>
+					<p:outputLabel value="Periodo" style="font-weight:bold" />
+					<p:outputLabel value="Dato numerador" style="font-weight:bold" />
+					<p:outputLabel value="Dato denominador" style="font-weight:bold" />
+					<p:outputLabel value="Resultado alcanzado (%)"
+						style="font-weight:bold" />
+					<p:outputLabel value="Meta mínima exigida (%)"
+						style="font-weight:bold" />
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,1)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(1))}"
+						style="font-weight:normal; font-size:14px;" />
+						
+					<p:outputPanel id="pnlN1"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,1)=='NORMAL'}">
+						<p:inputText id="txtN1"
+							value="#{administrarEtapa.indicadorTransaccion.numerador1}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN1, pnlR1, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(1)}" />
+						</p:inputText>
+						<p:message for="txtN1" />
+					</p:outputPanel>
+					
+					
+					<p:outputPanel id="pnlD1"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,1)=='NORMAL'}">
+						<p:inputText id="txtD1"
+							value="#{administrarEtapa.indicadorTransaccion.denominador1}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD1, pnlR1, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(1)}" />
+						</p:inputText>
+						<p:message for="txtD1" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR1"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,1)=='NORMAL'}">
+						<p:inputText id="txtR1" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo1)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo1}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,1)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,2)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(2))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN2"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,2)=='NORMAL'}">
+						<p:inputText id="txtN2"
+							value="#{administrarEtapa.indicadorTransaccion.numerador2}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN2, pnlR2, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(2)}" />
+						</p:inputText>
+						<p:message for="txtN2" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD2"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,2)=='NORMAL'}">
+						<p:inputText id="txtD2"
+							value="#{administrarEtapa.indicadorTransaccion.denominador2}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD2, pnlR2, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(2)}" />
+						</p:inputText>
+						<p:message for="txtD2" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR2"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,2)=='NORMAL'}">
+						<p:inputText id="txtR2" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo2)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo2}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,2)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,3)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(3))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN3"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,3)=='NORMAL'}">
+						<p:inputText id="txtN3"
+							value="#{administrarEtapa.indicadorTransaccion.numerador3}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN3, pnlR3, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(3)}" />
+						</p:inputText>
+						<p:message for="txtN3" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD3"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,3)=='NORMAL'}">
+						<p:inputText id="txtD3"
+							value="#{administrarEtapa.indicadorTransaccion.denominador3}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD3, pnlR3, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(3)}" />
+						</p:inputText>
+						<p:message for="txtD3" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR3"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,3)=='NORMAL'}">
+						<p:inputText id="txtR3" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo3)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo3}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,3)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,4)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(4))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN4"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,4)=='NORMAL'}">
+						<p:inputText id="txtN4"
+							value="#{administrarEtapa.indicadorTransaccion.numerador4}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN4, pnlR4, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(4)}" />
+						</p:inputText>
+						<p:message for="txtN4" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD4"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,4)=='NORMAL'}">
+						<p:inputText id="txtD4"
+							value="#{administrarEtapa.indicadorTransaccion.denominador4}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD4, pnlR4, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(4)}" />
+						</p:inputText>
+						<p:message for="txtD4" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR4"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,4)=='NORMAL'}">
+						<p:inputText id="txtR4" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo4)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo4}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,4)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,5)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(5))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN5"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,5)=='NORMAL'}">
+						<p:inputText id="txtN5"
+							value="#{administrarEtapa.indicadorTransaccion.numerador5}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN5, pnlR5, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(5)}" />
+						</p:inputText>
+						<p:message for="txtN5" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD5"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,5)=='NORMAL'}">
+						<p:inputText id="txtD5"
+							value="#{administrarEtapa.indicadorTransaccion.denominador5}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD5, pnlR5, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(5)}" />
+						</p:inputText>
+						<p:message for="txtD5" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR5"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,5)=='NORMAL'}">
+						<p:inputText id="txtR5" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo5)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo5}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,5)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,6)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(6))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN6"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,6)=='NORMAL'}">
+						<p:inputText id="txtN6"
+							value="#{administrarEtapa.indicadorTransaccion.numerador6}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN6, pnlR6, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(6)}" />
+						</p:inputText>
+						<p:message for="txtN6" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD6"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,6)=='NORMAL'}">
+						<p:inputText id="txtD6"
+							value="#{administrarEtapa.indicadorTransaccion.denominador6}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD6, pnlR6, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(6)}" />
+						</p:inputText>
+						<p:message for="txtD6" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR6"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,6)=='NORMAL'}">
+						<p:inputText id="txtR6" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo6)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo6}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,6)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,7)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(7))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN7"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,7)=='NORMAL'}">
+						<p:inputText id="txtN7"
+							value="#{administrarEtapa.indicadorTransaccion.numerador7}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN7, pnlR7, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(7)}" />
+						</p:inputText>
+						<p:message for="txtN7" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD7"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,7)=='NORMAL'}">
+						<p:inputText id="txtD7"
+							value="#{administrarEtapa.indicadorTransaccion.denominador7}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD7, pnlR7, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(7)}" />
+						</p:inputText>
+						<p:message for="txtD7" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR7"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,7)=='NORMAL'}">
+						<p:inputText id="txtR7" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo7)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo7}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,7)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,8)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(8))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN8"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,8)=='NORMAL'}">
+						<p:inputText id="txtN8"
+							value="#{administrarEtapa.indicadorTransaccion.numerador8}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN8, pnlR8, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(8)}" />
+						</p:inputText>
+						<p:message for="txtN8" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD8"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,8)=='NORMAL'}">
+						<p:inputText id="txtD8"
+							value="#{administrarEtapa.indicadorTransaccion.denominador8}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD8, pnlR8, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(8)}" />
+						</p:inputText>
+						<p:message for="txtD8" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR8"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,8)=='NORMAL'}">
+						<p:inputText id="txtR8" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo8)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo8}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,8)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,9)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(9))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN9"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,9)=='NORMAL'}">
+						<p:inputText id="txtN9"
+							value="#{administrarEtapa.indicadorTransaccion.numerador9}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN9, pnlR9, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(9)}" />
+						</p:inputText>
+						<p:message for="txtN9" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD9"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,9)=='NORMAL'}">
+						<p:inputText id="txtD9"
+							value="#{administrarEtapa.indicadorTransaccion.denominador9}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD9, pnlR9, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(9)}" />
+						</p:inputText>
+						<p:message for="txtD9" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR9"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,9)=='NORMAL'}">
+						<p:inputText id="txtR9" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo9)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo9}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,9)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,10)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(10))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN10"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,10)=='NORMAL'}">
+						<p:inputText id="txtN10"
+							value="#{administrarEtapa.indicadorTransaccion.numerador10}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN10, pnlR10, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(10)}" />
+						</p:inputText>
+						<p:message for="txtN10" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD10"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,10)=='NORMAL'}">
+						<p:inputText id="txtD10"
+							value="#{administrarEtapa.indicadorTransaccion.denominador10}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD10, pnlR10, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(10)}" />
+						</p:inputText>
+						<p:message for="txtD10" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR10"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,10)=='NORMAL'}">
+						<p:inputText id="txtR10" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo10)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo10}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,10)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,11)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(11))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN11"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,11)=='NORMAL'}">
+						<p:inputText id="txtN11"
+							value="#{administrarEtapa.indicadorTransaccion.numerador11}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN11, pnlR11, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(11)}" />
+						</p:inputText>
+						<p:message for="txtN11" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD11"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,11)=='NORMAL'}">
+						<p:inputText id="txtD11"
+							value="#{administrarEtapa.indicadorTransaccion.denominador11}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD11, pnlR11, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(11)}" />
+						</p:inputText>
+						<p:message for="txtD11" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR11"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,11)=='NORMAL'}">
+						<p:inputText id="txtR11" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo11)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo11}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,11)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,12)=='NORMAL'}"
+						value="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(12))}"
+						style="font-weight:normal; font-size:14px;" />
+					<p:outputPanel id="pnlN12"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,12)=='NORMAL'}">
+						<p:inputText id="txtN12"
+							value="#{administrarEtapa.indicadorTransaccion.numerador12}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlN12, pnlR12, tablaDatos, :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(12)}" />
+						</p:inputText>
+						<p:message for="txtN12" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlD12"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,12)=='NORMAL'}">
+						<p:inputText id="txtD12"
+							value="#{administrarEtapa.indicadorTransaccion.denominador12}"
+							style="font-size:14px;">
+							<p:ajax event="change" process="@this"
+								update="pnlD12, pnlR12, tablaDatos,  :form:messages"
+								listener="#{administrarEtapa.calcularResultadoPeriodo(12)}" />
+						</p:inputText>
+						<p:message for="txtD12" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlR12"
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,12)=='NORMAL'}">
+						<p:inputText id="txtR12" readonly="true"
+							styleClass="#{administrarEtapa.getColorTextoPeriodo(administrarEtapa.indicadorTransaccion,administrarEtapa.indicadorTransaccion.periodo12)}"
+							value="#{administrarEtapa.indicadorTransaccion.periodo12}"
+							style="font-size:14px;  background-color: #D3D3D3; font-weight:bold" />
+					</p:outputPanel>
+					<p:outputLabel
+						rendered="#{administrarEtapa.getColorCeldaPeriodo(administrarEtapa.indicadorTransaccion,12)=='NORMAL'}"
+						value="#{administrarEtapa.indicadorTransaccion.metaInferior+1}"
+						style="font-weight:bold; font-size:14px; color:orange" />
+
+
+					<p:outputLabel value=" " style="font-weight:bold" />
+					<p:outputLabel value=" " style="font-weight:bold" />
+					<p:outputLabel value="Resultado ponderado(%) ="
+						style="font-weight:bold" id="txtResultadoPonderado" />
+					<p:outputLabel
+						value="#{administrarEtapa.getResultadoIndicador(administrarEtapa.indicadorTransaccion)} "
+						style="font-weight:bold" />
+					<p:outputLabel value=" " style="font-weight:bold" />
+
+
+				</p:panelGrid>
+				<br />
+
+				<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+					columnClasses="columnaIgual" styleClass="ui-panelgrid-blank"
+					style="width:100%">
+
+					<p:chart type="bar" model="#{administrarEtapa.graficoIndicador}"
+						id="chartIndicador" style="width:100%"
+						rendered="#{administrarEtapa.graficoIndicador!=null}"
+						responsive="true" />
+
+					<p:outputLabel value="Gráfico de resultados no disponible"
+						style="font-weight:normal; font-size:14px"
+						rendered="#{administrarEtapa.graficoIndicador==null}" />
+
+					<p:outputPanel id="pnlAnalisis">
+						<p:panelGrid columns="1" style="width:100%" cellpadding="0"
+							cellspacing="0">
+							<f:facet name="header">
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Análisis de resultados"
+											style="font-weight:bold; color:black" />
+									</p:column>
+
+
+								</p:row>
+							</f:facet>
+
+							<p:inputTextarea
+								placeholder="Hacer un análisis interpretativo de los resultados arrojados por la gráfica y/o resultado analítico del indicador evaluado; y con base en dichos resultados tomar acciones preventivas, correctivas o de mejora para el cumplimiento y/o mejora continua del proceso"
+								value="#{administrarEtapa.indicadorTransaccion.observacionesResultados}"
+								label="Objetivo" rows="5" autoResize="false" id="txtAnalisis"
+								style="font-size:14px; width:100%; min-height:200px;">
+								<p:ajax event="change" process="@this"
+									update="@this, mensajeAnalisis" />
+							</p:inputTextarea>
+
+							<p:message for="txtAnalisis" id="mensajeAnalisis" />
+
+						</p:panelGrid>
+
+					</p:outputPanel>
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:dataTable var="loc" id="dtlPlanAccion"
+					rendered="#{!administrarEtapa.isTodosPeriodosNulos(administrarEtapa.indicadorTransaccion) and administrarEtapa.isTomarPlanAccion(administrarEtapa.indicadorTransaccion)}"
+					value="#{administrarEtapa.indicadorTransaccion.planesAccionIndicador}"
+					reflow="true" rows="10" paginator="true" paginatorPosition="bottom"
+					draggableColumns="true"
+					emptyMessage="No existen resultados con metas no cumplidas para realizar plan de acción">
+
+					<f:facet name="header">
+
+						<p:outputPanel>
+							<p:panelGrid style="width:100%" columns="2"
+								columnClasses="columnaPlanA, columnaPlanB"
+								styleClass="ui-panelgrid-blank">
+								<p:outputLabel
+									value="Plan de acción (Por metas no cumplidas)"
+									style="font-weight:bold; color:white" />
+
+								<p:commandButton id="btnIrCrearPlan"
+									style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+									title="Agrega un nuevo plan/acción vacío"
+									icon="fa fa-plus-circle"
+									action="#{administrarEtapa.agregarPlanAccion()}"
+									value="Agrega un nuevo plan/acción vacío" process="@this"
+									update="dtlPlanAccion, :form:messages" />
+
+
+
+							</p:panelGrid>
+						</p:outputPanel>
+
+
+
+					</f:facet>
+
+
+					<p:column headerText="Actividad" sortBy="#{loc.actividad}"
+						style="font-size:14px">
+						<p:inputTextarea id="txtActividad" value="#{loc.actividad}"
+							label="Actividad" rows="2" autoResize="false"
+							style="font-size:14px; width:100%; min-height:50px;"
+							required="true">
+
+							<p:ajax event="change" process="@this" update="@this" />
+
+
+						</p:inputTextarea>
+
+						<p:message for="txtActividad" />
+
+					</p:column>
+					<p:column headerText="Responsable" sortBy="#{loc.responsable}"
+						style="font-size:14px">
+						<p:inputTextarea id="txtResponsable" value="#{loc.responsable}"
+							label="Responsable" rows="2" autoResize="false" required="true"
+							style="font-size:14px; width:100%; min-height:50px;">
+
+							<p:ajax event="change" process="@this" update="@this" />
+						</p:inputTextarea>
+
+						<p:message for="txtResponsable" />
+
+					</p:column>
+
+					<p:column headerText="Fecha" sortBy="#{loc.fecha}"
+						style="font-size:14px; vertical-align:top">
+						<p:calendar id="calFecha" label="Fecha" required="true"
+							value="#{loc.fecha}" pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px">
+							<p:ajax event="dateSelect" process="@this" update="@this" />
+
+						</p:calendar>
+
+						<p:message for="calFecha" />
+					</p:column>
+
+
+
+
+					<p:column headerText="#{mensaje.acciones}"
+						rendered="#{administrarEtapa.indicadorTransaccion.planesAccionIndicador!=null and administrarEtapa.indicadorTransaccion.planesAccionIndicador.size()>1}"
+						style="font-size:14px; text-align:center;">
+
+
+
+
+
+						<p:commandButton id="btnIrEliminar"
+							style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+							value="" action="#{administrarEtapa.removerPlanAccion(loc)}"
+							process="@this" update="dtlPlanAccion" />
+
+
+
+						<p:tooltip for="btnIrEliminar" value="Remover registro"
+							trackMouse="true" />
+
+
+
+
+
+					</p:column>
+
+
+				</p:dataTable>
+
+
+
+			</p:outputPanel>
+
+
+			<br />
+			<div align="center">
+				<p:commandButton id="btnGuradarResultadosIndicador"
+					style="font-size:14px; font-weight: normal !important;"
+					action="#{administrarEtapa.guardarResultadosIndicador('calcular')}"
+					process="@this, tablaDatos" value="#{mensaje.guardar} resultados"
+					update="@this, tablaDatos, :form">
+
+				</p:commandButton>
+				<p:spacer width="10" />
+
+				<p:commandButton id="btnCancelarResultadosIndicador"
+					style="font-size:14px; font-weight: normal !important;"
+					action="#{administrarEtapa.cancelarResultadosIndicador()}"
+					process="@this" value="#{mensaje.cancelar}" update=":form">
+					<p:resetInput target=":formResultadosIndicador" />
+				</p:commandButton>
+
+			</div>
+
+
+
+			<p:blockUI block=":formResultadosIndicador"
+				trigger="btnCancelarResultadosIndicador, btnGuradarResultadosIndicador">
+				<p:graphicImage value="../imagenes/cargando.gif" />
+			</p:blockUI>
+
+			<p:outputLabel value="#{mensaje.informacionRequerida}"
+				style="font-size:10px" />
+
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

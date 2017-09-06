@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formIndicadoresIncompleto">
+
+		<p:dialog header="Guardado parcialmente..." width="400"
+			widgetVar="panelIndicadoresIncompleto" modal="false" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlIndicadoresIncompleto">
+				<div align="center">
+
+
+					<p:panelGrid columns="1" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel
+							value="Se ha guardado la información diligenciada al momento, pero no puede imprimir hasta que no esté completo. Revise que los campos con (*) esten diligenciados y los indicadores NO presenten un cículo rojo(indican información faltante)"
+							style="font-size:12px; font-weight:bold" />
+
+
+					</p:panelGrid>
+				</div>
+				<br />
+				<br />
+				<div align="center">
+					
+					<p:commandButton id="btnCancelarIncompleto"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{consultarFuncionesAPI.cerrarModal('panelIndicadoresIncompleto')}"
+						process="@this" value="#{mensaje.cancelar}" update="@this">
+
+					</p:commandButton>
+
+				</div>
+
+
+				<p:blockUI
+					block=":formIndicadoresIncompleto:pnlIndicadoresIncompleto"
+					trigger="btnCancelarIncompleto">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

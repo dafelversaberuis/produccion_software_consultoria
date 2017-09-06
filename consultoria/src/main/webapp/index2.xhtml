@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+<script type="text/javascript">
+//function disableContextMenu()
+//{
+//	window.frames["fraDisabled"].document.oncontextmenu = function(){alert('clic derecho deshabilitado'); return false;}
+	//document.oncontextmenu = function(){ return false;}
+//}
+
+
+
+
+</script>
+
+		
+
+		<h:form id="form">
+		<h:outputScript library="primefaces" name="jquery/jquery.js"/>
+			<br />
+			<!-- 
+			
+			
+			<iframe id="fraDisabled"  src="http://es.tldp.org/COMO-INSFLUG/es/pdf/Linuxdoc-Ejemplo.pdf#toolbar=0" width="100%" height="600px" onload="disableContextMenu();" onMyLoad="disableContextMenu();">
+			
+			</iframe>
+		
+		
+				<iframe allowfullscreen="true" id="iframe" src = "/consultoria/ViewerJS/index.html#../#{mensaje.bienvenidoA}" width='100%'  height="500"></iframe>
+						
+			-->
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+			<p:panelGrid columns="2" style="width:100%; vertical-align:top" layout="grid"
+				styleClass="ui-panelgrid-blank">
+				<p:outputPanel style=" vertical-align:top">
+					<div class="col-xs-12">
+						<div class="project-page-header">
+							<h1 class="project-title">#{mensaje.bienvenidoA}</h1>
+							<h1 class="project-title">
+								Carlos Rengifo
+								<p:outputLabel
+									value="#{administrarSesionCliente.administradorSesion.nombres} #{administrarSesionCliente.administradorSesion.apellidos}"
+									rendered="#{administrarSesionCliente.administradorSesion!=null and administrarSesionCliente.administradorSesion.id!=null}" />
+							</h1>
+						</div>
+					</div>
+				</p:outputPanel>
+				<p:outputPanel>
+<br/><br/><br/>
+			
+
+				</p:outputPanel>
+			</p:panelGrid>
+
+
+
+		</h:form>
+
+
+		<p:spacer height="1000" />
+	
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<script type="text/javascript">
+		/* $('#iframe').ready(function() {
+			   setTimeout(function() {
+			      $('#iframe').contents().find('#download').remove();
+			      $('#iframe').contents().find('#presentation').remove();
+			   }, 100);
+			});*/
+
+		function copyToClipboard() {
+
+			  // Create a "hidden" input
+			  var aux = document.createElement("input");
+			  // Assign it the value of the specified element
+			  aux.setAttribute("value", "NO POSEE PERMISOS DE PANTALLAZOS");
+			  // Append it to the body
+			  document.body.appendChild(aux);
+			  // Highlight its content
+			  aux.select();
+			  // Copy the highlighted text
+			  document.execCommand("copy");
+			  // Remove it from the body
+			  document.body.removeChild(aux);
+			  alert("PANTALLAZO DESHABILITADO!!!");  
+			  
+			}
+
+			$(window).keyup(function(e){
+
+			var tecla = e.keyCode;
+			
+				
+			  if(tecla == 44){
+				 // $("body").show();
+				  copyToClipboard();
+			  }
+			}); 
+
+			document.oncontextmenu = function(){ alert('ESTE DOCUMENTO ESTA PROTEGIDO POR DERECHOS DE AUTOR, POR ELLO SE DESHABILITO EL CLIC DERECHO'); return false;}
+			function noPrint(atr){return true;}
+		
+			
+		</script>
+		
+	
+	</ui:define>
+</ui:composition>

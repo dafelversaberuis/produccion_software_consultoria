@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formTareasAsociadas">
+
+		<p:dialog header="Actividades asociadas a etapa" width="900"
+			height="400" widgetVar="panelActividadesAsociadas" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlActividadesAsociadas">
+
+
+				<p:dataTable var="loc" id="dtlRegistros"
+					value="#{administrarEtapa.subtareas}" reflow="true" rows="10"
+					paginator="true" paginatorPosition="bottom" draggableColumns="true"
+					rowIndexVar="indice"
+					emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+					<p:column headerText="Actividad" sortBy="#{loc.nombre}"
+						style="font-size:14px">
+						<p:outputLabel value="#{loc.nombre}" style="font-weight:normal" />
+					</p:column>
+
+
+
+
+					<p:column headerText="Responsable" style="font-size:14px"
+						sortBy="#{loc.responsable}">
+						<p:outputLabel rendered="#{loc.responsable == 'A'}"
+							style="font-weight:normal" value="Consultor y Cliente" />
+
+						<p:outputLabel rendered="#{loc.responsable == 'CO'}"
+							style="font-weight:normal" value="Consultor" />
+
+						<p:outputLabel rendered="#{loc.responsable == 'CL'}"
+							style="font-weight:normal" value="Cliente" />
+
+					</p:column>
+
+					<p:column headerText="Fecha" style="font-size:14px">
+						<p:calendar id="calFecha" label="Fecha compromiso" required="true"
+							value="#{loc.fecha}" pattern="dd/MM/yyyy" mask="true"
+							style="font-size:14px;  height:10px" >
+
+						<p:ajax event="change" process="@this" />
+						
+						</p:calendar>
+
+
+					</p:column>
+
+					<p:column headerText="Estado" style="font-size:14px"
+						sortBy="#{loc.estado}">
+						<p:outputPanel id="pnlEstado">
+							<p:selectOneMenu label="Estado"
+								style="width:100%; font-size:14px;" value="#{loc.estado}">
+
+
+
+								<f:selectItem itemLabel="ABIERTA" itemValue="A" />
+								<f:selectItem itemLabel="CERRADA" itemValue="C" />
+
+
+								<p:ajax event="change" process="@this" update="pnlEstado"
+									listener="#{administrarEtapa.cambiarEstadoActividadEspecifica(loc)}" />
+
+
+
+							</p:selectOneMenu>
+
+							<p:outputLabel rendered="#{loc.estado=='C'}"
+								style="font-weight:normal"
+								value="#{consultarFuncionesAPI.getFechaHoraColombia(loc.tFecha)}" />
+						</p:outputPanel>
+
+					</p:column>
+
+
+
+
+
+
+
+				</p:dataTable>
+
+
+
+				<br />
+				<div align="center">
+
+					<p:commandButton id="btnCerrarModal"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{consultarFuncionesAPI.cerrarModal('panelActividadesAsociadas')}"
+						process="@this" value="#{mensaje.cerrar}" update="@this" />
+
+				</div>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

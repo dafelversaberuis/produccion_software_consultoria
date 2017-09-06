@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEditarSubtarea">
+
+		<p:dialog header="Editar subtarea/actividad etapa" width="600"
+			height="430" widgetVar="panelEdicionSubtarea" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlEditarSubtarea">
+
+
+
+				<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+					styleClass="ui-panelgrid-blank" layout="grid">
+
+					<p:outputLabel for="txtNombreTarea" value="Actividad"
+						style="font-weight:bold; font-size:14px;" />
+					<p:inputText id="txtNombreTarea"
+						value="#{hacerMantenimiento.subtareaTransaccion.nombre}"
+						required="true" label="Actividad o tarea general"
+						style="font-size:14px; width:100%" />
+
+
+
+					<p:spacer width="1" />
+					<p:message for="txtNombreTarea" />
+
+
+
+
+
+
+					<p:outputLabel for="lstResponsable" value="Responsable"
+						style="font-weight:bold; font-size:14px;" />
+
+					<p:selectOneMenu label="Responsable" required="true"
+						style="width:100%; font-size:14px;" id="lstResponsable"
+						value="#{hacerMantenimiento.subtareaTransaccion.responsable}">
+
+
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Consultor" itemValue="CO" />
+						<f:selectItem itemLabel="Cliente" itemValue="CL" />
+						<f:selectItem itemLabel="Consultor y cliente" itemValue="A" />
+
+
+
+
+
+
+					</p:selectOneMenu>
+
+
+
+					<p:spacer width="1" />
+					<p:message for="lstResponsable" />
+				</p:panelGrid>
+
+				<br />
+				<div align="center">
+					<p:commandButton id="btnEditarSubtarea" style="font-size:14px"
+						action="#{hacerMantenimiento.editarSubtarea()}"
+						value="#{mensaje.editar}"
+						process=":formEditarSubtarea:pnlEditarSubtarea"
+						update=":formEditarSubtarea:pnlEditarSubtarea, :formSubtarea:pnlSubtarea, :form:messages" />
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEdicionSubtarea"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{hacerMantenimiento.cancelarSubtareaTransaccion('MODAL_EDITAR_SUBTAREA')}"
+						process="@this" value="#{mensaje.cancelar}"
+						update=":formSubtarea:pnlSubtarea">
+						<p:resetInput
+							target=":formEditarSubtarea, :formSubtarea:pnlSubtarea, :form:messages" />
+					</p:commandButton>
+
+				</div>
+
+				<p:outputLabel value="#{mensaje.informacionRequerida}"
+					style="font-size:10px" />
+				<p:blockUI block=":formEditarSubtarea:pnlEditarSubtarea"
+					trigger="btnEditarSubtarea, btnCancelarEdicionSubtarea">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

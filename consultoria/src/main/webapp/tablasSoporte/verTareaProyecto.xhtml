@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formVerHijoTarea">
+
+		<p:dialog header="#{mensaje.informacionCompleta}" height="400"
+			width="600" widgetVar="panelVerHijoTarea" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlVer">
+				<div align="center">
+
+
+					<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="txtNombreTarea" value="#{mensaje.tarea}"
+							style="font-weight:bold; font-size:14px;" />
+						<p:inputText id="txtNombreTarea" disabled="true"
+							value="#{hacerMantenimiento.tareaProyectoTransaccion.tarea}"
+							label="#{mensaje.tarea}" style="font-size:14px; width:100%" />
+
+
+
+						<p:outputLabel for="lstEstado" value="#{mensaje.estado}"
+							style="font-weight:bold; font-size:14px" />
+						<p:selectOneMenu id="lstEstado" disabled="true"
+							style="font-size:14px; width:120px"
+							value="#{hacerMantenimiento.tareaProyectoTransaccion.estado}"
+							label="#{mensaje.estado}">
+							<f:selectItems value="#{consultarFuncionesAPI.itemsEstados}" />
+						</p:selectOneMenu>
+
+
+
+
+					</p:panelGrid>
+
+
+
+				</div>
+				<br />
+				<br />
+				<div align="center">
+
+
+					<p:commandButton id="btnCancelarVerTarea" style="font-size:14px"
+						action="#{hacerMantenimiento.cancelarTareaTransaccion('MODAL_VER_TAREA')}"
+						value="#{mensaje.regresar}" process="@this"
+						update=":formAsignarTarea:dtlTareas, :form, :formVerHijoTarea:pnlVer">
+
+						<p:resetInput target=":formVerHijoTarea:pnlVer" />
+
+					</p:commandButton>
+
+
+
+				</div>
+
+
+				<p:blockUI block=":formVerHijoTarea:pnlVer"
+					trigger="btnCancelarVerTarea">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

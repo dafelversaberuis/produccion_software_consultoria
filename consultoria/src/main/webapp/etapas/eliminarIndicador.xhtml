@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEliminarIndicador">
+
+		<p:dialog header="Eliminar Indicador"
+			widgetVar="panelEliminacionIndicador" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlEliminarIndicador">
+
+				<p:panelGrid columns="1" cellpadding="0" cellspacing="0"
+					styleClass="ui-panelgrid-blank" layout="grid">
+
+					<p:outputLabel
+						value="¿ Desea eliminar este indicador ?"
+						style="font-weight:bold; font-size:14px" />
+
+				</p:panelGrid>
+
+
+
+				<br />
+				<div align="center">
+					<p:commandButton id="btnEliminarIndicador" style="font-size:14px"
+						action="#{administrarEtapa.eliminarIndicador()}"
+						value="#{mensaje.eliminar}" process=":formEliminarIndicador"
+						update=":formEliminarIndicador, :form" />
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEliminacionIndicador"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{administrarEtapa.cancelarEliminacionIndicador()}"
+						process="@this" value="#{mensaje.cancelar}" update=":form">
+						<p:resetInput target=":formEliminarIndicador" />
+					</p:commandButton>
+
+				</div>
+
+
+				<p:blockUI block=":formEliminarIndicador"
+					trigger="btnEliminarIndicador, btnCancelarEliminacionIndicador">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formDocumento">
+
+		<p:dialog
+			header="Ejemplos de documentos para actividad seleccionada - Etapa Documentación"
+			width="1024" height="400" widgetVar="panelDocumento" resizable="true"
+			closable="false" responsive="true">
+
+			<p:outputPanel id="pnlDocumento">
+
+
+				<p:panelGrid columns="1" cellpadding="0" cellspacing="0" rendered="#{administrarEtapa.planificacionSeleccionada!=null and administrarEtapa.planificacionSeleccionada.tareaProyecto!=null and administrarEtapa.planificacionSeleccionada.tareaProyecto.id!=null}" 
+					style="width:100%" styleClass="ui-panelgrid-blank">
+
+					<p:outputLabel
+						value="Actividad: #{administrarEtapa.planificacionSeleccionada.tareaProyecto.tarea}"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:outputLabel for="txtExplicacion" value="Explicación"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						value="#{administrarEtapa.planificacionSeleccionada.tareaProyecto.explicacionDocumentacion}"
+						rows="2" id="txtExplicacion" required="true" autoResize="false"
+						readonly="true" style="font-size:14px; width:100%; background-color:#D3D3D3; color:black; min-height:50px" />
+
+
+				</p:panelGrid>
+
+				<p:spacer height="5" />
+
+
+				<p:accordionPanel id="pnlDtlDocumentos">
+					<p:tab title="Ejemlos de documentos" titleStyle="font-size:16px"
+						closable="true">
+
+						<p:dataTable var="loc" id="dtlDocumentos"
+							value="#{administrarEtapa.documentos}" reflow="true" rows="5"
+							paginator="true" paginatorPosition="bottom"
+							draggableColumns="true"
+							emptyMessage="No existen documentos cargados">
+
+
+							<p:column headerText="#{mensaje.nombre}"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.nombre}" filterBy="#{loc.nombre}"
+								style="font-size:12px">
+								<p:outputLabel value="#{loc.nombre}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+
+
+
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+								<p:commandButton id="btnIrDescargar"
+									style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.descargarDocumento(loc)}"
+									process=":formDocumento:pnlDtlDocumentos"
+									update=":formVerDocumento" value="" />
+
+
+								<p:tooltip for="btnIrDescargar" value="Ver documento"
+									trackMouse="true" />
+
+
+
+							</p:column>
+
+
+						</p:dataTable>
+						<p:spacer width="10" />
+						<div align="center">
+
+							<p:commandButton id="btnBorrar"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{consultarFuncionesAPI.cerrarModal('panelDocumento')}"
+								process="@this" value="#{mensaje.regresar}" update="@this">
+
+
+
+							</p:commandButton>
+
+						</div>
+
+
+
+					</p:tab>
+				</p:accordionPanel>
+
+			</p:outputPanel>
+
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

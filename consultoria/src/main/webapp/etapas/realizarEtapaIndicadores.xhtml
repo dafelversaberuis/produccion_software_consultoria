@@ -1,0 +1,813 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+
+		<style type="text/css">
+.ui-datatable-scrollable-theadclone th span.ui-column-title {
+	display: none !important;
+	height: 0px;
+}
+</style>
+
+		<style type="text/css">
+.selectOneMenuGrouped.ui-selectonemenu-list, .ui-selectonemenu-panel {
+	max-height: 50% !important;
+	overflow: scroll;
+}
+
+.selectOneMenuGrouped .ui-selectonemenu-items-wrapper {
+	height: 100% !important;
+	overflow: scroll;
+}
+
+.BLOQUEADO {
+	background-color: #D3D3D3 !important;
+	text-align: right
+}
+
+.NORMAL {
+	background-color: white !important;
+	text-align: right
+}
+
+.INTERMEDIA {
+	background-color: yellow !important;
+}
+
+.INFERIOR {
+	background-color: red !important;
+}
+
+.ROJO {
+	color: red !important;
+	font-weight: bold;
+	text-align: right;
+}
+
+.VERDE {
+	color: green !important;
+	font-weight: bold;
+	text-align: right;
+}
+
+.NARANJA {
+	color: orange !important;
+	font-weight: bold;
+	text-align: right;
+}
+
+.columnaA {
+	text-align: left;
+	vertical-align: middle;
+}
+
+.columnaB {
+	text-align: right;
+	vertical-align: middle;
+}
+
+.columnaIgual {
+	text-align: left;
+	vertical-align: top;
+	width: 50%
+}
+
+.columnaPlanA {
+	text-align: left;
+	vertical-align: top;
+	width: 80%
+}
+
+.columnaPlanB {
+	text-align: right;
+	vertical-align: top;
+	width: 20%
+}
+</style>
+
+		<h:form id="form">
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('DIAGNOSTICO')}"
+				autoRun="true" />
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('INDICADORES')}"
+				autoRun="true" />
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloEtapas}: Indicadores</h2>
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+			<p:outputPanel id="pnlCasoUso">
+				<p:spacer height="10" />
+
+				<p:panel>
+					<p:outputPanel id="pnlCriteriosConsulta">
+						<div align="left">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid" cellpadding="0">
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.labelCliente}" filter="true"
+									filterMatchMode="contains" style="width:100%; font-size:14px;"
+									id="lstCliente" value="#{administrarEtapa.cliente.id}">
+
+
+									<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+									<p:ajax event="change" process="@this"
+										listener="#{administrarEtapa.setProyectoCliente(null)}"
+										update=":form:pnlCriteriosConsulta, :form:pnlEstructuraIndicadores" />
+
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="#{mensaje.proyectoSimple}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+									style="width:100%; font-size:14px;" id="lstProyecto"
+									value="#{administrarEtapa.proyectoCliente.id}">
+
+
+									<f:selectItems
+										value="#{administrarEtapa.itemsProyectosCliente}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, pnlProyectoCliente5, pnlProyectoCliente6, pnlProyectoCliente7, :form:pnlEstructuraIndicadores, :form:messages"
+										listener="#{administrarEtapa.consultarDatosParaIndicadores()}" />
+
+
+
+								</p:selectOneMenu>
+								<p:outputPanel id="pnlProyectoCliente1">
+									<p:outputLabel value="#{mensaje.consultor}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente2">
+									<p:outputLabel
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+										style="font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente3">
+
+									<p:outputLabel value="Vigencia"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente4">
+
+									<p:panelGrid columns="2" style="width:100%;">
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:outputLabel
+											value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+											style="font-weight:normal; font-size:14px" />
+									</p:panelGrid>
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente5">
+
+									<p:outputLabel value="Periodo en que inicia los indicadores"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										for="txtPeriodoInicio"
+										style="font-weight:bold; font-size:14px" />
+
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente6">
+									<p:inputText label="Periodo en que inicia los indicadores"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										id="txtPeriodoInicio"
+										style="width:100%; font-size:14px; text-align:center; background-color:#D3D3D3;"
+										required="true" readonly="true"
+										value="#{consultarFuncionesAPI.getMesAno(administrarEtapa.informacionGeneralIndicador.fechaInicio)}" />
+
+								</p:outputPanel>
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:outputPanel id="pnlProyectoCliente7">
+									<p:commandButton value=" - " style="height:30px"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										action="#{administrarEtapa.retrocederMesAno()}"
+										process="@this" update=":form, :form:pnlEstructuraIndicadores" />
+									<p:commandButton value=" + " style="height:30px"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										process="@this" update=":form, :form:pnlEstructuraIndicadores"
+										action="#{administrarEtapa.adelantarMesAno()}" />
+								</p:outputPanel>
+
+
+
+
+
+							</p:panelGrid>
+						</div>
+					</p:outputPanel>
+				</p:panel>
+
+				<p:spacer height="30" />
+				<p:outputPanel id="pnlEstructuraIndicadores">
+					<p:accordionPanel id="pnlDltRegistros"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null }">
+						<p:tab title="Información" titleStyle="font-size:16px"
+							closable="true">
+
+
+
+							<p:spacer height="20" />
+
+							<c:forEach var="t" varStatus="loop"
+								items="#{administrarEtapa.informacionGeneralIndicador.objetivos}">
+
+								<p:panelGrid columns="2" style="width:100%"
+									columnClasses="columnaA,columnaB"
+									styleClass="ui-panelgrid-blank">
+									<h3 style="color: black">Objetivo #{(loop.index+1)}</h3>
+									<p:menuButton value="Menú de opciones sobre este objetivo"
+										style="color:orange; font-size:14px">
+										<p:menuitem value="Agregar nuevo indicador al objetivo"
+											actionListener="#{administrarEtapa.crearIndicadorVacio(t)}"
+											icon="ui-icon-disk" process="@this"
+											update=":form:pnlEstructuraIndicadores, :form:messages" />
+
+										<p:menuitem
+											rendered="#{administrarEtapa.informacionGeneralIndicador.objetivos!=null and administrarEtapa.informacionGeneralIndicador.objetivos.size()>1}"
+											value="Eliminar objetivo y toda su información asociada"
+											process="@this" update=":formEliminarObjetivo"
+											actionListener="#{administrarEtapa.asignarObjetivo(t)}"
+											icon="ui-icon-close" />
+
+									</p:menuButton>
+
+								</p:panelGrid>
+
+								<p:separator />
+								<br />
+
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									cellpadding="0" cellspacing="0" style="width:100%">
+
+
+
+
+									<p:outputLabel value="Descripción del objetivo:"
+										for="txtObjetivo-#{t.id}"
+										style="font-weight:bold; font-size:14px" />
+
+
+
+									<p:outputLabel value="Objetivo(s) relacionados:"
+										for="txtObjetivosRelacionados-#{t.id}"
+										style="font-weight:bold; font-size:14px" />
+
+
+									<p:inputTextarea value="#{t.objetivo}" label="Objetivo"
+										id="txtObjetivo-#{t.id}" rows="2" autoResize="false"
+										required="true"
+										style="font-size:14px; width:100%; min-height:50px">
+
+										<p:ajax event="change" process="@this" update="@this" />
+
+									</p:inputTextarea>
+
+
+
+
+
+
+
+									<p:inputTextarea value="#{t.objetivoRelacionado}"
+										label="Objetivo(s) relacionados"
+										id="txtObjetivosRelacionados-#{t.id}" rows="2"
+										autoResize="false" required="true"
+										style="font-size:14px; width:100%; ; min-height:50px">
+
+										<p:ajax event="change" process="@this" update="@this" />
+
+									</p:inputTextarea>
+
+									<p:message for="txtObjetivo-#{t.id}" />
+
+									<p:message for="txtObjetivosRelacionados-#{t.id}" />
+
+								</p:panelGrid>
+
+
+								<p:dataTable var="loc" id="dtlRegistros-#{t.id}"
+									scrollable="true" rowIndexVar="indice" rows="5"
+									value="#{t.indicadores}" paginator="true"
+									paginatorPosition="bottom"
+									emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+									<f:facet name="header">
+
+										<p:outputPanel>
+											<div align="left">
+												<p:panelGrid style="width:100%" columns="1"
+													styleClass="ui-panelgrid-blank">
+
+
+													<p:outputLabel value="Indicadores asociados"
+														style="font-weight:bold; color:white; font-size:14px" />
+
+												</p:panelGrid>
+											</div>
+										</p:outputPanel>
+
+
+
+									</f:facet>
+
+									<p:columnGroup type="header">
+
+
+										<p:row>
+											<p:column rowspan="2" headerText="#" width="50" footerText="" />
+											<p:column rowspan="2" headerText=" " width="50" footerText="" />
+
+											<p:column colspan="7"
+												headerText="Información general indicador*" width="2100"
+												footerText="" />
+
+
+
+
+
+											<p:column colspan="12" headerText="Resumen de resultados(%)*"
+												footerText="" width="620" />
+
+											<p:column rowspan="2" headerText="Resultado ponderado(%)"
+												footerText="hee" width="150" />
+
+											<p:column rowspan="2" headerText="Acciones" width="300"
+												footerText="" />
+
+
+
+
+
+										</p:row>
+										<p:row>
+											<p:column headerText="Nombre indicador *" width="300" />
+											<p:column headerText="Fórmula *" width="300" />
+											<p:column headerText="Responsable decisión *" width="300" />
+											<p:column headerText="Responsable cálculo *" width="300" />
+											<p:column headerText="Sistema de información *" width="300" />
+											<p:column headerText="Frecuencia de revisión *" width="300" />
+
+											<p:column headerText="Meta" width="300" />
+
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(1))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(2))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(3))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(4))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(5))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(6))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(7))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(8))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(9))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(10))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(11))}" />
+											<p:column style="font-size:14px"
+												headerText="#{consultarFuncionesAPI.getMesAnoF2(administrarEtapa.getFechaPeriodo(12))}" />
+
+
+
+
+										</p:row>
+
+									</p:columnGroup>
+
+									<p:column>
+										<p:outputLabel value="#{indice+1}" style="font-size:14px;" />
+
+									</p:column>
+
+									<p:column>
+										<p:outputPanel id="pnlBotonesIndicador">
+											<p:commandButton
+												title="El indicador posee su información general completa y por lo menos tiene un resultado calculado"
+												rendered="#{administrarEtapa.getEstadoIndicador(loc)=='VERDE'}"
+												style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+												value="" />
+											<p:commandButton
+												title="Indicador incompleto: Debe tener su información general completa y por lo menos un resultado calculado"
+												rendered="#{administrarEtapa.getEstadoIndicador(loc)=='ROJO'}"
+												style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+												value="" />
+										</p:outputPanel>
+
+									</p:column>
+
+									<p:column>
+										<p:inputTextarea value="#{loc.nombreIndicador}"
+											label="Nombre indicador" id="txtNombreIndicador" rows="3"
+											autoResize="false" required="true"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this"
+												update="@this, pnlBotonesIndicador" />
+										</p:inputTextarea>
+
+										<p:message for="txtNombreIndicador" />
+									</p:column>
+
+									<p:column>
+										<p:inputTextarea value="#{loc.formula}" label="Fórmula"
+											id="txtFormula" rows="3" autoResize="false" required="true"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this"
+												update="@this, pnlBotonesIndicador" />
+										</p:inputTextarea>
+
+										<p:message for="txtFormula" />
+									</p:column>
+
+									<p:column>
+										<p:inputTextarea value="#{loc.responsableDecision}"
+											label="Responsable decisión" id="txtResponsableDecision"
+											rows="3" autoResize="false" required="true"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this"
+												update="@this, pnlBotonesIndicador" />
+										</p:inputTextarea>
+
+										<p:message for="txtResponsableDecision" />
+									</p:column>
+
+									<p:column>
+										<p:inputTextarea value="#{loc.responsableCalculo}"
+											label="Responsable cálculo" id="txtResponsableCalculo"
+											rows="3" autoResize="false" required="true"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this"
+												update="@this, pnlBotonesIndicador" />
+										</p:inputTextarea>
+
+										<p:message for="txtResponsableCalculo" />
+
+
+									</p:column>
+
+
+									<p:column>
+										<p:inputTextarea value="#{loc.sistemaInformacion}"
+											label="Sistema de información" id="txtSistemaInformacion"
+											rows="3" autoResize="false" required="true"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this"
+												update="@this, pnlBotonesIndicador" />
+										</p:inputTextarea>
+
+
+										<p:message for="txtSistemaInformacion" />
+									</p:column>
+
+
+									<p:column style="vertical-align:top">
+
+										<p:selectOneMenu label="Frecuencia de revisión"
+											required="true" style="width:100%; font-size:14px;"
+											disabled="#{!administrarEtapa.isTodosPeriodosNulos(loc)}"
+											id="lstFrecuenciaRevision" value="#{loc.frecuencia}">
+
+
+											<f:selectItem itemLabel="#{mensaje.comboVacio}" itemValue="" />
+											<f:selectItem itemLabel="Mensual" itemValue="12" />
+											<f:selectItem itemLabel="Bimestral (Cada 2 meses)"
+												itemValue="6" />
+											<f:selectItem itemLabel="Trimestral (Cada 3 meses)"
+												itemValue="4" />
+											<f:selectItem itemLabel="Semestral (Cada 6 meses)"
+												itemValue="2" />
+											<f:selectItem itemLabel="Anual" itemValue="1" />
+
+											<p:ajax event="change" process="@this"
+												update=":form:pnlEstructuraIndicadores" />
+
+
+										</p:selectOneMenu>
+
+										<p:message for="lstFrecuenciaRevision" />
+
+
+
+									</p:column>
+
+									<p:column style="vertical-align:top; text-align:center">
+										<p:outputPanel id="pnlMetas">
+											<p:panelGrid style="width:100%" columns="3"
+												styleClass="ui-panelgrid-blank">
+
+
+
+
+
+
+												<p:outputLabel id="outputInferior"
+													value="Inferior (#{loc.metaInferior} %)"
+													style="color:red; font-weight:bold; font-size:14px" />
+
+
+												<p:outputLabel id="outputIntermedia"
+													value="Intermedia (#{loc.metaIntermedia} %)"
+													style="color:orange; font-weight:bold; font-size:14px" />
+
+
+
+												<p:outputLabel id="outputSuperior"
+													value="Superior (#{loc.metaSuperior} %)"
+													style="color:green; font-weight:bold; font-size:14px" />
+
+
+
+
+
+
+
+												<p:slider for="txtMetaInferior" display="outputInferior"
+													disabled="#{!administrarEtapa.isTodosPeriodosNulos(loc)}"
+													id="txtMetaInferiorS" minValue="0"
+													maxValue="#{(loc.metaIntermedia-1)}"
+													style="width: 100%; background-color:green"
+													displayTemplate="Inferior ({value}%)">
+
+													<p:ajax event="slideEnd" process="@this, pnlMetas"
+														update="pnlMetas" />
+												</p:slider>
+
+												<p:slider for="txtMetaIntermedia" display="outputIntermedia"
+													disabled="#{!administrarEtapa.isTodosPeriodosNulos(loc)}"
+													id="txtMetaIntermediaS" minValue="#{(loc.metaInferior+1)}"
+													maxValue="#{(loc.metaSuperior-1)}"
+													style="width: 100%; background-color:green"
+													displayTemplate="Intermedia ({value}%)">
+													<p:ajax event="slideEnd" process="@this, pnlMetas"
+														update="pnlMetas" />
+												</p:slider>
+
+												<p:slider for="txtMetaSuperior" display="outputSuperior"
+													disabled="#{!administrarEtapa.isTodosPeriodosNulos(loc)}"
+													id="txtMetaSuperiorS" minValue="#{(loc.metaIntermedia+1)}"
+													maxValue="100" style="width: 100%; background-color:green"
+													displayTemplate="Superior ({value}%)">
+													<p:ajax event="slideEnd" process="@this, pnlMetas"
+														update="pnlMetas" />
+												</p:slider>
+
+
+												<h:inputHidden id="txtMetaInferior"
+													value="#{loc.metaInferior}" />
+
+
+
+
+												<h:inputHidden id="txtMetaIntermedia"
+													value="#{loc.metaIntermedia}" />
+
+
+
+												<h:inputHidden id="txtMetaSuperior"
+													value="#{loc.metaSuperior}" />
+
+												<p:message for="txtMetaInferiorS" />
+												<p:message for="txtMetaIntermediaS" />
+												<p:message for="txtMetaSuperiorS" />
+
+											</p:panelGrid>
+										</p:outputPanel>
+									</p:column>
+
+
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,1)}">
+										<p:outputLabel value="#{loc.periodo1}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo1)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,2)}">
+										<p:outputLabel value="#{loc.periodo2}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo2)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,3)}">
+										<p:outputLabel value="#{loc.periodo3}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo3)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,4)}">
+										<p:outputLabel value="#{loc.periodo4}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo4)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,5)}">
+										<p:outputLabel value="#{loc.periodo5}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo5)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,6)}">
+										<p:outputLabel value="#{loc.periodo6}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo6)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,7)}">
+										<p:outputLabel value="#{loc.periodo7}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo7)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,8)}">
+										<p:outputLabel value="#{loc.periodo8}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo8)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,9)}">
+										<p:outputLabel value="#{loc.periodo9}" style="font-size:14px;"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo9)}" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,10)}">
+										<p:outputLabel value="#{loc.periodo10}"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo10)}"
+											style="font-size:14px;" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,11)}">
+										<p:outputLabel value="#{loc.periodo11}"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo11)}"
+											style="font-size:14px;" />
+									</p:column>
+									<p:column
+										styleClass="#{administrarEtapa.getColorCeldaPeriodo(loc,12)}">
+										<p:outputLabel value="#{loc.periodo12}"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,loc.periodo12)}"
+											style="font-size:14px;" />
+									</p:column>
+									<p:column style="text-align:right">
+										<p:outputLabel
+											value="#{administrarEtapa.getResultadoIndicador(loc)}"
+											styleClass="#{administrarEtapa.getColorTextoPeriodo(loc,administrarEtapa.getResultadoIndicador(loc))}"
+											style="font-size:14px; font-weight:bold"
+											rendered="#{!administrarEtapa.isTodosPeriodosNulos(loc)}" />
+									</p:column>
+									<p:column>
+										<div align="center">
+											<p:commandButton id="btnIndicadores"
+												style="background-origin: content-box; background-image: url('../imagenes/chart.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+												value=""
+												action="#{administrarEtapa.asignarIndicador(loc,'RESULTADOS_INDICADOR')}"
+												process="@this"
+												update=":formResultadosIndicador, :form:messages" />
+
+											<p:tooltip for="btnIndicadores"
+												value="Ver/calcular resultados" trackMouse="true" />
+
+
+											<p:commandButton id="btnBorrarIndicador"
+												rendered="#{t.indicadores!=null and t.indicadores.size()>1}"
+												style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+												value=""
+												action="#{administrarEtapa.asignarIndicador(loc,'ELIMINAR_INDICADOR')}"
+												process="@this" update=":formEliminarIndicador" />
+
+											<p:tooltip for="btnBorrarIndicador"
+												value="Eliminar Indicador"
+												rendered="#{t.indicadores!=null and t.indicadores.size()>1}"
+												trackMouse="true" />
+
+										</div>
+									</p:column>
+
+
+									<f:facet name="footer">
+										<p:outputLabel
+											value="Resultado ponderado objetivo(%) = #{administrarEtapa.getResultadoObjetivo(t)}"
+											style="font-size:16px; font-weight:bold" />
+									</f:facet>
+
+
+								</p:dataTable>
+
+								<br />
+								<br />
+
+
+							</c:forEach>
+							<p:outputLabel value="#{mensaje.informacionRequerida}"
+								style="font-size:10px" />
+
+
+							<p:spacer height="10" />
+							<div align="center">
+
+
+								<p:commandButton id="btnIrCrearObjetivo"
+									style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+									title="Agrega un nuevo objetivo" icon="fa fa-plus-circle"
+									action="#{administrarEtapa.crearObjetivoVacio('N')}"
+									value="Agregar nuevo objetivo" process="@this"
+									update=":form:pnlEstructuraIndicadores, :form:messages" />
+
+
+								<p:spacer width="10" />
+
+								<p:commandButton id="btnCrear" style="font-size:14px;"
+									rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+									process=":form"
+									action="#{administrarEtapa.guardarFormaIncompleta()}"
+									value="Guardar todo e imprimir"
+									update=":form, :formIndicadoresCompleto, :formIndicadoresIncompleto" />
+
+								<p:spacer width="10" />
+
+
+								<p:commandButton id="btnBorrar" rendered="1==2"
+									title="Elimina lo guardado a la fecha para la empresa/proyecto en lo que refiere a indicadores"
+									style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+									action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
+									process="@this" value="Eliminar info. etapa indicadores"
+									update=":form" />
+
+
+
+
+
+
+								<p:blockUI block=":form"
+									trigger="btnCrear, btnBorrar, btnIrCrearObjetivo">
+									<p:graphicImage value="../imagenes/cargando.gif" />
+								</p:blockUI>
+							</div>
+
+
+
+
+
+
+
+						</p:tab>
+					</p:accordionPanel>
+					<p:spacer height="10" />
+
+
+
+
+				</p:outputPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+		<ui:include src="/etapas/eliminarObjetivo.xhtml" />
+		<ui:include src="/etapas/eliminarIndicador.xhtml" />
+		<ui:include src="/etapas/calcularResultados.xhtml" />
+
+
+
+		<ui:include src="/etapas/guardarIndicadoresIncompleto.xhtml" />
+		<ui:include src="/etapas/guardarIndicadoresCompleto.xhtml" />
+		<ui:include src="/etapas/mostrarResumenGuardadoIndicadores.xhtml" />
+
+
+
+	</ui:define>
+</ui:composition>

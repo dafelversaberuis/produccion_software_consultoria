@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirDiagnostico" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="45bfd656-432b-4516-b2fd-cf545a8ac7e9">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="bandas" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2==0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#CCCCCC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="pSistema" class="java.lang.String"/>
+	<parameter name="pModulo" class="java.lang.String"/>
+	<parameter name="pCasoUso" class="java.lang.String"/>
+	<parameter name="pTituloAdicional" class="java.lang.String"/>
+	<parameter name="pLogin" class="java.lang.String"/>
+	<parameter name="pRutaLogo" class="java.lang.String"/>
+	<parameter name="pParcial" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\workspaceJEE\\consultoria\\src\\main\\webapp\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pEstadosProyecto" class="java.util.List"/>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="evidenciaEncontrada" class="java.lang.String"/>
+	<field name="proyectoCliente" class="java.lang.Object"/>
+	<field name="preguntaProyecto" class="java.lang.Object"/>
+	<field name="tIdRegistro" class="java.lang.Integer"/>
+	<field name="tEstadosDiagnostico" class="java.util.List">
+		<fieldDescription><![CDATA[tEstadosDiagnostico]]></fieldDescription>
+	</field>
+	<background>
+		<band height="752" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="944f530a-826f-44d9-a21e-4281d78ea904" x="2" y="386" width="570" height="88" forecolor="#FF0000">
+					<printWhenExpression><![CDATA[$P{pParcial}!=null && $P{pParcial}.equals("S")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" rotation="None">
+					<font size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[::ESTE INFORME SE ECUENTRA DILIGENCIADO DE FORMA PARCIAL::]]></text>
+			</staticText>
+		</band>
+	</background>
+	<pageHeader>
+		<band height="84" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ccf244cd-3c74-4472-970d-8a7df03df625" x="155" y="28" width="283" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pCasoUso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5ddc3a26-e85f-4d4e-a28e-7d5034326412" x="155" y="2" width="283" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pSistema}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMM / dd / yyyy">
+				<reportElement uuid="a37d22e0-eed5-406e-a3bc-8a6d4b39eca8" x="476" y="3" width="96" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="89ac95ef-b1db-41cf-a540-95faa48d6db6" x="155" y="41" width="283" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pTituloAdicional}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealHeight" onErrorType="Icon">
+				<reportElement uuid="b2a75f77-4464-4152-813a-a57f90e6cfb7" x="2" y="2" width="153" height="78"/>
+				<imageExpression><![CDATA[$P{pRutaLogo}]]></imageExpression>
+			</image>
+			<textField pattern="hh:mm a">
+				<reportElement uuid="3df035cd-a12b-4af4-80c5-3393350778e3" x="476" y="16" width="96" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8b226b0c-d948-48e8-9851-96add9d04cf1" x="155" y="15" width="283" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pModulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="85f66b5d-730f-41b4-b632-419b5f830bbf" x="438" y="31" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pag. "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="8589fec7-7209-4c3d-b2ce-ba8705bf9c3b" x="518" y="31" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0f635440-dfde-46a9-8552-d01adaae7965" x="155" y="67" width="283" height="13"/>
+				<textElement/>
+				<text><![CDATA[Informe: INFORME DE DIAGNÓSTICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0f635440-dfde-46a9-8552-d01adaae7965" x="155" y="54" width="283" height="13"/>
+				<textElement/>
+				<text><![CDATA[Etapa: Abierta]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="118" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6ec98de9-46bc-4bf3-9190-8dea96d579eb" positionType="Float" x="2" y="7" width="570" height="20"/>
+				<textElement markup="html">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tIdRegistro}+". "+$F{preguntaProyecto}.pregunta]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="78b66746-5c92-4bb8-accd-82a12be7a994" positionType="Float" x="2" y="48" width="295" height="20"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA[$F{preguntaProyecto}.posibleEvidencia]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="74875de8-7690-45da-a02d-5db32693093e" positionType="Float" x="2" y="32" width="119" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Posible evidencia:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="63e38d56-42be-4db5-b8ff-7eed02897cf5" positionType="Float" x="0" y="84" width="297" height="20"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA[$F{evidenciaEncontrada}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e2c8ee0f-36d6-46dc-b5ec-77c95c1a7d14" positionType="Float" x="0" y="68" width="121" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hallazgos encontrados:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="7f388b95-887e-49b5-8a08-33419c3e388c" positionType="Float" x="0" y="108" width="572" height="1"/>
+			</line>
+			<subreport>
+				<reportElement uuid="81955491-ece7-42d0-8285-ed52769ef5e1" positionType="Float" x="318" y="49" width="254" height="16"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$F{tEstadosDiagnostico})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "imprimirEstadosDiagnostico.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="72512afa-4862-40ed-9458-05bd8735587e" x="318" y="33" width="254" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[ESTADOS (COMPONENTES)]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="6c572847-e15c-4a7d-bc04-46c9cdf4250d" x="313" y="29" width="259" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="22399ab6-0114-451f-94af-a41c81dea4d3" x="313" y="49" width="259" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="34">
+			<subreport>
+				<reportElement uuid="81955491-ece7-42d0-8285-ed52769ef5e1" positionType="Float" x="0" y="19" width="572" height="8"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$P{pEstadosProyecto})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "imprimirTotalEstadosDiagnostico.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="0f635440-dfde-46a9-8552-d01adaae7965" x="2" y="0" width="570" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESUMEN]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

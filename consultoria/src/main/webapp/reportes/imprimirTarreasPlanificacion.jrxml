@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirTarreasPlanificacion" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb9917b5-3eaa-41ed-bc86-31716e615cd9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="bandas" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2==0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#CCCCCC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="pSistema" class="java.lang.String"/>
+	<parameter name="pModulo" class="java.lang.String"/>
+	<parameter name="pCasoUso" class="java.lang.String"/>
+	<parameter name="pTituloAdicional" class="java.lang.String"/>
+	<parameter name="pLogin" class="java.lang.String"/>
+	<parameter name="pRutaLogo" class="java.lang.String"/>
+	<parameter name="pParcial" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\workspaceJEE\\consultoria\\src\\main\\webapp\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pEstadosProyecto" class="java.util.List"/>
+	<field name="tareaProyecto" class="java.lang.Object"/>
+	<field name="indicativo" class="java.lang.String"/>
+	<field name="aprobadaCliente" class="java.lang.String"/>
+	<field name="aprobadaConsultor" class="java.lang.String"/>
+	<pageHeader>
+		<band height="84" splitType="Stretch">
+			<textField pattern="MMM / dd / yyyy">
+				<reportElement uuid="a37d22e0-eed5-406e-a3bc-8a6d4b39eca8" x="474" y="4" width="96" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="8589fec7-7209-4c3d-b2ce-ba8705bf9c3b" x="516" y="32" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0f635440-dfde-46a9-8552-d01adaae7965" x="153" y="68" width="377" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Informe: TAREAS ABIERTAS/CERRADAS (ETAPA PLANIFICACIÓN)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0f635440-dfde-46a9-8552-d01adaae7965" x="153" y="55" width="283" height="13"/>
+				<textElement/>
+				<text><![CDATA[Etapa: Abierta]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ccf244cd-3c74-4472-970d-8a7df03df625" x="153" y="29" width="283" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pCasoUso}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealHeight" onErrorType="Icon">
+				<reportElement uuid="b2a75f77-4464-4152-813a-a57f90e6cfb7" x="0" y="3" width="153" height="78"/>
+				<imageExpression><![CDATA[$P{pRutaLogo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="89ac95ef-b1db-41cf-a540-95faa48d6db6" x="153" y="42" width="283" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pTituloAdicional}]]></textFieldExpression>
+			</textField>
+			<textField pattern="hh:mm a">
+				<reportElement uuid="3df035cd-a12b-4af4-80c5-3393350778e3" x="474" y="17" width="96" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8b226b0c-d948-48e8-9851-96add9d04cf1" x="153" y="16" width="283" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pModulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5ddc3a26-e85f-4d4e-a28e-7d5034326412" x="153" y="3" width="283" height="13"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pSistema}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="85f66b5d-730f-41b4-b632-419b5f830bbf" x="436" y="32" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pag. "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="370e31a1-6813-4447-a4df-9ac39af61a05" x="0" y="8" width="389" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tarea]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="74dd0853-e12f-4f9f-8d75-b115917ba9d5" x="389" y="8" width="181" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="5ceaefcd-e981-4151-9c85-d74fa664df27" x="0" y="4" width="572" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="1cd9fd48-f014-4670-ac5f-d2f9d9e08889" x="0" y="27" width="572" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="1a8482c0-778a-4d2b-b227-6dc753b506e7" style="bandas" x="0" y="0" width="572" height="25"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="a51cd1b0-66c8-421c-9424-450c4148d45c" positionType="Float" x="0" y="2" width="389" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tareaProyecto}.tarea]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="fd2960ed-c1fe-4a76-b0b7-834aff7d2dfb" positionType="Float" x="389" y="2" width="183" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[( $F{indicativo}!=null && $F{indicativo}.equals("A")? "ABIERTA" : "CERRADA" )]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

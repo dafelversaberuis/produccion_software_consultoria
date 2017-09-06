@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirEstadosDiagnostico" language="groovy" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e1ba6a0f-c564-4ed8-abda-4c2aeac4a3e1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="bandas" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2==0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#CCCCCC"/>
+		</conditionalStyle>
+	</style>
+	<field name="estado" class="java.lang.Object"/>
+	<field name="tSeleccionado" class="java.lang.Boolean"/>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="c2361c9d-5424-4a8c-ab89-5ec74bd75eda" style="bandas" x="0" y="0" width="257" height="19" forecolor="#FFFFFF"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="aa6e61b6-5202-47a7-aa7a-4b67b189c101" x="0" y="2" width="257" height="13"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{tSeleccionado}==true ? "(X) "+$F{estado}.nombre : "(  )  "+$F{estado}.nombre )]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

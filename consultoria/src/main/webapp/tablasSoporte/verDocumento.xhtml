@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formVerDocumento">
+
+
+		<p:dialog header="Ver documento" width="999" height="499"
+			widgetVar="panelVistaPreviaDocumento" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlVistaPreviaDocumento">
+
+				<h:panelGrid style="width:100%" id="panelAntes"
+					rendered="#{hacerMantenimiento.documentoActividadTransaccion!=null and hacerMantenimiento.documentoActividadTransaccion.descargable=='S'}">
+					
+					<p:outputLabel value="ESTE DOCUMENTO SOLO POSEE PERMISOS DE VISUALIZACIÓN"
+						style="font-weight:bold; font-size:14px; color:red" />
+				
+					<iframe allowfullscreen="false" id="iframe"
+						src="/consultoria/ViewerJS/index.html#../archivosTemporales/#{hacerMantenimiento.documentoActividadTransaccion.tNombre}"
+						style="width: 100%; height: 400px"></iframe>
+
+
+				</h:panelGrid>
+				<h:panelGrid style="width:100%"
+					rendered="#{hacerMantenimiento.documentoActividadTransaccion!=null and hacerMantenimiento.documentoActividadTransaccion.descargable=='N'}">
+
+					<iframe id="iframe"
+						src="/consultoria/archivosTemporales/#{hacerMantenimiento.documentoActividadTransaccion.tNombre}"
+						style="width: 100%; height: 400px"></iframe>
+
+
+				</h:panelGrid>
+
+				<br />
+				<div align="center">
+
+					<p:commandButton id="btnCerrarDocumento"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{consultarFuncionesAPI.cerrarModal('panelVistaPreviaDocumento')}"
+						process="@this" value="#{mensaje.cerrar}" update="@this" />
+
+				</div>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+
+</ui:composition>

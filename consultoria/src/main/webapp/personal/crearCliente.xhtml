@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 30px
+}
+
+.columna2 {
+	
+}
+</style>
+
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('INFORMACION_CLIENTE')}"
+				autoRun="true" />
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloPersonal}:
+						#{mensaje.administrarClientes}</h2>
+
+
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+
+			<p:outputPanel id="pnlCliente">
+
+				<p:spacer height="10" />
+
+				<p:accordionPanel id="pnlCrear" activeIndex="1">
+					<p:tab title="#{mensaje.crearCliente}" titleStyle="font-size:16px"
+						closable="true">
+						<div align="left">
+							<p:panelGrid columns="6" cellpadding="0" cellspacing="0"
+								style="width:100%" styleClass="ui-panelgrid-blank" layout="grid">
+
+
+
+								<p:outputLabel for="txtNit" value="#{mensaje.nit}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtNit"
+									value="#{administrarPersonal.cliente.nit}" required="true"
+									label="#{mensaje.nit}"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:outputLabel for="txtCliente" value="#{mensaje.cliente}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtCliente"
+									value="#{administrarPersonal.cliente.cliente}" required="true"
+									label="#{mensaje.cliente}"
+									style="width:100%; font-size:14px; " />
+
+
+
+
+
+
+								<p:outputLabel for="txtCorreo" value="#{mensaje.correo}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtCorreo"
+									value="#{administrarPersonal.cliente.correoElectronico}"
+									required="true" label="#{mensaje.correo}"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:spacer width="1" />
+								<p:message for="txtNit" />
+								<p:spacer width="1" />
+								<p:message for="txtCliente" />
+								<p:spacer width="1" />
+								<p:message for="txtCorreo" />
+
+
+								<p:outputLabel for="txtRepresentante"
+									value="Nombre completo Líder Sostenibilidad"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:inputText id="txtRepresentante"
+									value="#{administrarPersonal.cliente.representante}"
+									required="true" label="Nombre completo Líder Sostenibilidad"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:outputLabel for="txtTelefono" value="#{mensaje.telefonos}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtTelefono"
+									value="#{administrarPersonal.cliente.telefono}"
+									label="#{mensaje.telefonos}"
+									style="width:100%; font-size:14px; " />
+
+
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+
+
+								<p:spacer width="1" />
+								<p:message for="txtRepresentante" />
+								<p:spacer width="1" />
+								<p:message for="txtTelefono" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+
+
+							</p:panelGrid>
+
+						</div>
+
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrear" style="font-size:14px;"
+								action="#{administrarPersonal.crearCliente()}"
+								value="#{mensaje.guardar}" update=":form" />
+
+							<p:spacer width="10" />
+							<p:commandButton id="btnBorrar"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{administrarPersonal.cancelarCliente()}"
+								process="@this" value="#{mensaje.cancelar}" update=":form">
+
+								<p:resetInput target=":form:pnlCliente" />
+
+							</p:commandButton>
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":form:pnlCrear" trigger="btnCrear, btnBorrar">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+					</p:tab>
+				</p:accordionPanel>
+				<p:spacer height="30" />
+				<p:outputPanel id="pnlConsultar">
+					<p:accordionPanel activeIndex="1">
+						<p:tab title="#{mensaje.consultarClientes}"
+							titleStyle="font-size:16px" closable="true">
+
+							<p:panelGrid columns="3" cellpadding="0" cellspacing="0"
+								styleClass="ui-panelgrid-blank">
+								<p:outputLabel for="txtNombre2" value="#{mensaje.nombreOParte}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtNombre2"
+									value="#{administrarPersonal.clienteConsulta.cliente}"
+									label="#{mensaje.nombre}" style="width:100%; font-size:14px" />
+								<p:message for="txtNombre2" />
+
+								<p:outputLabel for="txtNit2" value="#{mensaje.nit}"
+									style="font-weight:bold; font-size:14px" />
+								<p:inputText id="txtNit2"
+									value="#{administrarPersonal.clienteConsulta.nit}"
+									label="#{mensaje.nit}" style="width:100%; font-size:14px" />
+								<p:message for="txtNit2" />
+
+							</p:panelGrid>
+
+							<p:spacer height="10" />
+							<div align="center">
+								<p:commandButton id="btnConsultar" style="font-size:14px; "
+									action="#{administrarPersonal.consultarClientes()}"
+									value="#{mensaje.consultar}"
+									update=":form:pnlConsultar, :form:pnlDtlClientes"
+									process=":form:pnlConsultar" />
+
+								<p:spacer width="10" />
+								<p:commandButton id="btnBorrar"
+									style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+									action="#{administrarPersonal.cancelarConsulta()}"
+									process="@this" value="#{mensaje.cancelar}"
+									update=":form:pnlConsultar, :form:pnlDtlClientes">
+
+									<p:resetInput target=":form:pnlConsultar" />
+
+								</p:commandButton>
+
+							</div>
+
+							<p:blockUI block=":form:pnlConsultar"
+								trigger="btnConsultar, btnBorrar">
+
+								<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+							</p:blockUI>
+
+
+						</p:tab>
+
+					</p:accordionPanel>
+				</p:outputPanel>
+
+				<p:spacer height="30" />
+				<p:accordionPanel id="pnlDtlClientes">
+					<p:tab title="#{mensaje.listadoClientes}"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="loc" id="dtlClientes" widgetVar="dtlRegistros"
+							value="#{administrarPersonal.clientes}" reflow="true" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							draggableColumns="true"
+							emptyMessage="#{mensaje.noExistenciaClientes}">
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align:right">
+									<p:inputText id="globalFilter" immediate="true"
+										onkeyup="PF('dtlRegistros').filter()"
+										style="width:300px;  height:35px"
+										placeholder="#{mensaje.palabrasClave}" />
+								</p:outputPanel>   
+							</f:facet>
+
+
+
+							<p:column headerText="#{mensaje.nit}" filterMatchMode="contains"
+								filterStyle="display:none" sortBy="#{loc.nit}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.nit}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+							<p:column headerText="#{mensaje.cliente}"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.cliente}" filterBy="#{loc.cliente}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.cliente}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+							<p:column headerText="Lider Sostenibilidad"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.representante}" filterBy="#{loc.representante}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.representante}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.correo}"
+								filterStyle="display:none" filterMatchMode="contains"
+								filterBy="#{loc.correoElectronico}"
+								sortBy="#{loc.correoElectronico}" style="font-size:14px">
+								<p:outputLabel value="#{loc.correoElectronico}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+							<p:column headerText="#{mensaje.telefonos}"
+								filterStyle="display:none" filterMatchMode="contains"
+								filterBy="#{loc.telefono}" sortBy="#{loc.telefono}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.telefono}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+
+
+
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+								<p:commandButton id="btnIrEditar"
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarPersonal.asignarCliente(loc,'MODAL_EDITAR_CLIENTE')}"
+									value="" process=":form:pnlDtlClientes" update=":formEditar" />
+
+
+								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
+									trackMouse="true" />
+
+								<p:commandButton id="btnIrEliminar"
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{administrarPersonal.asignarCliente(loc,'MODAL_ELIMINAR_CLIENTE')}"
+									process=":form:pnlDtlClientes" update=":formEliminar" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrClave"
+									style="background-origin: content-box; background-image: url('../imagenes/c_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{administrarPersonal.asignarCliente(loc,'MODAL_CLAVE_CLIENTE')}"
+									process=":form:pnlDtlClientes" update=":formClave" />
+
+								<p:tooltip for="btnIrClave"
+									value="#{mensaje.generarClaveCliente}" trackMouse="true" />
+
+
+							</p:column>
+
+
+						</p:dataTable>
+
+					</p:tab>
+				</p:accordionPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+		<ui:include src="/personal/editarCliente.xhtml" />
+		<ui:include src="/personal/eliminarCliente.xhtml" />
+		<ui:include src="/personal/cambiarClaveCliente.xhtml" />
+
+
+		<p:spacer height="800" />
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:form id="formAsignarPregunta">
+		<p:outputPanel id="pnlPreguntas"
+			rendered="#{hacerMantenimiento.vistaActual == 'VISTA_PREGUNTAS'}">
+			<p:spacer height="5" />
+			<p:panel>
+				<div align="left">
+					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+						cellpadding="5">
+						<p:outputLabel value="#{mensaje.proyectoSimple}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel style="font-weight:normal; font-size:14px"
+							value="#{hacerMantenimiento.proyectoTransaccion.nombre}" />
+
+
+						<p:outputLabel value="#{mensaje.indicativo}"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel value="#{mensaje.ESTADO_ACTIVO}"
+							style="font-weight:normal; font-size:14px"
+							rendered="#{hacerMantenimiento.proyectoTransaccion.indicativoVigencia=='A'}" />
+						<p:outputLabel value="#{mensaje.ESTADO_INACTIVO}"
+							style="font-weight:normal; font-size:14px"
+							rendered="#{hacerMantenimiento.proyectoTransaccion.indicativoVigencia=='I'}" />
+
+					</p:panelGrid>
+				</div>
+			</p:panel>
+
+			<p:spacer height="5" />
+
+			<p:outputPanel id="pnlCrearPregunta">
+				<p:accordionPanel activeIndex="1">
+					<p:tab title="#{mensaje.crearPregunta}" id="tabPregunta"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank" style="width:100%">
+							<p:outputLabel for="txtNombrePregunta"
+								value="#{mensaje.pregunta}"
+								style="font-weight:bold; font-size:14px;" />
+							<p:inputText id="txtNombrePregunta"
+								value="#{hacerMantenimiento.preguntaProyecto.pregunta}"
+								required="true" label="#{mensaje.pregunta}"
+								style="font-size:14px; width:100%" />
+
+							<p:message for="txtNombrePregunta" />
+
+
+							<p:outputLabel for="txtPosibleEvidencia"
+								value="#{mensaje.posibleEvidencia}"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:inputTextarea cols="3" style="font-size:14px; width:100%" id="txtPosibleEvidencia" required="true"
+								value="#{hacerMantenimiento.preguntaProyecto.posibleEvidencia}" />
+
+
+
+							<p:message for="txtPosibleEvidencia" />
+
+
+
+
+						</p:panelGrid>
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrearPregunta"
+								style="font-size:14px; font-weight: normal !important;"
+								action="#{hacerMantenimiento.crearPreguntaProyecto()}"
+								process=":formAsignarPregunta" value="#{mensaje.guardar}"
+								update=":formAsignarPregunta, :form" />
+
+						</div>
+
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formAsignarPregunta:pnlCrearPregunta"
+							trigger="btnCrearPregunta">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+
+			<p:spacer height="5" />
+
+			<p:outputPanel id="dtlPreguntas">
+				<p:accordionPanel>
+					<p:tab title="#{mensaje.listadoPreguntas}"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="det" value="#{hacerMantenimiento.preguntas}"
+							draggableRows="true" reflow="true" rows="5" paginator="true"
+							id="dtlRegistros2" widgetVar="dtlRegistros2" rowIndexVar="indice"
+							paginatorPosition="bottom" draggableColumns="true"
+							emptyMessage="#{mensaje.noExistenPreguntas}">
+							<p:ajax event="rowReorder" process="@this"
+								listener="#{hacerMantenimiento.onRowReorder}"
+								update=":form:messages, :formAsignarPregunta:dtlPreguntas" />
+							<f:facet name="header">
+								<p:outputPanel style="text-align:right">
+									<p:inputText id="globalFilter" immediate="true"
+										onkeyup="PF('dtlRegistros2').filter()"
+										style="width:300px; height:35px"
+										placeholder="#{mensaje.palabrasClave}" />
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="#{mensaje.pregunta}"
+								sortBy="#{det.pregunta}" filterBy="#{det.pregunta}"
+								filterMatchMode="contains" filterStyle="display:none"
+								style="font-size:14px">
+								<p:outputLabel value="#{det.pregunta}"
+									style="font-weight:normal" rendered="#{det.estado == 'A'}" />
+								<p:outputLabel style="font-weight:normal"
+									value="#{det.pregunta} #{mensaje.preguntaInactiva}: "
+									rendered="#{det.estado == 'I'}" />
+
+
+								<p:outputLabel value="#{det.fechaEstado}"
+									style="font-weight:normal; font-size:14px"
+									rendered="#{det.estado == 'I'}">
+
+									<f:convertDateTime pattern=" dd/MM/yyyy" />
+								</p:outputLabel>
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.estado}" style="font-size:14px"
+								sortBy="#{det.estado}">
+								<p:outputLabel rendered="#{det.estado == 'A'}"
+									style="font-weight:normal" value="#{mensaje.ESTADO_ACTIVO}" />
+								<p:outputLabel rendered="#{det.estado == 'I'}"
+									style="font-weight:normal" value="#{mensaje.ESTADO_INACTIVO}" />
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.posicion}"
+								style="font-size:14px; width:130px; text-align:right"
+								sortBy="#{det.posicion}" filterBy="#{det.posicion}"
+								filterMatchMode="contains" filterStyle="display:none">
+
+								<p:outputLabel style="font-weight:normal" value="#{indice+1}" />
+							</p:column>
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+								<p:commandButton id="btnIrVer" value=""
+									style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarPreguntaProyecto(det,'MODAL_VER_PREGUNTA')}"
+									process=":formAsignarPregunta:dtlPreguntas"
+									update=":formVerHijo" />
+
+
+								<p:tooltip for="btnIrVer"
+									value="#{mensaje.verInformacionCompleta}" trackMouse="true" />
+
+
+								<p:commandButton id="btnIrEditar" value=""
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarPreguntaProyecto(det,'MODAL_EDICION_PREGUNTA')}"
+									process=":formAsignarPregunta:dtlPreguntas"
+									update=":formEditarHijo" />
+
+
+								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrEliminar" value=""
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarPreguntaProyecto(det,'MODAL_ELIMINACION_PREGUNTA')}"
+									process=":formAsignarPregunta:dtlPreguntas"
+									update=":formEliminarHijo" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+
+
+							</p:column>
+
+
+						</p:dataTable>
+
+						<p:outputLabel value="#{mensaje.informacionReordenar}"
+							style="font-size:10px" />
+
+
+						<div align="center">
+
+							<p:commandButton id="btnRegresarAProyecto"
+								style="font-size:14px; font-weight: normal !important;"
+								action="#{hacerMantenimiento.cancelarProyectoTransaccion(null)}"
+								process="@this" value="#{mensaje.regresar}"
+								update=":formAsignarPregunta, :form">
+
+								<p:resetInput target=":formAsignarPregunta:pnlCrearPregunta" />
+							</p:commandButton>
+						</div>
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+		</p:outputPanel>
+	</h:form>
+</ui:composition>

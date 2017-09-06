@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formResumenSeleccion">
+
+		<p:dialog
+			header="La actividad que seleccionó presenta las siguientes opciones. Tome una decisión"
+			widgetVar="panelResumenSeleccion" resizable="true" closable="false"
+			responsive="true">
+			<p:panel id="pnlResumenSeleccion">
+
+				<p:panelGrid styleClass="ui-panelgrid-blank" layout="grid"
+					style="width:100%" cellpadding="0" columns="1">
+
+					<p:outputLabel
+						value="Actividad: #{administrarEtapa.planificacionSeleccionada.tareaProyecto.tarea}"
+						style="font-weight:bold; font-size:14px"
+						rendered="#{administrarEtapa.planificacionSeleccionada!=null and administrarEtapa.planificacionSeleccionada.tareaProyecto!=null and administrarEtapa.planificacionSeleccionada.tareaProyecto.id!=null}" />
+
+					<p:commandButton id="btnResumen1"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.getUrlEtapaDiagnostico()}"
+						ajax="false" value="Ir a Etapa de diagnóstico..." />
+
+
+					<p:commandButton id="btnResumen2" process="@this"
+						disabled="#{!(administrarEtapa.isPoseeDocumentacion())}"
+						update=":form:messages, :formResumenSeleccion, :formDocumento"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.seleccionarOpcionDocumentacion()}"
+						value="Ver ejemplos - Etapa Documentación" />
+
+					<p:commandButton id="btnResumen3" process="@this"
+						update=":form:messages, :formResumenSeleccion:pnlResumenSeleccion"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{consultarFuncionesAPI.cerrarModal('panelResumenSeleccion')}"
+						value="Cerrar y volver a planificación" />
+
+
+
+
+				</p:panelGrid>
+
+				<p:blockUI block=":formResumenSeleccion:pnlResumenSeleccion"
+					trigger="btnResumen1, btnResumen2, btnResumen3">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/main/webapp/reportes/imprimirDatosIdentificacion.jrxml=UTF-8
+encoding//src/main/webapp/reportes/imprimirInformCronograma.jrxml=UTF-8
+encoding//src/main/webapp/reportes/imprimirInformeDiagnosticoV1.jrxml=UTF-8
+encoding//src/main/webapp/reportes/imprimirInformeDiagnosticoV1G.jrxml=UTF-8
+encoding//src/main/webapp/reportes/imprimirInformeIndicadores.jrxml=UTF-8
+encoding//src/main/webapp/reportes/imprimirInformeIndicadoresGlobal.jrxml=UTF-8
+encoding//src/main/webapp/reportes/subreportePeriodos.jrxml=UTF-8

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreportePeriodos" language="groovy" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isSummaryWithPageHeaderAndFooter="true" uuid="bcb2e825-cef4-45b6-8931-7c5f78f9611f">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\workspaceJEE\\optimo\\src\\main\\webapp\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pMetaInferior" class="java.math.BigDecimal"/>
+	<parameter name="pPeriodo" class="java.math.BigDecimal"/>
+	<parameter name="pMetaIntermedia" class="java.math.BigDecimal"/>
+	<parameter name="pMetaSuperior" class="java.math.BigDecimal"/>
+	<parameter name="pAnalisisResultados" class="java.lang.String"/>
+	<field name="tNombrePeriodo" class="java.lang.String"/>
+	<field name="tNumerador" class="java.math.BigDecimal"/>
+	<field name="tDenominador" class="java.math.BigDecimal"/>
+	<field name="tResultado1" class="java.math.BigDecimal"/>
+	<field name="tColorTexto" class="java.lang.String"/>
+	<title>
+		<band height="16">
+			<staticText>
+				<reportElement uuid="eba949cf-96f6-4313-825f-8ddd8ca7a174" positionType="Float" x="0" y="0" width="212" height="15"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADOS PERIODOS:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="a81392ea-04d7-4f49-88a0-4bfb857778b1" x="0" y="2" width="572" height="24" backcolor="#DED9C3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="8501d481-dde8-496a-80ac-e49fdf352567" x="341" y="2" width="110" height="24" backcolor="#DED9C3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="5a77a8df-89b0-4682-a3fe-22baf3c69a38" x="125" y="2" width="112" height="24" backcolor="#DED9C3"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="1c4ad0fa-6d88-4ae5-b3d5-2611de48924f" x="3" y="6" width="119" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERIODO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af91e6f7-2b4e-45da-93db-b6675ebb3cdc" x="341" y="6" width="110" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b0163f18-b70e-4ff8-a704-2bb40d85865c" x="462" y="6" width="107" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[META MINIMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9ebea257-e896-44c7-89a2-24ce10480567" x="127" y="6" width="101" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATO NUMERADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a2aa84f7-8dd7-4e82-ae42-7e33f8750e60" x="238" y="6" width="99" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATO DENOMINADOR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="6656a79d-2393-4f06-b299-e87168672487" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="572" height="20" isPrintWhenDetailOverflows="true"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="377ae943-5dc1-445c-9c04-33ae42b733d3" positionType="Float" stretchType="RelativeToBandHeight" x="125" y="0" width="112" height="20" isPrintWhenDetailOverflows="true"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="226171f6-eefb-4725-a9d2-6e85839714cd" positionType="Float" stretchType="RelativeToBandHeight" x="341" y="0" width="110" height="20" isPrintWhenDetailOverflows="true"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="3" y="1" width="119" height="17"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tNombrePeriodo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="127" y="0" width="101" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tNumerador}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="238" y="0" width="99" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tDenominador}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="346" y="0" width="99" height="17" forecolor="#FF0000">
+					<printWhenExpression><![CDATA[$F{tResultado1}!=null && $F{tColorTexto}!=null && $F{tColorTexto}.equals("ROJO")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tResultado1}+"%"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="462" y="0" width="99" height="17" forecolor="#FF9900"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{pMetaInferior}+1)+"%"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="346" y="0" width="99" height="17" forecolor="#FF9900">
+					<printWhenExpression><![CDATA[$F{tResultado1}!=null && $F{tColorTexto}!=null && $F{tColorTexto}.equals("NARANJA")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tResultado1}+"%"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="346" y="0" width="99" height="17" forecolor="#006600">
+					<printWhenExpression><![CDATA[$F{tResultado1}!=null && $F{tColorTexto}!=null && $F{tColorTexto}.equals("VERDE")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tResultado1}+"%"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="203">
+			<bar3DChart>
+				<chart>
+					<reportElement uuid="b9aadedf-7292-413d-a410-fda15ebb4f25" x="3" y="20" width="338" height="177"/>
+					<chartTitle>
+						<font size="8"/>
+						<titleExpression><![CDATA["RESULTADOS INDICADOR POR PERIODO"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend position="Top">
+						<font size="8"/>
+					</chartLegend>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["RESULTADO ALCANZADO"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{tNombrePeriodo}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{tResultado1}]]></valueExpression>
+						<labelExpression><![CDATA["RESULTADO ALCANZADO PERIODO"]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["META MINIMA"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{tNombrePeriodo}]]></categoryExpression>
+						<valueExpression><![CDATA[($P{pMetaInferior}+1)]]></valueExpression>
+						<labelExpression><![CDATA["META MINIMA INDICADOR"]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot labelRotation="-45.0">
+						<seriesColor seriesOrder="0" color="#0066FF"/>
+						<seriesColor seriesOrder="1" color="#FF9900"/>
+					</plot>
+					<itemLabel/>
+					<categoryAxisLabelExpression><![CDATA["PERIODO"]]></categoryAxisLabelExpression>
+					<categoryAxisFormat labelRotation="-45.0">
+						<axisFormat>
+							<labelFont>
+								<font size="8"/>
+							</labelFont>
+							<tickLabelFont>
+								<font size="8"/>
+							</tickLabelFont>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["RESULTADO"]]></valueAxisLabelExpression>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont>
+								<font size="8"/>
+							</labelFont>
+						</axisFormat>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+			<staticText>
+				<reportElement uuid="af91e6f7-2b4e-45da-93db-b6675ebb3cdc" x="188" y="1" width="152" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADO PONDERADO=]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2d50f8a4-d785-450b-9493-8b5dfb4aa5fe" x="346" y="1" width="99" height="17" forecolor="#FF0000">
+					<printWhenExpression><![CDATA[$P{pPeriodo} <= $P{pMetaInferior}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pPeriodo}+"%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2d50f8a4-d785-450b-9493-8b5dfb4aa5fe" x="346" y="1" width="99" height="17" forecolor="#FF9900">
+					<printWhenExpression><![CDATA[$P{pPeriodo} > $P{pMetaInferior} && $P{pPeriodo} <= $P{pMetaIntermedia}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pPeriodo}+"%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2d50f8a4-d785-450b-9493-8b5dfb4aa5fe" x="346" y="1" width="99" height="17" forecolor="#006600">
+					<printWhenExpression><![CDATA[$P{pPeriodo} > $P{pMetaIntermedia}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pPeriodo}+"%"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="a81392ea-04d7-4f49-88a0-4bfb857778b1" x="346" y="20" width="226" height="18" backcolor="#DED9C3"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="b0163f18-b70e-4ff8-a704-2bb40d85865c" x="368" y="22" width="193" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ANALISIS DE RESULTADOS]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="6656a79d-2393-4f06-b299-e87168672487" positionType="Float" stretchType="RelativeToTallestObject" x="346" y="38" width="226" height="162"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" positionType="Float" x="350" y="38" width="219" height="159"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pAnalisisResultados}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

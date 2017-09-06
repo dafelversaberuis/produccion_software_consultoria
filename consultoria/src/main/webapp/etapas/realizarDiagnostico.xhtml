@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 60%;
+	vertical-align: top;
+}
+
+.columna2 {
+	width: 40%;
+	vertical-align: top;
+}
+
+.columnaI {
+	width: 50%;
+	vertical-align: top;
+}
+</style>
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloEtapas}:
+						#{mensaje.diagnostico}</h2>
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+			<p:outputPanel id="pnlCasoUso">
+				<p:spacer height="10" />
+
+				<p:panel>
+					<p:outputPanel id="pnlCriteriosConsulta">
+						<div align="left">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid" cellpadding="0">
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.labelCliente}"
+									style="width:100%; font-size:14px;" id="lstCliente"
+									value="#{administrarEtapa.cliente.id}">
+
+
+									<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+									<p:ajax event="change" process="@this"
+										listener="#{administrarEtapa.setProyectoCliente(null)}"
+										update=":form:pnlCriteriosConsulta, :form:pnlEstructuraDiagnostico" />
+
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="#{mensaje.proyectoSimple}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+									style="width:100%; font-size:14px;" id="lstProyecto"
+									value="#{administrarEtapa.proyectoCliente.id}">
+
+
+									<f:selectItems
+										value="#{administrarEtapa.itemsProyectosCliente}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraDiagnostico"
+										listener="#{administrarEtapa.consultarDatosCompletosConsultoria()}" />
+
+
+
+								</p:selectOneMenu>
+								<p:outputPanel id="pnlProyectoCliente1">
+									<p:outputLabel value="#{mensaje.consultor}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente2">
+									<p:outputLabel
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+										style="font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente3">
+
+									<p:outputLabel value="#{mensaje.fechasConsultoria}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente4">
+
+									<p:panelGrid columns="2" style="width:100%;">
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:outputLabel
+											value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+											style="font-weight:normal; font-size:14px" />
+									</p:panelGrid>
+								</p:outputPanel>
+							</p:panelGrid>
+						</div>
+					</p:outputPanel>
+				</p:panel>
+				<p:outputPanel id="pnlEstructuraDiagnostico">
+					<p:panelGrid columns="2" style="width:100%;"
+						styleClass="ui-panelgrid-blank" columnClasses="columna1,columna2">
+
+						<p:accordionPanel value="#{administrarEtapa.diagnostico}"
+							var="loc" id="acordion" style="top:0px" activeIndex="-1"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}">
+
+							<p:tab title="#{mensaje.pregunta} #{loc.tIdRegistro}">
+								<p:scrollPanel style="width:100%;height:60px; border:0">
+									<p:outputLabel value="#{loc.preguntaProyecto.pregunta}"
+										style="font-size:12px" />
+
+								</p:scrollPanel>
+
+								<p:panelGrid columns="2" style="width:100%;"
+									columnClasses="columnaI,columnaI"
+									styleClass="ui-panelgrid-blank">
+									<p:outputLabel
+										value="#{mensaje.posibleEvidencia} #{mensaje.verifiquelas}"
+										style="font-size:12px; font-weight:bold;" />
+
+									<p:outputLabel value="#{mensaje.escribaEvidencia}*"
+										style="font-size:12px; font-weight:bold;" />
+
+									<p:scrollPanel style="width:100%;height:250px;">
+										<p:outputLabel
+											value="#{loc.preguntaProyecto.posibleEvidencia}"
+											style="font-size:12px;" escape="false" />
+									</p:scrollPanel>
+
+									<p:editor value="#{loc.evidenciaEncontrada}"
+										id="txtEvidenciaEncontrada" style="font-size:14px">
+
+									</p:editor>
+									<p:spacer width="1" />
+									<p:message for="txtEvidenciaEncontrada" />
+
+
+
+								</p:panelGrid>
+								<p:outputPanel id="pnlEstados">
+									<p:panelGrid columns="1" style="width:100%;">
+
+										<p:outputLabel value="#{mensaje.estadosLabel}*"
+											style="font-size:12px; font-weight:bold;" />
+
+
+										<ui:repeat var="e" value="#{loc.tEstadosDiagnostico}">
+											<p:selectBooleanButton id="booleanBtn"
+												onLabel="#{e.estado.nombre}" offLabel="#{e.estado.nombre}"
+												onIcon="ui-icon-check" offIcon="ui-icon-close"
+												value="#{e.tSeleccionado}">
+												<p:ajax event="change"
+													listener="#{administrarEtapa.vaidarNoAplica(loc.tEstadosDiagnostico,e)}"
+													process="@this"
+													update=":form:acordion:#{loc.tIdRegistro-1}:pnlEstados, :form:chartEstados" />
+											</p:selectBooleanButton>
+
+										</ui:repeat>
+									</p:panelGrid>
+								</p:outputPanel>
+
+
+							</p:tab>
+
+
+						</p:accordionPanel>
+
+						<p:chart type="bar" model="#{administrarEtapa.graficoBarras}"
+							id="chartEstados" style="width:100%"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							responsive="true" />
+
+
+					</p:panelGrid>
+
+					<p:spacer height="10" />
+					<div align="center">
+						<p:commandButton id="btnCrear" style="font-size:14px;"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							process=":form"
+							action="#{administrarEtapa.actualizarValidarDiagnostico()}"
+							value="#{mensaje.guardar}" update=":form" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnBorrar"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.diagnosticoExistente}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
+							process="@this" value="#{mensaje.eliminar}" update=":form" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnImprimir"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelImprimir')}"
+							value="#{mensaje.imprimir}" update=":form" />
+
+
+
+
+						<p:blockUI
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							block=":form" trigger="btnCrear, btnBorrar">
+							<p:graphicImage value="../imagenes/cargando.gif" />
+						</p:blockUI>
+					</div>
+				</p:outputPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+		<p:spacer height="500" />
+		<ui:include src="/etapas/guardarDianosticoIncompleto.xhtml" />
+		<ui:include src="/etapas/eliminarDiagnostico.xhtml" />
+		<ui:include src="/etapas/imprimirDiagnostico.xhtml" />
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formVerHistorico">
+
+		<p:dialog header="#{mensaje.verHistoricoTarea}" height="400"
+			width="900" widgetVar="panelVerHistorico" resizable="true"
+			closable="false" responsive="true">
+
+			<p:dataTable var="loc" id="dtlRegistros"
+				value="#{administrarEtapa.registroPlanificacion.tHistoricosRegistroPlanificacion}"
+				reflow="true" rows="5" paginator="true" paginatorPosition="bottom"
+				draggableColumns="true" rowIndexVar="indice"
+				emptyMessage="#{mensaje.noExistenciaCambios}">
+
+				<f:facet name="header">
+					<p:outputLabel value="#{mensaje.historialCambios}"
+						style="font-weight:normal" />
+				</f:facet>
+
+
+				<p:column headerText="#{mensaje.fechaRegistro}"
+					sortBy="#{loc.fechaHora}" style="font-size:14px">
+					<p:outputLabel
+						value="#{consultarFuncionesAPI.getFechaHoraColombia(loc.fechaHora)}"
+						style="font-weight:normal" />
+				</p:column>
+
+				<p:column headerText="#{mensaje.comentarios}"
+					sortBy="#{loc.comentarios}" style="font-size:14px">
+					<p:outputLabel value="#{loc.comentarios}"
+						style="font-weight:normal" />
+
+
+
+				</p:column>
+
+				<p:column headerText="#{mensaje.autor}" sortBy="#{loc.responsable}"
+					style="font-size:14px">
+					<p:outputLabel value="#{mensaje.reviso} #{mensaje.consultor}"
+						rendered="#{loc.responsable=='CO' and loc.aprobadaConsultor=='N'}"
+						style="font-weight:normal" />
+					<p:outputLabel value="#{mensaje.elaboro} #{mensaje.labelCliente}"
+						rendered="#{loc.responsable=='C' and loc.aprobadaConsultor=='N'}"
+						style="font-weight:normal" />
+
+					<p:outputLabel value="#{mensaje.aprobo} #{mensaje.consultor}"
+						rendered="#{loc.responsable=='CO' and loc.aprobadaConsultor=='S'}"
+						style="font-weight:normal" />
+
+					<p:outputLabel value="#{mensaje.aprobo} #{mensaje.cliente}"
+						rendered="#{loc.responsable=='C' and loc.aprobadaConsultor=='S'}"
+						style="font-weight:normal" />
+
+
+				</p:column>
+
+
+				<p:column headerText="#{mensaje.compromisos}"
+					style="font-size:14px; text-align:center;">
+
+					<p:commandButton id="btnVerCompromisos"
+						style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+						action="#{administrarEtapa.verCompromiso(loc)}"
+						rendered="#{loc.tCompromisos!=null and loc.tCompromisos.size() > 0}"
+						value="" process="@this" update=":formVerCompromisos" />
+
+
+
+
+					<p:tooltip for="btnVerCompromisos"
+						value="#{mensaje.verCompromisosRegistro}"
+						rendered="#{loc.tCompromisos!=null and loc.tCompromisos.size() > 0}"
+						trackMouse="true" />
+
+
+					<p:outputLabel value="#{mensaje.sinCompromisosAsociados}"
+						rendered="#{!(loc.tCompromisos!=null and loc.tCompromisos.size() > 0)}"
+						style="font-weight:normal" />
+
+
+				</p:column>
+
+
+			</p:dataTable>
+
+			<br />
+			<br />
+			<br />
+
+			<div align="center">
+
+				<p:commandButton id="btnCerrarHistorico"
+					action="#{consultarFuncionesAPI.cerrarModal('panelVerHistorico')}"
+					style="font-size:14px; font-weight: normal !important;"
+					process="@this" value="#{mensaje.regresar}" update="@this">
+
+				</p:commandButton>
+			</div>
+
+
+
+		
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>
