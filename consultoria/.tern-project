@@ -1,1 +1,14 @@
-{"plugins":{"guess-types":{},"outline":{}},"libs":["ecma5","browser"],"ide":{}}
+{
+  "plugins": {
+    "guess-types": {
+      
+    },
+    "outline": {
+      
+    }
+  },
+  "libs": [
+    "ecma5",
+    "browser"
+  ]
+}

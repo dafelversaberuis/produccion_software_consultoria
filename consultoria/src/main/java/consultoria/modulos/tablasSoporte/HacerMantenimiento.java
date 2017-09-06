@@ -407,15 +407,18 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 			String nombre = "isoluciones" + aDocumentoActividad.getId().intValue() * aDocumentoActividad.getId().intValue();
 
-			File file = new File(this.getPath("/archivosTemporales/") + "/" + nombre + ".pdf");
-			if (file == null || (file != null && file.exists())) {
-				aDocumentoActividad.settNombre(nombre + ".pdf");
-			} else {
-				OutputStream out = new FileOutputStream(this.getPath("/archivosTemporales/") + "/" + nombre + ".pdf");
-				out.write(aArchivo);
-				out.close();
-				aDocumentoActividad.settNombre(nombre + ".pdf");
-			}
+			//File file = new File(this.getPath("/archivosTemporales/") + "/" + nombre + ".pdf");
+
+			// if (file == null || (file != null && file.exists())) {
+			// aDocumentoActividad.settNombre(nombre + ".pdf");
+			// } else {
+			//
+			// }
+
+			OutputStream out = new FileOutputStream(this.getPath("/archivosTemporales/") + "/" + nombre + ".pdf");
+			out.write(aArchivo);
+			out.close();
+			aDocumentoActividad.settNombre(nombre + ".pdf");
 
 			this.abrirModal("panelVistaPreviaDocumento");
 
@@ -533,9 +536,11 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	public boolean isHabilitadaDocumentacion(TareaProyecto aTareaProyecto) {
 		boolean ok = true;
 		try {
-//			if (!(aTareaProyecto != null && aTareaProyecto.getExplicacionDocumentacion() != null && !aTareaProyecto.getExplicacionDocumentacion().trim().equals(""))) {
-//				ok = false;
-//			}
+			// if (!(aTareaProyecto != null &&
+			// aTareaProyecto.getExplicacionDocumentacion() != null &&
+			// !aTareaProyecto.getExplicacionDocumentacion().trim().equals(""))) {
+			// ok = false;
+			// }
 			if (aTareaProyecto != null && aTareaProyecto.getId() != null) {
 				DocumentoActividad doc = new DocumentoActividad();
 				doc.getTareaProyecto().setId(aTareaProyecto.getId());
@@ -628,7 +633,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		try {
 			if (isValidoDocumento()) {
 				conexion.setAutoCommitBD(false);
-				
+
 				this.documentoActividad.setFecha(new Date());
 
 				this.documentoActividad.getCamposBD();
@@ -971,8 +976,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * M�todo que me selecciona el nombre del cliente, lo busca y llena del objeto
-	 * el id para consulta
+	 * M�todo que me selecciona el nombre del cliente, lo busca y llena del
+	 * objeto el id para consulta
 	 * 
 	 * @param event
 	 */
@@ -1020,8 +1025,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * M�todo que me selecciona el nombre del cliente, lo busca y llena del objeto
-	 * el id
+	 * M�todo que me selecciona el nombre del cliente, lo busca y llena del
+	 * objeto el id
 	 * 
 	 * @param event
 	 */
@@ -2669,7 +2674,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 				DocumentoActividad doc = new DocumentoActividad();
 				doc.getTareaProyecto().setId(this.tareaProyectoTransaccion.getId());
 				this.documentos = IConsultasDAO.getDocumentos(doc);
-				
+
 				if (this.documentos != null && this.documentos.size() > 0) {
 					for (DocumentoActividad da : this.documentos) {
 						if (da.getFecha() != null) {
