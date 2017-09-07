@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+	<ui:define name="body">
+		<style type="text/css">
+.selectOneMenuGrouped.ui-selectonemenu-list, .ui-selectonemenu-panel {
+	max-height: 50% !important;
+	overflow: scroll;
+}
+
+.selectOneMenuGrouped .ui-selectonemenu-items-wrapper {
+	height: 100% !important;
+	overflow: scroll;
+}
+
+.ui-steps .ui-steps-item {
+	width: 20%;
+}
+
+.ui-panelgrid-cell {
+	border-width: 1px;
+	border-style: solid;
+	border-color: inherit;
+	padding: 4px 4px 0px !important;
+}
+
+.ui-state-highlight {
+	text-shadow: none !important;
+}
+
+.ui-steps.custom {
+	margin-bottom: 30px;
+}
+
+.ui-steps.custom .ui-steps-item .ui-menuitem-link {
+	height: 30px;
+	padding: 0 1em;
+}
+
+.ui-steps.custom .ui-steps-item .ui-steps-number {
+	background-color: #0081c2;
+	color: #FFFFFF;
+	display: inline-block;
+	width: 30px;
+	border-radius: 10px;
+	margin-top: -10px;
+	margin-bottom: 10px;
+}
+
+.ui-fieldset, .ui-fieldset .ui-fieldset-legend {
+	padding: .6em 1em;
+	width: 100%;
+}
+
+ui-fieldset-content {
+	padding: 10px;
+}
+
+.fc-content {
+	color: white;
+}
+
+.inputTexto {
+	font-size: 13px !important;
+}
+
+.textoNegrita {
+	font-weight: bold !important;
+	font-size: 14px !important;
+}
+
+.ui-button-text-only .ui-button-text {
+	padding: .3em 0em;
+}
+
+.ui-inputtextarea {
+	height: 100px;
+}
+
+.ui-inputnumber {
+	text-align: right;
+}
+</style>
+		<h:form id="formAtencion">
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('DIAGNOSTICO')}"
+				autoRun="true" />
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+			<div class="row">
+				<div class="row x_title">
+					<div class="col-md-6">
+						<h3>
+							<p:outputLabel value="Agenda: " styleClass="tituloPrincipal" />
+							<p:spacer width="2" />
+							<p:outputLabel
+								value="Programación de citas/reuniones consultoría"
+								styleClass="tituloPrincipal" />
+						</h3>
+					</div>
+				</div>
+				<br />
+				<div align="center">
+					<p:outputPanel id="pnlDetalleAtencion">
+						<div align="left">
+
+							<p:tabView id="tabAtencion"
+								activeIndex="#{administrarEtapa.vistaActual}">
+								<p:tab title="Agenda" id="pnlDatosUsuario">
+									<center>
+										<p:schedule id="calendario"
+											value="#{administrarEtapa.calendario}"
+											style="width:100%; height:70%" widgetVar="myschedule"
+											timeZone="GMT-5" locale="es">
+
+											<p:ajax event="dateSelect" process="@this"
+												listener="#{administrarEtapa.onDateSelect}"
+												update=":formAtencion:messages,:formAgenda"
+												oncomplete="PF('eventDialog').show();" />
+											<p:ajax event="eventSelect" process="@this"
+												listener="#{administrarEtapa.onEventSelect}"
+												update=":formAtencion:messages,:formAgenda" />
+											<p:ajax event="eventMove" process="@this"
+												listener="#{administrarEtapa.onEventMove}"
+												update=":formAtencion:messages" />
+											<p:ajax event="eventResize" process="@this"
+												listener="#{administrarEtapa.onEventResize}"
+												update=":formAtencion:messages" />
+
+										</p:schedule>
+									</center>
+
+									<br />
+
+								</p:tab>
+							</p:tabView>
+							<br />
+
+
+
+						</div>
+					</p:outputPanel>
+
+				</div>
+
+			</div>
+
+		</h:form>
+		<h:form id="formAgenda">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+			<p:dialog widgetVar="eventDialog" id="eventDialog"
+				header="Detalles de la cita" showEffect="clip" hideEffect="clip"
+				closable="false"
+				rendered="#{administrarEtapa.citaSeleccionada!=null}">
+				<p:panelGrid id="eventDetails" columns="2"
+					styleClass="ui-panelgrid-blank  ">
+
+
+
+					<p:outputLabel value="#{mensaje.labelCliente}" for="lstCliente"
+						style="font-weight:normal; font-size:14px" />
+
+
+					<p:selectOneMenu label="#{mensaje.labelCliente}" filter="true"
+						required="true" filterMatchMode="contains"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						style="width:100%; font-size:14px;" id="lstCliente"
+						value="#{administrarEtapa.cliente.id}">
+
+
+						<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+						<p:ajax event="change" process="@this"
+							listener="#{administrarEtapa.setProyectoCliente(null)}"
+							update="lstCliente, lstProyecto" />
+
+
+					</p:selectOneMenu>
+
+
+					<p:outputLabel value="#{mensaje.proyectoSimple}" for="lstProyecto"
+						style="font-weight:normal; font-size:14px" />
+
+
+					<p:selectOneMenu label="#{mensaje.proyectoSimple}" required="true"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						style="width:100%; font-size:14px;" id="lstProyecto"
+						value="#{administrarEtapa.proyectoCliente.id}">
+
+
+						<f:selectItems value="#{administrarEtapa.itemsProyectosCliente}" />
+
+						<p:ajax event="change" process="@this"
+							update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, lstCliente, lstProyecto, :formAtencion:messages"
+							listener="#{administrarEtapa.consultarDatosParaAgenda()}" />
+
+
+
+					</p:selectOneMenu>
+
+					<p:outputPanel id="pnlProyectoCliente1">
+						<p:outputLabel value="#{mensaje.consultor}"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							style="font-weight:normal; font-size:14px" />
+					</p:outputPanel>
+
+					<p:outputPanel id="pnlProyectoCliente2">
+						<p:outputLabel
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+							style="font-size:14px" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlProyectoCliente3">
+
+						<p:outputLabel value="Vigencia proyecto/norma/proceso"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							style="font-weight:normal; font-size:14px" />
+					</p:outputPanel>
+					<p:outputPanel id="pnlProyectoCliente4">
+
+						<p:panelGrid columns="2" style="width:100%;">
+							<p:commandButton
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+								style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+								value="" />
+							<p:commandButton
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+								style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+								value="" />
+							<p:outputLabel
+								value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+								style="font-weight:normal; font-size:14px" />
+						</p:panelGrid>
+					</p:outputPanel>
+
+
+
+
+					<p:outputLabel for="estado" value="Estado de cita/reunión:" />
+
+					<p:selectOneMenu id="estado" required="true"
+						style="width:100%; font-size:14px;"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						value="#{administrarEtapa.citaSeleccionada.estado}" label="Estado">
+						<f:selectItem itemValue="R" itemLabel="Registrado/Programada" />
+						<f:selectItem itemValue="A" itemLabel="Aprobada para atención" />
+						<f:selectItem itemValue="T" itemLabel="En Atención" />
+						<f:selectItem itemValue="C" itemLabel="Cancelada" />
+						<f:selectItem itemValue="P" itemLabel="Aplazada" />
+						<f:selectItem itemValue="F"
+							itemLabel="Finalizada(No podrá modificar en este estado)" />
+					</p:selectOneMenu>
+
+
+					<p:outputLabel for="fechaInicio" value="Desde:" />
+					<p:calendar id="fechaInicio"
+						value="#{administrarEtapa.citaSeleccionada.event.startDate}"
+						timeZone="GMT-5" pattern="dd/MM/yyyy HH:mm" required="true"
+						stepMinute="5"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}">
+						<p:ajax event="dateSelect" process="@this" update="fechaFin"
+							listener="#{administrarEtapa.actualizarFecha()}" />
+					</p:calendar>
+
+					<p:outputLabel for="fechaFin" value="Hasta:" />
+					<p:calendar id="fechaFin"
+						value="#{administrarEtapa.citaSeleccionada.event.endDate}"
+						timeZone="GMT-5" pattern="dd/MM/yyyy HH:mm" required="true"
+						stepMinute="5"
+						mindate="#{administrarEtapa.citaSeleccionada.event.startDate}"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}">
+					</p:calendar>
+
+					<p:outputLabel for="txtObservacionesCliente"
+						value="Observaciones del cliente" />
+
+					<p:inputTextarea
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						value="#{administrarEtapa.citaSeleccionada.observacionesCliente}"
+						rows="2" autoResize="false" id="txtObservacionesCliente"
+						style="font-size:14px; width:100%; min-height:50px" />
+
+					<p:outputLabel for="txtObservacionesConsultor"
+						value="Observaciones del consultor/Isoluciones" />
+
+					<p:inputTextarea
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						value="#{administrarEtapa.citaSeleccionada.observacionesConsultor}"
+						rows="2" autoResize="false" id="txtObservacionesConsultor"
+						style="font-size:14px; width:100%; min-height:50px" />
+
+
+
+				</p:panelGrid>
+				<br />
+				<p:outputPanel id="pnlBotones">
+					<div style="text-align: center;">
+						<p:commandButton value="Regresar"
+							style="font-size:14px; font-weight:normal !important"
+							action="#{administrarEtapa.cancelarFormularioCita()}"
+							update=":formAgenda" process="@this">
+
+							<p:resetInput target=":formAgenda" />
+
+						</p:commandButton>
+						<p:spacer width="10" />
+						<p:commandButton id="btnGuardar" process=":formAgenda"
+							rendered="#{!administrarEtapa.citaSeleccionada.modoEdicion}"
+							style="font-size:14px; font-weight:normal !important"
+							action="#{administrarEtapa.agregarDesdeModal()}"
+							oncomplete="PF('myschedule').update();"
+							update="pnlBotones,:formAtencion:messages, eventDetails"
+							value="Guardar Cita" />
+						<p:commandButton id="btnActualizar" process=":formAgenda"
+							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}"
+							style="font-size:14px; font-weight:normal !important"
+							action="#{administrarEtapa.agregarDesdeModal()}"
+							disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+							oncomplete="PF('myschedule').update();"
+							update="eventDetails,:formAtencion:messages, eventDetails"
+							value="Actualizar Cita" />
+
+						<p:commandButton id="btnCorreo" process=":formAgenda"
+							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}"
+							style="font-size:14px; font-weight:normal !important"
+							action="#{administrarEtapa.enviarCorreoCitas()}"
+							oncomplete="PF('myschedule').update();"
+							update="eventDetails,:formAtencion:messages, eventDetails"
+							value="Enviar correo recordatorio" />
+
+						<p:blockUI block="eventDetails" trigger="btnCorreo"
+							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}">
+							<p:graphicImage value="../imagenes/cargando.gif" />
+						</p:blockUI>
+
+
+
+					</div>
+				</p:outputPanel>
+			</p:dialog>
+
+		</h:form>
+		<script type="text/javascript">
+    PrimeFaces.locales['es'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        currentText: 'Hoy',
+        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+            'Jul','Ago','Sep','Oct','Nov','Dic'],
+        dayNames: ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'],
+        dayNamesShort: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+    
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: true,
+        yearSuffix: 'Año',  
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Dia',
+        allDayText : 'Todo el día'
+    };
+</script>
+
+	</ui:define>
+</ui:composition>

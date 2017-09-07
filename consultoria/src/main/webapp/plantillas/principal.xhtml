@@ -4,14 +4,10 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-
 <h:head>
-
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-
 	<meta name="author" content="Quimerapps" />
 	<title>Isoluciones - Consulting Software</title>
 	<meta name="description" content="Isoluciones - Consulting Software" />
@@ -55,7 +51,18 @@
 
 			<nav id="navigation" class="navigation">
 
+
+
 			<ul>
+
+				<h:panelGroup
+					rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+
+					<li class=""><p:commandLink value="Agenda"
+							ajax="false" title="Agenda"
+							action="/etapas/agenda.xhtml?faces-redirect=true" /></li>
+
+				</h:panelGroup>
 
 
 				<li class=""><a href="#" class="">#{mensaje.etapas}</a>
@@ -87,7 +94,7 @@
 											ajax="false" /></li>
 
 									<li><p:commandLink value="Planificación General"
-											title="Planificación General" 
+											title="Planificación General"
 											action="/etapas/realizarPlanificacionProyecto.xhtml?faces-redirect=true"
 											ajax="false" /></li>
 

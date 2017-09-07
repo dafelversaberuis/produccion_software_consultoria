@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.primefaces.model.DefaultScheduleEvent;
+
 import consultoria.Conexion;
+import consultoria.beans.Cita;
 import consultoria.beans.Cliente;
 import consultoria.beans.Compromiso;
 import consultoria.beans.CompromisoGeneral;
@@ -40,8 +43,80 @@ import consultoria.beans.TiempoPlanificacion;
 import consultoria.generales.IConstantes;
 
 public interface IConsultasDAO {
-	
-	
+
+	// obtiene la agenda especificada
+	public static List<Cita> getAgenda(Date fechaInicio, Date fechaFin, ProyectoCliente aProyectoCliente) throws Exception {
+
+		List<Cita> lstCitas = new ArrayList<Cita>();
+		List<Object> parametros = new ArrayList<Object>();
+		Cita cita = null;
+		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("  SELECT c.*, cl.cliente, cl.representante, cl.nit, pr.nombre FROM cita c");
+			sql.append("  INNER JOIN proyectos_cliente p ON  p.id = c.id_proyecto_cliente");
+			sql.append("  INNER JOIN clientes cl ON  cl.id = p.id_cliente");
+			sql.append("  INNER JOIN proyectos pr ON  pr.id = p.id_proyecto WHERE 1=1");
+
+			if (fechaInicio != null) {
+				// sql.append(" AND c.fecha_inicio >= ?");
+				// parametros.add(fechaInicio);
+			}
+			if (fechaFin != null) {
+				// sql.append(" AND c.fecha_fin <= ?");
+				// parametros.add(fechaFin);
+			}
+			if (aProyectoCliente != null) {
+				if (aProyectoCliente.getConsultor() != null && aProyectoCliente.getConsultor().getId() != null) {
+					sql.append("  AND p.id_consultor = ? ");
+					parametros.add(aProyectoCliente.getConsultor().getId());
+				}
+				if (aProyectoCliente.getCliente() != null && aProyectoCliente.getCliente().getId() != null) {
+					sql.append("  AND p.id_cliente = ? ");
+					parametros.add(aProyectoCliente.getCliente().getId());
+				}
+
+			}
+			sql.append(" ORDER BY fecha_inicio DESC ");
+			rs = conexion.consultarBD(sql.toString(), parametros);
+
+			while (rs.next()) {
+				cita = new Cita();
+				cita.setId((Integer) rs.getObject("id"));
+				cita.getProyectoCliente().setId((Integer) rs.getObject("id_proyecto_cliente"));
+				cita.getProyectoCliente().getProyecto().setNombre((String) rs.getObject("nombre"));
+
+				cita.getProyectoCliente().getCliente().setNit((String) rs.getObject("nit"));
+				cita.getProyectoCliente().getCliente().setRepresentante((String) rs.getObject("representante"));
+				cita.getProyectoCliente().getCliente().setCliente((String) rs.getObject("cliente"));
+
+				cita.setEvent(new DefaultScheduleEvent(cita.getTituloCita(), (Date) rs.getObject("fecha_inicio"), (Date) rs.getObject("fecha_fin")));
+				cita.setFechaInicio((Date) rs.getObject("fecha_inicio"));
+				cita.setFechaFin((Date) rs.getObject("fecha_fin"));
+				cita.setEstado((String) rs.getObject("estado"));
+
+				cita.setObservacionesCliente((String) rs.getObject("observaciones_cliente"));
+				cita.setObservacionesConsultor((String) rs.getObject("observaciones_consultor"));
+				cita.setModoEdicion(true);
+				lstCitas.add(cita);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e);
+
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			conexion.cerrarConexion();
+		}
+
+		return lstCitas;
+
+	}
+
 	public static List<DocumentoCronograma> getDocumentosCronograma(DocumentoCronograma aDocumento) throws Exception {
 		List<DocumentoCronograma> documentos = new ArrayList<DocumentoCronograma>();
 		List<Object> prametros = new ArrayList<Object>();
@@ -87,9 +162,6 @@ public interface IConsultasDAO {
 		return documentos;
 
 	}
-	
-	
-	
 
 	/**
 	 * Obtiene los documentos pero no precarag el archiv o hasta que se haga click
@@ -353,8 +425,7 @@ public interface IConsultasDAO {
 		return objetivos;
 
 	}
-	
-	
+
 	public static DocumentoCronograma getAdjuntoDocumentoCronograma(DocumentoCronograma aDocumento) throws Exception {
 
 		List<Object> prametros = new ArrayList<Object>();

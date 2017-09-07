@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class Conexion implements Serializable {
 	 */
 	public Conexion() {
 		try {
-			
+
 			// **************openshuftV3********************
 			String DB_driver = "org.postgresql.Driver";
 
@@ -52,8 +53,7 @@ public class Conexion implements Serializable {
 			// **************openshuftV2********************
 			// InitialContext ctx = new InitialContext();
 			// DataSource ds = (DataSource)
-			// ctx.lookup("java:jboss/datasources/dentalDS");
-			// java:jboss/datasources/PostgreSQLDS
+			// ctx.lookup("java:jboss/datasources/PostgreSQLDS");
 			// con = ds.getConnection();
 			// ***************************************************
 			con.setAutoCommit(true);
@@ -67,6 +67,36 @@ public class Conexion implements Serializable {
 	/******************************************************************************
 	 ******************** METODOS MÁS USADOS PARA CRUD'S****************************
 	 ******************************************************************************/
+
+	/**
+	 * Método que consulta el consecutivo máximo de la de los criterios de un
+	 * nivel de un modelo
+	 */
+	public Integer getConsecutivo(String aNamedQuery) throws Exception {
+		Integer valor = 1;
+		try {
+			List<Object> parametros = new ArrayList<Object>();
+			rs = this.consultarBD(aNamedQuery, parametros);
+			if (rs.next()) {
+				valor = (Integer) rs.getObject("consecutivo");
+				if (valor == null)
+					valor = 0;
+				valor++;
+			}
+		} catch (Exception e) {
+			valor = 1;
+			IConstantes.log.error(e, e);
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					valor = 1;
+				}
+			}
+		}
+		return valor;
+	}
 
 	/**
 	 * Realiza una nueva consulta a la base de datos
@@ -446,7 +476,7 @@ public class Conexion implements Serializable {
 					} else if (aCondiciones[i].getClass().getName().equals("java.lang.Long")) {
 						pstmt.setLong(i + 1, ((Long) aCondiciones[i]).longValue());
 					} else if (aCondiciones[i].getClass().getName().equals("java.util.Date")) {// Es
-						pstmt.setDate(i + 1, new java.sql.Date((((Date) aCondiciones[i]).getTime())));
+						pstmt.setTimestamp(i + 1, new java.sql.Timestamp((((Date) aCondiciones[i]).getTime())));
 					} else if (aCondiciones[i].getClass().getName().equals("java.math.BigDecimal")) {// Es
 						pstmt.setBigDecimal(i + 1, (BigDecimal) aCondiciones[i]);
 					} else {
@@ -521,7 +551,7 @@ public class Conexion implements Serializable {
 				} else if (aValores[j].getClass().getName().equals("java.lang.Long")) {
 					pstmt.setLong(j + 1, ((Long) aValores[j]).longValue());
 				} else if (aValores[j].getClass().getName().equals("java.util.Date")) {// Es
-					pstmt.setDate(j + 1, new java.sql.Date((((Date) aValores[j]).getTime())));
+					pstmt.setTimestamp(j + 1, new java.sql.Timestamp(((Date) aValores[j]).getTime()));
 				} else if (aValores[j].getClass().getName().equals("java.math.BigDecimal")) {// Es
 					pstmt.setBigDecimal(j + 1, (BigDecimal) aValores[j]);
 				} else {
@@ -584,7 +614,7 @@ public class Conexion implements Serializable {
 				} else if (aValores[j].getClass().getName().equals("java.lang.Long")) {// Es
 					pstmt.setLong(j + 1, ((Long) aValores[j]).longValue());
 				} else if (aValores[j].getClass().getName().equals("java.util.Date")) {// Es
-					pstmt.setDate(j + 1, new java.sql.Date((((Date) aValores[j]).getTime())));
+					pstmt.setTimestamp(j + 1, new java.sql.Timestamp((((Date) aValores[j]).getTime())));
 				} else if (aValores[j].getClass().getName().equals("java.math.BigDecimal")) {// Es
 					pstmt.setBigDecimal(j + 1, (BigDecimal) aValores[j]);
 				} else {
@@ -666,7 +696,7 @@ public class Conexion implements Serializable {
 					} else if (aValoresActualizar[j].getClass().getName().equals("java.lang.Long")) {
 						pstmt.setLong(j + 1, ((Long) aValoresActualizar[j]).longValue());
 					} else if (aValoresActualizar[j].getClass().getName().equals("java.util.Date")) {// Es
-						pstmt.setDate(j + 1, new java.sql.Date((((Date) aValoresActualizar[j]).getTime())));
+						pstmt.setTimestamp(j + 1, new java.sql.Timestamp((((Date) aValoresActualizar[j]).getTime())));
 					} else if (aValoresActualizar[j].getClass().getName().equals("java.math.BigDecimal")) {// Es
 						pstmt.setBigDecimal(j + 1, (BigDecimal) aValoresActualizar[j]);
 					} else {
@@ -688,7 +718,7 @@ public class Conexion implements Serializable {
 					} else if (aValoresCondiciones[k].getClass().getName().equals("java.lang.Long")) {
 						pstmt.setLong(j + 1, ((Long) aValoresCondiciones[k]).longValue());
 					} else if (aValoresCondiciones[k].getClass().getName().equals("java.util.Date")) {// Es
-						pstmt.setDate(j + 1, new java.sql.Date((((Date) aValoresCondiciones[k]).getTime())));
+						pstmt.setTimestamp(j + 1, new java.sql.Timestamp((((Date) aValoresCondiciones[k]).getTime())));
 					} else if (aValoresCondiciones[k].getClass().getName().equals("java.math.BigDecimal")) {// Es
 						pstmt.setBigDecimal(j + 1, (BigDecimal) aValoresCondiciones[k]);
 					} else {
