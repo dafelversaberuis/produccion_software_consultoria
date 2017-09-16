@@ -17,7 +17,7 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	</context-param>
 
 
-	<!-- TEMA DE PRIMEFACES USADO afternoon-->
+	<!-- TEMA DE PRIMEFACES USADO afternoon -->
 
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
@@ -38,6 +38,21 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Push Servlet</servlet-name>
+		<servlet-class>org.primefaces.push.PushServlet</servlet-class>
+		<init-param>
+			<param-name>org.atmosphere.cpr.broadcasterCacheClass</param-name>
+			<param-value>org.atmosphere.cache.UUIDBroadcasterCache</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		<async-supported>true</async-supported>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Push Servlet</servlet-name>
+		<url-pattern>/primepush/*</url-pattern>
 	</servlet-mapping>
 
 
@@ -72,7 +87,7 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 		<extension>xhtml</extension>
 		<mime-type>text/html</mime-type>
 	</mime-mapping>
-	
+
 	<mime-mapping>
 		<extension>ttf</extension>
 		<mime-type>application/x-font-ttf</mime-type>

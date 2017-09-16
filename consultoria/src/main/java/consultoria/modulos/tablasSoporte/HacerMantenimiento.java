@@ -1,6 +1,5 @@
 package consultoria.modulos.tablasSoporte;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
