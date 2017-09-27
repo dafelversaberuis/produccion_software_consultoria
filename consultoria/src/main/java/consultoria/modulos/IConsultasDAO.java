@@ -28,10 +28,12 @@ import consultoria.beans.EstadoDiagnostico;
 import consultoria.beans.EstadoProyectoCliente;
 import consultoria.beans.Indicador;
 import consultoria.beans.InformacionEtapaIndicador;
+import consultoria.beans.Iva;
 import consultoria.beans.ObjetivoEtapaIndicador;
 import consultoria.beans.ParametroAuditoria;
 import consultoria.beans.PersonaDiagnostico;
 import consultoria.beans.Personal;
+import consultoria.beans.Plan;
 import consultoria.beans.PlanAccionIndicador;
 import consultoria.beans.Planificacion;
 import consultoria.beans.PlanificacionGeneral;
@@ -43,6 +45,133 @@ import consultoria.beans.TiempoPlanificacion;
 import consultoria.generales.IConstantes;
 
 public interface IConsultasDAO {
+
+	/**
+	 * Obtiene los registros de iva de acuerdo a los parámetros especificados
+	 * 
+	 * @param aIva
+	 * @return ivas
+	 * @throws Exception
+	 */
+	public static List<Iva> getIvas(Iva aIva) throws Exception {
+		List<Iva> ivas = new ArrayList<Iva>();
+		List<Object> parametros = new ArrayList<Object>();
+		Iva iva = null;
+		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("  SELECT *");
+			sql.append("  FROM iva ");
+			sql.append("  WHERE 1=1 ");
+
+			if (aIva != null && aIva.getId() != null) {
+				sql.append(" AND id = ? ");
+				parametros.add(aIva.getId());
+			}
+
+			sql.append("  ORDER BY valor_iva");
+
+			rs = conexion.consultarBD(sql.toString(), parametros);
+
+			while (rs.next()) {
+				iva = new Iva();
+				iva.setId((Integer) rs.getObject("id"));
+				iva.setNombre((String) rs.getObject("nombre"));
+				iva.setValorIva((BigDecimal) rs.getObject("valor_iva"));
+				ivas.add(iva);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e);
+
+		} finally {
+
+			if (rs != null) {
+				rs.close();
+			}
+			conexion.cerrarConexion();
+
+		}
+		return ivas;
+
+	}
+
+	/**
+	 * Obtiene los planes creados
+	 * 
+	 * @param aArbolito
+	 * @return arbolitos
+	 * @throws Exception
+	 */
+	public static List<Plan> getArbolitos(Plan aArbolito) throws Exception {
+		List<Plan> arbolitos = new ArrayList<Plan>();
+		List<Object> parametros = new ArrayList<Object>();
+		Plan arbolito = null;
+		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("  SELECT a.*, i.nombre nombre_iva, i.valor_iva");
+			sql.append("  FROM planes a ");
+			sql.append("  INNER JOIN iva i ON a.id_iva = i.id");
+			sql.append("  WHERE 1=1");
+
+			if (aArbolito != null && aArbolito.getId() != null) {
+				sql.append("  AND a.id = ?");
+				parametros.add(aArbolito.getId());
+			}
+
+			if (aArbolito != null && aArbolito.getEstadoVigencia() != null && !aArbolito.getEstadoVigencia().equals("")) {
+				sql.append("  AND a.estado_vigencia = ?");
+				parametros.add(aArbolito.getEstadoVigencia());
+			}
+
+			if (aArbolito != null && aArbolito.getIva() != null && aArbolito.getIva().getId() != null) {
+				sql.append("  AND a.id_iva = ?");
+				parametros.add(aArbolito.getIva().getId());
+			}
+
+			sql.append("  ORDER BY a.nombre");
+
+			rs = conexion.consultarBD(sql.toString(), parametros);
+
+			while (rs.next()) {
+
+				arbolito = new Plan();
+
+				// arbolitos
+				arbolito.setId((Integer) rs.getObject("id"));
+				arbolito.setNombre((String) rs.getObject("nombre"));
+				arbolito.setEstadoVigencia((String) rs.getObject("estado_vigencia"));
+				arbolito.setMinutos((Integer) rs.getObject("minutos"));
+				arbolito.setPrecioVentaPesos((BigDecimal) rs.getObject("precio_cop_sin_iva"));
+				arbolito.setIvaPesos((BigDecimal) rs.getObject("valor_iva_cop"));
+				arbolito.setPrecioVentaPesosConIva((BigDecimal) rs.getObject("precio_cop_con_iva"));
+				// iva
+				arbolito.getIva().setId((Integer) rs.getObject("id_iva"));
+				arbolito.getIva().setNombre((String) rs.getObject("nombre_iva"));
+				arbolito.getIva().setValorIva((BigDecimal) rs.getObject("valor_iva"));
+
+				arbolitos.add(arbolito);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e);
+
+		} finally {
+
+			if (rs != null) {
+				rs.close();
+			}
+			conexion.cerrarConexion();
+
+		}
+		return arbolitos;
+
+	}
 
 	// obtiene la agenda especificada
 	public static List<Cita> getAgenda(Date fechaInicio, Date fechaFin, ProyectoCliente aProyectoCliente) throws Exception {

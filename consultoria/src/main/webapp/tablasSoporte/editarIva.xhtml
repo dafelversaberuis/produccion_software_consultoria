@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEditar">
+
+		<p:dialog header="#{mensaje.editarIva}" widgetVar="panelEdicionIva"
+			 resizable="true" closable="false" responsive="true">
+			<p:panel id="pnlEditarIva">
+				<div align="center">
+
+
+					<p:panelGrid columns="5" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="txtNombre" value="#{mensaje.nombre}"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputText id="txtNombre"
+							value="#{hacerMantenimiento.ivaTransaccion.nombre}" required="true"
+							label="#{mensaje.nombre}" style="width:100%; font-size:14px" />
+						<p:graphicImage value="../imagenes/ayuda.png" id="ayudaNombreIva" />
+						<p:tooltip value="#{mensaje.ayudaNombreIva}" trackMouse="true"
+							for="ayudaNombreIva" />
+						<p:message for="txtNombre" />
+
+
+
+
+						<p:outputLabel for="txtValor" value="#{mensaje.valorIva}"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputText id="txtValor" style="font-size:14px; width:120px"
+							value="#{hacerMantenimiento.ivaTransaccion.valorIva}" required="true"
+							label="#{mensaje.valorIva}" />
+						<p:graphicImage value="../imagenes/ayuda.png" id="ayudaValorIva" />
+						<p:tooltip value="#{mensaje.ayudaValorIva}" trackMouse="true"
+							for="ayudaValorIva" />
+						<p:message for="txtValor" />
+
+
+
+					</p:panelGrid>
+
+
+
+				</div>
+				<br />
+				<br />
+				<div align="center">
+					<p:commandButton id="btnEditarIva" style="font-size:14px"
+						action="#{hacerMantenimiento.editarIva()}"
+						value="#{mensaje.editar}" process=":formEditar:pnlEditarIva"
+						update=":formEditar:pnlEditarIva, :form" />
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEdicionIva"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{hacerMantenimiento.cancelarIvaTransaccion('MODAL_EDITAR_IVA')}"
+						process="@this" value="#{mensaje.cancelar}" update=":form">
+
+					</p:commandButton>
+
+				</div>
+
+				<p:outputLabel value="#{mensaje.informacionRequerida}"
+					style="font-size:10px" />
+				<p:blockUI block=":formEditar:pnlEditarIva"
+					trigger="btnEditarIva, btnCancelarEdicionIva">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+		<p:blockUI block="pnlEditarIva" trigger="btnEditarIva" />
+
+	</h:form>
+</ui:composition>

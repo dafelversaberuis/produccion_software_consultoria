@@ -3,6 +3,7 @@ package consultoria.modulos.tablasSoporte;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +29,9 @@ import consultoria.beans.Cliente;
 import consultoria.beans.Consultor;
 import consultoria.beans.DocumentoActividad;
 import consultoria.beans.Estado;
+import consultoria.beans.Iva;
 import consultoria.beans.ParametroAuditoria;
+import consultoria.beans.Plan;
 import consultoria.beans.PreguntaProyecto;
 import consultoria.beans.Proyecto;
 import consultoria.beans.ProyectoCliente;
@@ -72,12 +75,17 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private ProyectoCliente						proyectoCliente;
 	private ProyectoCliente						proyectoClienteTransaccion;
 
+	private Iva												iva;
+	private Iva												ivaTransaccion;
+
 	private List<Estado>							estados;
 	private List<Proyecto>						proyectos;
 	private List<ProyectoCliente>			proyectosCliente;
 	private List<PreguntaProyecto>		preguntas;
 	private List<TareaProyecto>				tareas;
 	private List<DocumentoActividad>	documentos;
+	private List<Iva>									ivas;
+	private List<SelectItem>					itemsIva;
 
 	private List<SelectItem>					itemsProyectos;
 	private List<SelectItem>					itemsConsultores;
@@ -85,6 +93,312 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private List<SelectItem>					itemsConsultoresEdicion;
 
 	// privados
+
+	/**
+	 * Validaciones de iva
+	 * 
+	 * @param aTransaccion
+	 * @return ok
+	 */
+	private boolean isValidoIva(String aTransaccion) {
+		boolean ok = true;
+
+		if (aTransaccion.equals("C")) {
+			if (this.ivas != null && this.ivas.size() > 0 && this.ivas.stream().anyMatch(i -> i.getValorIva().equals(this.iva.getValorIva()))) {
+				ok = false;
+				this.mostrarMensajeGlobal("valorIvaExistente", "advertencia");
+			}
+			if (this.isVacio(this.iva.getNombre())) {
+				ok = false;
+				this.mostrarMensajeGlobal("nombreVacio", "advertencia");
+			}
+		} else {
+			if (this.ivas != null && this.ivas.size() > 0 && this.ivas.stream().anyMatch(i -> i.getId() != this.ivaTransaccion.getId() && i.getValorIva().equals(this.ivaTransaccion.getValorIva()))) {
+				ok = false;
+				this.mostrarMensajeGlobal("valorIvaExistente", "advertencia");
+			}
+			if (this.isVacio(this.ivaTransaccion.getNombre())) {
+				ok = false;
+				this.mostrarMensajeGlobal("nombreVacio", "advertencia");
+			}
+		}
+
+		return ok;
+	}
+
+	/**
+	 * Crea un nuevo registro de iva
+	 */
+	public void crearIva() {
+		Conexion conexion = new Conexion();
+
+		try {
+			if (isValidoIva("C")) {
+				conexion.setAutoCommitBD(false);
+
+				this.iva.setNombre(this.getSinEspacios(this.iva.getNombre()));
+
+				this.iva.getCamposBD();
+				conexion.insertarBD(this.iva.getEstructuraTabla().getTabla(), this.iva.getEstructuraTabla().getPersistencia());
+				conexion.commitBD();
+				this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+				// reseteo de variables
+				this.iva = null;
+				this.getIva();
+				this.ivas = null;
+				this.getIvas();
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+	}
+
+	/**
+	 * Edita un registro de iva
+	 */
+	public void editarIva() {
+		Conexion conexion = new Conexion();
+		Plan arbolito = null;
+
+		List<Plan> arbolitos = null;
+
+		try {
+			if (isValidoIva("E")) {
+				conexion.setAutoCommitBD(false);
+				this.ivaTransaccion.setNombre(this.getSinEspacios(this.ivaTransaccion.getNombre()));
+
+				this.ivaTransaccion.getCamposBD();
+				conexion.actualizarBD(this.ivaTransaccion.getEstructuraTabla().getTabla(), this.ivaTransaccion.getEstructuraTabla().getPersistencia(), this.ivaTransaccion.getEstructuraTabla().getLlavePrimaria(), null);
+
+				// actualiza los precios de los planes existentes, pues
+				arbolito = new Plan();
+				arbolito.setIva(this.ivaTransaccion);
+				arbolitos = IConsultasDAO.getArbolitos(arbolito);
+
+				if (arbolitos != null && arbolitos.size() > 0) {
+					for (Plan a : arbolitos) {
+
+						// puede ser que se cambió el valor del iva
+						a.getIva().setValorIva(this.ivaTransaccion.getValorIva());
+
+						a.setIvaPesos(this.getValorRedondeado(a.getPrecioVentaPesos().multiply(a.getIva().getValorIva()).divide(new BigDecimal(100)), IConstantes.DECIMALES_REDONDEAR));
+						a.setPrecioVentaPesosConIva(this.getValorRedondeado(a.getPrecioVentaPesos().add(a.getIvaPesos()), IConstantes.DECIMALES_REDONDEAR));
+
+						Map<String, Object> camposActualizar = new HashMap<String, Object>();
+						camposActualizar.put("valor_iva_cop", a.getIvaPesos());
+						camposActualizar.put("precio_cop_con_iva", a.getPrecioVentaPesosConIva());
+						a.getCamposBD();
+						conexion.actualizarBD(a.getEstructuraTabla().getTabla(), camposActualizar, a.getEstructuraTabla().getLlavePrimaria(), null);
+
+					}
+				}
+
+				conexion.commitBD();
+				this.mostrarMensajeGlobal("edicionExitosa", "exito");
+				this.cerrarModal("panelEdicionIva");
+
+				// reseteo de variables
+				this.ivaTransaccion = null;
+				this.getIvaTransaccion();
+				this.ivas = null;
+				this.getIvas();
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+	}
+
+	/**
+	 * Elimina un registro de iva
+	 */
+	public void eliminarIva() {
+
+		Conexion conexion = new Conexion();
+		try {
+
+			conexion.setAutoCommitBD(false);
+			this.ivaTransaccion.getCamposBD();
+			conexion.eliminarBD(this.ivaTransaccion.getEstructuraTabla().getTabla(), this.ivaTransaccion.getEstructuraTabla().getLlavePrimaria());
+			conexion.commitBD();
+			this.mostrarMensajeGlobal("eliminacionExitosa", "exito");
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+			this.mostrarMensajeGlobal("eliminacionFallida", "error");
+
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+		// reseteo de variables
+		this.ivaTransaccion = null;
+		this.ivas = null;
+		this.getIvas();
+
+	}
+
+	/**
+	 * Este método borra el formulario de creación de un iva
+	 */
+	public void cancelarIva() {
+
+		try {
+			this.iva = new Iva();
+
+			this.ivas = null;
+			this.getIvas();
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Este método borra el formulario de edición de un iva en transacción
+	 */
+	public void cancelarIvaTransaccion(String aVista) {
+		try {
+
+			this.ivaTransaccion = new Iva();
+			this.ivas = null;
+			this.getIvas();
+
+			if (aVista != null && aVista.equals("MODAL_EDITAR_IVA")) {
+				this.cerrarModal("panelEdicionIva");
+
+			} else if (aVista != null && aVista.equals("MODAL_ELIMINAR_IVA")) {
+				this.cerrarModal("panelEliminacionIva");
+
+			}
+
+		} catch (Exception e) {
+
+			IConstantes.log.error(e, e);
+
+		}
+
+	}
+
+	/**
+	 * Asigna un iva para realizar una acción
+	 * 
+	 * @param aAgrupador
+	 * @param aVista
+	 */
+	public void asignarIva(Iva aIva, String aVista) {
+
+		try {
+
+			this.ivaTransaccion = aIva;
+
+			if (aVista != null && aVista.equals("MODAL_EDITAR_IVA")) {
+				this.abrirModal("panelEdicionIva");
+
+			} else {
+
+				this.abrirModal("panelEliminacionIva");
+
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Obtiene un listado de ivas creados
+	 * 
+	 * @return ivas
+	 */
+	public List<Iva> getIvas() {
+		try {
+			if (this.ivas == null) {
+
+				this.ivas = IConsultasDAO.getIvas(null);
+
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return ivas;
+	}
+
+	/**
+	 * Establece los ivas creados
+	 * 
+	 * @param ivas
+	 */
+	public void setIvas(List<Iva> ivas) {
+		this.ivas = ivas;
+	}
+
+	/**
+	 * Obtiene items de iva
+	 * 
+	 * @return itemsIva
+	 */
+	public List<SelectItem> getItemsIva() {
+		try {
+
+			this.itemsIva = new ArrayList<SelectItem>();
+			this.itemsIva.add(new SelectItem("", this.getMensaje("comboVacio")));
+
+			this.ivas = null;
+			this.getIvas();
+			if (this.ivas != null && this.ivas.size() > 0) {
+				this.ivas.forEach(p -> this.itemsIva.add(new SelectItem(p.getId(), p.getNombre() + "(" + p.getValorIva() + "%)")));
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return itemsIva;
+	}
+
+	/**
+	 * Establece item de iva
+	 * 
+	 * @param itemsIva
+	 */
+	public void setItemsIva(List<SelectItem> itemsIva) {
+		this.itemsIva = itemsIva;
+	}
+
+	public Iva getIva() {
+		try {
+			if (this.iva == null) {
+				this.iva = new Iva();
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return iva;
+	}
+
+	public void setIva(Iva iva) {
+		this.iva = iva;
+	}
+
+	public Iva getIvaTransaccion() {
+		return ivaTransaccion;
+	}
+
+	public void setIvaTransaccion(Iva ivaTransaccion) {
+		this.ivaTransaccion = ivaTransaccion;
+	}
 
 	/**
 	 * Descarga el archivo requerido
@@ -406,7 +720,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 			String nombre = "isoluciones" + aDocumentoActividad.getId().intValue() * aDocumentoActividad.getId().intValue();
 
-			//File file = new File(this.getPath("/archivosTemporales/") + "/" + nombre + ".pdf");
+			// File file = new File(this.getPath("/archivosTemporales/") + "/" +
+			// nombre + ".pdf");
 
 			// if (file == null || (file != null && file.exists())) {
 			// aDocumentoActividad.settNombre(nombre + ".pdf");

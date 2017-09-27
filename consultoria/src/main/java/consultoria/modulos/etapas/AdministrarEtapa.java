@@ -170,7 +170,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			List<String> aCorreos = new ArrayList<String>();
 			aCorreos.add(this.proyectoCliente.getCliente().getCorreoElectronico());
 			aCorreos.add(this.proyectoCliente.getConsultor().getCorreoElectronico());
-			IEmail.enviarCorreoMasivo(this.getMensaje("mensajeCita", this.proyectoCliente.getCliente().getCliente(), this.proyectoCliente.getProyecto().getNombre(), this.proyectoCliente.getConsultor().getNombres()+" "+this.proyectoCliente.getConsultor().getApellidos(), this.getFechaHoraColombia(this.citaSeleccionada.getFechaInicio()) + " a " + this.getFechaHoraColombia(this.citaSeleccionada.getFechaFin()), getEstadoTexto(this.citaSeleccionada.getEstado())), "RECORDATORIO CITA CONSULTORIA ISOLUCIONES", aCorreos);
+			IEmail.enviarCorreoMasivo(this.getMensaje("mensajeCita", this.proyectoCliente.getCliente().getCliente(), this.proyectoCliente.getProyecto().getNombre(), this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos(), this.getFechaHoraColombia(this.citaSeleccionada.getFechaInicio()) + " a " + this.getFechaHoraColombia(this.citaSeleccionada.getFechaFin()), getEstadoTexto(this.citaSeleccionada.getEstado())), "RECORDATORIO CITA CONSULTORIA ISOLUCIONES", aCorreos);
 
 			this.mostrarMensajeGlobalPersonalizado("CORREOS RECORDATORIOS ENVIADOS A CONSULTOR Y CLIENTE", "exito");
 
