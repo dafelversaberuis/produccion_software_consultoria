@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -47,8 +48,25 @@ public class ConsultarFuncionesAPI implements Serializable {
 	private static final long serialVersionUID = -765747957311162349L;
 
 	// PRIVADOS
-	
-	
+
+	// Fecha actual colombia
+	public Date getFechaActualGmtColombia() {
+		Date fecha = null;
+		try {
+			SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+			dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT-5"));
+
+			// Local time zone
+			SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+
+			fecha = dateFormatLocal.parse(dateFormatGmt.format(new Date()));
+		} catch (Exception e) {
+
+		}
+		// Time in GMT
+		return fecha;
+	}
+
 	/**
 	 * Obtiene la fecha con dias sumados o restados
 	 * 
@@ -229,7 +247,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 		}
 
 	}
-	
+
 	/**
 	 * Obtiene el mes y el año
 	 * 
@@ -241,7 +259,6 @@ public class ConsultarFuncionesAPI implements Serializable {
 		return aFecha != null ? formato.format(aFecha) : "";
 
 	}
-
 
 	/**
 	 * Obtiene el mes y el año
@@ -428,13 +445,13 @@ public class ConsultarFuncionesAPI implements Serializable {
 	 * @param aValor
 	 * @return textoSalida
 	 */
-	public String getMoneda(String aMoneda, BigDecimal aValor) {
+	public String getMoneda(BigDecimal aValor) {
 		String textoSalida = "";
 		DecimalFormat formato = new DecimalFormat("###,###.00");
 		if (aValor != null) {
 			textoSalida = formato.format(aValor);
 		}
-		return aMoneda.equals("COP") ? "$ " + textoSalida : "US$ " + textoSalida;
+		return "$ " + textoSalida;
 
 	}
 

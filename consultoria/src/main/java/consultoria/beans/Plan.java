@@ -38,7 +38,7 @@ public class Plan implements Serializable {
 		this.estructuraTabla = new EstructuraTabla();
 		this.iva = new Iva();
 		// la bolsa como es temp y esta es 1-1 no lo instanciamos para que no quede
-		// cíclico.
+		// cï¿½clico.
 
 	}
 
@@ -51,6 +51,8 @@ public class Plan implements Serializable {
 
 		this.estructuraTabla.getPersistencia().put("valor_iva_cop", this.ivaPesos);
 
+		this.estructuraTabla.getPersistencia().put("precio_cop_sin_iva", this.precioVentaPesos);
+		
 		this.estructuraTabla.getPersistencia().put("precio_cop_con_iva", this.precioVentaPesosConIva);
 
 		this.estructuraTabla.getPersistencia().put("estado_vigencia", this.estadoVigencia);

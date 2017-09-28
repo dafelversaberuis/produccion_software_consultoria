@@ -2,11 +2,13 @@ package consultoria.modulos.personal;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
 
 import org.primefaces.event.FileUploadEvent;
 
@@ -14,6 +16,8 @@ import consultoria.Conexion;
 import consultoria.beans.Cliente;
 import consultoria.beans.Consultor;
 import consultoria.beans.Personal;
+import consultoria.beans.Plan;
+import consultoria.beans.PlanCliente;
 import consultoria.generales.ConsultarFuncionesAPI;
 import consultoria.generales.IConstantes;
 import consultoria.generales.IEmail;
@@ -35,9 +39,230 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	private Cliente						clienteConsulta;
 	private Cliente						cliente;
 	private Cliente						clienteTransaccion;
+	private String						vistaActual;
+
+	private PlanCliente				preguntaProyecto;
+	private PlanCliente				preguntaProyectoTransaccion;
+
 	private List<Personal>		administradores;
 	private List<Consultor>		consultores;
 	private List<Cliente>			clientes;
+	private List<PlanCliente>	preguntas;
+	private List<SelectItem>	itemsArbolitosDisponibles;
+
+	// nuevos
+
+	/**
+	 * Crea un registro de pregunta de un proyecto
+	 */
+	public void crearPreguntaProyecto() {
+		Conexion conexion = new Conexion();
+		List<Plan> planes = null;
+		try {
+
+			conexion.setAutoCommitBD(false);
+
+			this.preguntaProyecto.setFechaCompra(this.getFechaActualGmtColombia());
+			this.preguntaProyecto.setMinutosConCosto(0);
+			this.preguntaProyecto.setMinutosSinCosto(0);
+			this.preguntaProyecto.setMinutosGastados(0);
+			this.preguntaProyecto.setMinutosComprados(this.preguntaProyecto.getPlan().getMinutos());
+
+			Plan temp = new Plan();
+			temp.setId(this.preguntaProyecto.getId());
+			planes = IConsultasDAO.getArbolitos(temp);
+			if (planes != null && planes.size() > 0) {
+				this.preguntaProyecto.setPlan(planes.get(0));
+			}
+
+			this.preguntaProyecto.setPrecioVentaPesos(this.preguntaProyecto.getPlan().getPrecioVentaPesos());
+			this.preguntaProyecto.setPrecioVentaPesosConIva(this.preguntaProyecto.getPlan().getPrecioVentaPesosConIva());
+			this.preguntaProyecto.setIvaPesos(this.preguntaProyecto.getPlan().getIvaPesos());
+
+			this.preguntaProyecto.getCamposBD();
+			conexion.insertarBD(this.preguntaProyecto.getEstructuraTabla().getTabla(), this.preguntaProyecto.getEstructuraTabla().getPersistencia());
+
+			conexion.commitBD();
+			this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+			// reseteo de variables
+			this.preguntaProyecto = null;
+			this.getPreguntaProyecto();
+			this.preguntas = null;
+			this.getPreguntas();
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+
+			conexion.cerrarConexion();
+		}
+	}
+
+	/**
+	 * Asigna la preguna a editar o eliminar
+	 * 
+	 * @param aPregunta
+	 * @param aVista
+	 */
+	public void asignarPreguntaProyecto(PlanCliente aPregunta, String aVista) {
+
+		try {
+
+			this.preguntaProyectoTransaccion = aPregunta;
+
+			if (aVista != null && aVista.equals("MODAL_EDICION_PREGUNTA")) {
+				this.abrirModal("panelEdicionHijo");
+			} else if (aVista != null && aVista.equals("MODAL_ELIMINACION_PREGUNTA")) {
+				this.abrirModal("panelEliminacionHijo");
+			} else if (aVista != null && aVista.equals("MODAL_VER_PREGUNTA")) {
+				this.abrirModal("panelVerHijo");
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Elimina la pregunta de un proyecto
+	 */
+	public void eliminarPreguntaProyecto() {
+		Conexion conexion = new Conexion();
+
+		try {
+
+			conexion.setAutoCommitBD(false);
+			this.preguntaProyectoTransaccion.getCamposBD();
+			conexion.eliminarBD(this.preguntaProyectoTransaccion.getEstructuraTabla().getTabla(), this.preguntaProyectoTransaccion.getEstructuraTabla().getLlavePrimaria());
+
+			conexion.commitBD();
+
+			this.mostrarMensajeGlobal("eliminacionExitosa", "exito");
+			this.mostrarMensajeGlobal("tambienPosiciones", "exito");
+			this.cerrarModal("panelEliminacionHijo");
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+			this.mostrarMensajeGlobal("eliminacionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+		// reseteo de variables
+		this.preguntaProyectoTransaccion = null;
+		this.getPreguntaProyectoTransaccion();
+		this.preguntas = null;
+		this.getPreguntas();
+
+	}
+
+	/**
+	 * Este m�todo cancela la transacci�n de una pregunta
+	 */
+	public void cancelarPreguntaTransaccion(String aVista) {
+
+		try {
+
+			this.preguntaProyectoTransaccion = null;
+			this.getPreguntaProyectoTransaccion();
+			this.preguntas = null;
+			this.getPreguntas();
+			if (aVista != null && aVista.equals("MODAL_EDITAR_PREGUNTA")) {
+
+				this.cerrarModal("panelEdicionHijo");
+
+			} else if (aVista != null && aVista.equals("MODAL_VER_PREGUNTA")) {
+
+				this.cerrarModal("panelVerHijo");
+
+			} else {
+
+				this.cerrarModal("panelEliminacionHijo");
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Obtiene la pregunat a crear
+	 * 
+	 * @return preguntaProyecto
+	 */
+	public PlanCliente getPreguntaProyecto() {
+		if (this.preguntaProyecto == null) {
+			this.preguntaProyecto = new PlanCliente();
+			this.preguntaProyecto.setCliente(this.clienteTransaccion);
+		}
+		return preguntaProyecto;
+	}
+
+	/**
+	 * Establece la pregunta a crear
+	 * 
+	 * @param preguntaProyecto
+	 */
+	public void setPreguntaProyecto(PlanCliente preguntaProyecto) {
+		this.preguntaProyecto = preguntaProyecto;
+	}
+
+	/**
+	 * Obtiene la pregunata a realizarle una transacci�n
+	 * 
+	 * @return preguntaProyectoTransaccion
+	 */
+	public PlanCliente getPreguntaProyectoTransaccion() {
+		if (this.preguntaProyectoTransaccion == null) {
+			this.preguntaProyectoTransaccion = new PlanCliente();
+		}
+		return preguntaProyectoTransaccion;
+	}
+
+	/**
+	 * Establece la pregunta a realizarle una transacci�n
+	 * 
+	 * @param preguntaProyectoTransaccion
+	 */
+	public void setPreguntaProyectoTransaccion(PlanCliente preguntaProyectoTransaccion) {
+		this.preguntaProyectoTransaccion = preguntaProyectoTransaccion;
+	}
+
+	/**
+	 * Obtiene un listado de pregunta a realizarle transacciones
+	 * 
+	 * @return preguntas
+	 */
+	public List<PlanCliente> getPreguntas() {
+		try {
+			if (this.preguntas == null) {
+
+				PlanCliente pregunta = new PlanCliente();
+				pregunta.setCliente(this.clienteTransaccion);
+
+				this.preguntas = IConsultasDAO.getPlanesCliente(pregunta);
+
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return preguntas;
+	}
+
+	/**
+	 * Establece un listado de preguntas a relizarle transacciones
+	 * 
+	 * @param preguntas
+	 */
+	public void setPreguntas(List<PlanCliente> preguntas) {
+		this.preguntas = preguntas;
+	}
 
 	// privados
 
@@ -1047,6 +1272,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 
 			this.clienteTransaccion = new Cliente();
 			this.clientes = null;
+			this.preguntas = null;
 			this.consultarClientes();
 
 			if (aVista != null && aVista.equals("MODAL_EDITAR_CLIENTE")) {
@@ -1058,6 +1284,9 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 			} else if (aVista != null && aVista.equals("MODAL_ELIMINAR_CLIENTE")) {
 				this.cerrarModal("panelEliminacionCliente");
 
+			}else{
+				this.vistaActual = null;
+				
 			}
 
 		} catch (Exception e) {
@@ -1143,7 +1372,17 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 		try {
 
 			this.clienteTransaccion = aCliente;
-			if (aVista != null && aVista.equals("MODAL_EDITAR_CLIENTE")) {
+			this.vistaActual = null;
+
+			if (aVista != null && aVista.equals("VISTA_PREGUNTAS")) {
+				this.vistaActual = aVista;
+				this.preguntas = null;
+				this.getPreguntas();
+
+				this.preguntaProyecto = null;
+				this.getPreguntaProyecto();
+
+			} else if (aVista != null && aVista.equals("MODAL_EDITAR_CLIENTE")) {
 
 				String[] partes = this.clienteTransaccion.getNit().split("-");
 
@@ -1426,6 +1665,56 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 
 	public void setClienteConsulta(Cliente clienteConsulta) {
 		this.clienteConsulta = clienteConsulta;
+	}
+
+	/**
+	 * 
+	 * @return vistaActual
+	 */
+	public String getVistaActual() {
+		return vistaActual;
+	}
+
+	/**
+	 * 
+	 * @param vistaActual
+	 */
+	public void setVistaActual(String vistaActual) {
+		this.vistaActual = vistaActual;
+	}
+
+	/**
+	 * Obtiene los items de los arbolitos disponibles
+	 * 
+	 * @return itemsArbolitosDisponibles
+	 */
+	public List<SelectItem> getItemsArbolitosDisponibles() {
+		try {
+
+			this.itemsArbolitosDisponibles = new ArrayList<SelectItem>();
+			this.itemsArbolitosDisponibles.add(new SelectItem("", this.getMensaje("comboVacio")));
+
+			Plan arbol = new Plan();
+			arbol.setEstadoVigencia(IConstantes.ACTIVO);
+			List<Plan> arbolitosActivos = IConsultasDAO.getArbolitos(arbol);
+
+			if (arbolitosActivos != null && arbolitosActivos.size() > 0) {
+				arbolitosActivos.forEach(p -> this.itemsArbolitosDisponibles.add(new SelectItem(p.getId(), p.getMinutos() + " minutos (PRECIO: " + this.getMoneda(p.getPrecioVentaPesosConIva()) + ", PLAN:" + p.getNombre() + ", )")));
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return itemsArbolitosDisponibles;
+	}
+
+	/**
+	 * Establece los items de los arbolitos disponibles
+	 * 
+	 * @param itemsArbolitosDisponibles
+	 */
+	public void setItemsArbolitosDisponibles(List<SelectItem> itemsArbolitosDisponibles) {
+		this.itemsArbolitosDisponibles = itemsArbolitosDisponibles;
 	}
 
 }

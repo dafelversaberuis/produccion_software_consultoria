@@ -35,6 +35,7 @@ import consultoria.beans.PersonaDiagnostico;
 import consultoria.beans.Personal;
 import consultoria.beans.Plan;
 import consultoria.beans.PlanAccionIndicador;
+import consultoria.beans.PlanCliente;
 import consultoria.beans.Planificacion;
 import consultoria.beans.PlanificacionGeneral;
 import consultoria.beans.PreguntaProyecto;
@@ -45,6 +46,74 @@ import consultoria.beans.TiempoPlanificacion;
 import consultoria.generales.IConstantes;
 
 public interface IConsultasDAO {
+
+	/**
+	 * Obtiene planes del clente
+	 * 
+	 * @param aPregunta
+	 * @return preguntas
+	 * @throws Exception
+	 */
+	public static List<PlanCliente> getPlanesCliente(PlanCliente aPregunta) throws Exception {
+		List<PlanCliente> preguntas = new ArrayList<PlanCliente>();
+		List<Object> parametros = new ArrayList<Object>();
+		PlanCliente pregunta = null;
+		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("  SELECT p.*, pl.nombre");
+			sql.append("  FROM planes_cliente p ");
+			sql.append("  INNER JOIN planes pl ON p.id_plan = pl.id ");
+			sql.append("  WHERE 1=1");
+
+			if (aPregunta != null && aPregunta.getCliente() != null && aPregunta.getCliente().getId() != null) {
+
+				sql.append("  AND p.id_cliente = ? ");
+				parametros.add(aPregunta.getCliente().getId());
+			}
+
+			sql.append("  ORDER BY p.fecha_compra DESC");
+
+			rs = conexion.consultarBD(sql.toString(), parametros);
+
+			while (rs.next()) {
+
+				pregunta = new PlanCliente();
+				pregunta.setId((Integer) rs.getObject("id"));
+
+				pregunta.getPlan().setId((Integer) rs.getObject("id_plan"));
+				pregunta.getPlan().setNombre((String) rs.getObject("nombre"));
+
+				pregunta.setMinutosComprados((Integer) rs.getObject("minutos_comprados"));
+				pregunta.setMinutosConCosto((Integer) rs.getObject("minutos_con_costo"));
+				pregunta.setMinutosSinCosto((Integer) rs.getObject("minutos_sin_costo"));
+				pregunta.setMinutosGastados((Integer) rs.getObject("minutos_gastados"));
+
+				pregunta.setPrecioVentaPesos((BigDecimal) rs.getObject("precio_cop_sin_iva"));
+				pregunta.setIvaPesos((BigDecimal) rs.getObject("valor_iva_cop"));
+				pregunta.setPrecioVentaPesosConIva((BigDecimal) rs.getObject("precio_cop_con_iva"));
+
+				pregunta.setFechaCompra((Date) rs.getObject("fecha_compra"));
+				pregunta.setFechaVencimiento((Date) rs.getObject("fecha_vencimiento"));
+
+				preguntas.add(pregunta);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e);
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+
+			conexion.cerrarConexion();
+
+		}
+		return preguntas;
+
+	}
 
 	/**
 	 * Obtiene los registros de iva de acuerdo a los parámetros especificados

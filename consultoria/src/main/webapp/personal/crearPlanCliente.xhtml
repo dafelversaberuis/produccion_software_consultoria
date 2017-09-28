@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:form id="formAsignarPregunta">
+		<p:outputPanel id="pnlPreguntas"
+			rendered="#{administrarPersonal.vistaActual == 'VISTA_PREGUNTAS'}">
+			<p:spacer height="5" />
+			<p:panel>
+				<div align="left">
+					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+						cellpadding="5">
+						<p:outputLabel value="Cliente"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel style="font-weight:normal; font-size:14px"
+							value="#{administrarPersonal.cliente.cliente}" />
+
+
+					</p:panelGrid>
+				</div>
+			</p:panel>
+
+			<p:spacer height="5" />
+
+			<p:outputPanel id="pnlCrearPregunta">
+				<p:accordionPanel activeIndex="1">
+					<p:tab title="Comprar/adquirir plan" id="tabPregunta"
+						titleStyle="font-size:16px" closable="true">
+
+
+
+						<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+							style="width:50%">
+							<p:outputLabel for="lstArbolito" value="Plan a comprar/adquirir"
+								style="font-weight:bold; font-size:14px;" />
+							<p:selectOneMenu id="lstArbolito" required="true"
+								style="font-size:14px; width:350px"
+								value="#{administrarPersonal.preguntaProyecto.plan.id}"
+								label="Plan a comprar/adquirir">
+								<f:selectItems
+									value="#{administrarPersonal.itemsArbolitosDisponibles}" />
+							</p:selectOneMenu>
+							<p:spacer width="1" />
+							<p:message for="lstArbolito" />
+						</p:panelGrid>
+
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrearPregunta"
+								style="font-size:14px; font-weight: normal !important;"
+								action="#{administrarPersonal.crearPreguntaProyecto()}"
+								process=":formAsignarPregunta" value="#{mensaje.guardar}"
+								update=":formAsignarPregunta, :form" />
+
+						</div>
+
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formAsignarPregunta:pnlCrearPregunta"
+							trigger="btnCrearPregunta">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+
+			<p:spacer height="5" />
+
+			<p:outputPanel id="dtlPreguntas">
+				<p:accordionPanel>
+					<p:tab title="Planes adquiridos/comprados por el cliente"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="det" value="#{administrarPersonal.preguntas}"
+							draggableRows="true" reflow="true" rows="5" paginator="true"
+							id="dtlRegistros2" widgetVar="dtlRegistros2" rowIndexVar="indice"
+							paginatorPosition="bottom"
+							emptyMessage="No existen planes adquiridos por el cliente">
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align:right">
+									<p:inputText id="globalFilter" immediate="true"
+										onkeyup="PF('dtlRegistros2').filter()"
+										style="width:300px; height:35px"
+										placeholder="#{mensaje.palabrasClave}" />
+								</p:outputPanel>
+							</f:facet>
+
+
+							<p:column headerText="Fecha compra/adquisición"
+								style="font-size:14px" sortBy="#{det.fechaCompra}">
+								<p:outputLabel style="font-weight:normal"
+									value="#{consultarFuncionesAPI.getFechaHoraColombia(det.fechaCompra)}" />
+
+							</p:column>
+
+							<p:column headerText="Plan adquirido" sortBy="#{det.plan.nombre}"
+								filterBy="#{det.plan.nombre}" filterMatchMode="contains"
+								filterStyle="display:none" style="font-size:14px">
+								<p:outputLabel value="#{det.plan.nombre}"
+									style="font-weight:normal" />
+							</p:column>
+
+							<p:column headerText="Precio plan(Impuesto incluido)"
+								sortBy="#{det.precioVentaPesosConIva}"
+								style="font-size:14px; text-align:right;">
+								<p:outputLabel value="#{det.precioVentaPesosConIva}"
+									style="font-weight:normal; font-size:12px">
+
+									<f:convertNumber type="currency" currencySymbol="$ " />
+								</p:outputLabel>
+							</p:column>
+
+
+
+							<p:column headerText="Minutos adquiridos"
+								style="font-size:14px; text-align:right"
+								sortBy="#{det.minutosComprados}"
+								filterBy="#{det.minutosComprados}" filterMatchMode="contains"
+								filterStyle="display:none">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{det.minutosComprados}" />
+							</p:column>
+
+
+							<p:column headerText="Minutos con costo gastados"
+								style="font-size:14px; text-align:right"
+								sortBy="#{det.minutosConCosto}"
+								filterBy="#{det.minutosComprados}" filterMatchMode="contains"
+								filterStyle="display:none">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{det.minutosConCosto}" />
+							</p:column>
+
+							<p:column headerText="Minutos sin costo gastados(Sin afectar plan)"
+								style="font-size:14px; text-align:right"
+								sortBy="#{det.minutosSinCosto}"
+								filterBy="#{det.minutosSinCosto}" filterMatchMode="contains"
+								filterStyle="display:none">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{det.minutosSinCosto}" />
+							</p:column>
+
+							
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+
+
+
+								<p:commandButton id="btnIrEliminar" value=""
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarPersonal.asignarPreguntaProyecto(det,'MODAL_ELIMINACION_PREGUNTA')}"
+									process=":formAsignarPregunta:dtlPreguntas"
+									update=":formEliminarHijo" />
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+
+
+							</p:column>
+
+
+						</p:dataTable>
+
+					
+
+
+						<div align="center">
+
+							<p:commandButton id="btnRegresarAProyecto"
+								style="font-size:14px; font-weight: normal !important;" 
+								action="#{administrarPersonal.cancelarClienteTransaccion(null)}"
+								process="@this" value="#{mensaje.regresar}"
+								update=":formAsignarPregunta, :form">
+
+								<p:resetInput target=":formAsignarPregunta:pnlCrearPregunta" />
+							</p:commandButton>
+						</div>
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+		</p:outputPanel>
+	</h:form>
+</ui:composition>

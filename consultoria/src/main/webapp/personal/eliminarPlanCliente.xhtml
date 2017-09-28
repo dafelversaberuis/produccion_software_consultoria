@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formEliminarHijo">
+
+		<p:dialog header="Eliminar plan/cliente" height="400" width="600"
+			widgetVar="panelEliminacionHijo" resizable="true" closable="false"
+			responsive="true">
+			<p:panel id="pnlEliminar">
+				<div align="center">
+
+
+					<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+						styleClass="ui-panelgrid-blank">
+
+
+						<p:outputLabel value="Fecha adquisición" style="font-weight:bold" />
+
+						<p:outputLabel style="font-weight:normal"
+							value="#{consultarFuncionesAPI.getFechaHoraColombia(det.fechaCompra)}" />
+
+						<p:outputLabel value="Plan adquirido" style="font-weight:bold" />
+
+
+						<p:outputLabel value="#{det.plan.nombre}"
+							style="font-weight:normal" />
+
+
+
+						<p:outputLabel value="Precio plan (Impuesto incluido)"
+							style="font-weight:bold" />
+
+
+
+						<p:outputLabel value="#{det.precioVentaPesosConIva}"
+							style="font-weight:normal; font-size:12px">
+
+							<f:convertNumber type="currency" currencySymbol="$ " />
+						</p:outputLabel>
+
+
+
+						<p:outputLabel value="Minutos del plan" style="font-weight:bold" />
+
+
+						<p:outputLabel style="font-weight:normal"
+							value="#{det.minutosComprados}" />
+
+
+
+
+
+
+
+
+
+					</p:panelGrid>
+
+
+
+				</div>
+				<br />
+				<br />
+				<div align="center">
+
+
+					<p:commandButton id="btnEliminarHijo" style="font-size:14px"
+						action="#{administrarPersonal.eliminarPreguntaProyecto()}"
+						value="#{mensaje.eliminar}"
+						process=":formEliminarHijo:pnlEliminar"
+						update=":formEliminarHijo:pnlEliminar, :formAsignarPregunta:dtlPreguntas, :form" />
+
+					<p:spacer width="10" />
+					<p:commandButton id="btnCancelarEliminar" style="font-size:14px"
+						action="#{administrarPersonal.cancelarPreguntaTransaccion('MODAL_ELIMINAR_PREGUNTA')}"
+						value="#{mensaje.cancelar}" process="@this"
+						update=":formAsignarPregunta:dtlPreguntas, :form, :formEliminarHijo:pnlEliminar">
+
+						<p:resetInput target=":formEliminarHijo:pnlEliminar" />
+
+					</p:commandButton>
+
+
+
+				</div>
+
+
+				<p:blockUI block=":formEliminarHijo:pnlEliminar"
+					trigger="btnEliminarHijo, btnCancelarEliminar">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

@@ -55,16 +55,14 @@
 									style="font-weight:bold; font-size:14px" />
 								<p:inputText id="txtNit"
 									value="#{administrarPersonal.cliente.nit}" required="true"
-									label="#{mensaje.nit}"
-									style="width:100%; font-size:14px; " />
+									label="#{mensaje.nit}" style="width:100%; font-size:14px; " />
 
 
 								<p:outputLabel for="txtCliente" value="#{mensaje.cliente}"
 									style="font-weight:bold; font-size:14px" />
 								<p:inputText id="txtCliente"
 									value="#{administrarPersonal.cliente.cliente}" required="true"
-									label="#{mensaje.cliente}"
-									style="width:100%; font-size:14px; " />
+									label="#{mensaje.cliente}" style="width:100%; font-size:14px; " />
 
 
 
@@ -226,7 +224,7 @@
 										onkeyup="PF('dtlRegistros').filter()"
 										style="width:300px;  height:35px"
 										placeholder="#{mensaje.palabrasClave}" />
-								</p:outputPanel>   
+								</p:outputPanel>
 							</f:facet>
 
 
@@ -312,6 +310,14 @@
 									value="#{mensaje.generarClaveCliente}" trackMouse="true" />
 
 
+
+								<p:commandButton id="btnIrPreguntas" title="Planes del cliente"
+									style="background-origin: content-box; background-image: url('../imagenes/p_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarPersonal.asignarCliente(loc,'VISTA_PREGUNTAS')}"
+									value="" process=":form:pnlDltRegistros"
+									update=":formAsignarPregunta, :form" />
+
+
 							</p:column>
 
 
@@ -326,6 +332,11 @@
 		<ui:include src="/personal/editarCliente.xhtml" />
 		<ui:include src="/personal/eliminarCliente.xhtml" />
 		<ui:include src="/personal/cambiarClaveCliente.xhtml" />
+
+
+		<ui:include src="/personal/crearPlanCliente.xhtml" />
+		<ui:include src="/personal/eliminarPlanCliente.xhtml" />
+
 
 
 		<p:spacer height="800" />
