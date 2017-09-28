@@ -11,18 +11,20 @@
 		<h:form id="form">
 			<p:growl id="messages" showDetail="true" globalOnly="true" />
 			<p:remoteCommand name="onload" process="@this"
-				action="#{administrarSesionCliente.getNoRolAdmitido()}"
+				action="#{administrarSesionCliente.getNoRolAdmitido('TODO_PERSONAL')}"
 				autoRun="true" />
 			
 
 
 			<div class="row x_title">
 				<div class="col-md-6">
-					<p:outputLabel value="#{mensaje.moduloParametros}: "
-						styleClass="tituloPrincipal" />
-					<p:spacer width="2" />
-					<p:outputLabel value="#{mensaje.administrarIva}"
-						styleClass="tituloPrincipal" />
+
+					<h2 class="project-title">#{mensaje.moduloTablasSoporte}:
+						Iva / Impuestos aplicables a los planes</h2>
+
+
+
+
 				</div>
 			</div>
 
@@ -33,33 +35,29 @@
 				<p:spacer height="10" />
 
 				<p:accordionPanel id="pnlCrearIva">
-					<p:tab title="#{mensaje.crearIva}" titleStyle="font-size:16px"
+					<p:tab title="Crear IVA/ impuesto" titleStyle="font-size:16px"
 						closable="true">
 
-						<p:panelGrid columns="5" cellpadding="0" cellspacing="0"
+						<p:panelGrid columns="3" cellpadding="0" cellspacing="0"
 							styleClass="ui-panelgrid-blank">
 
-							<p:outputLabel for="txtNombre" value="#{mensaje.nombre}"
+							<p:outputLabel for="txtNombre" value="Nombre del impuesto"
 								style="font-weight:bold; font-size:14px" />
 							<p:inputText id="txtNombre"
 								value="#{hacerMantenimiento.iva.nombre}" required="true"
 								label="#{mensaje.nombre}" style="width:100%; font-size:14px" />
-							<p:graphicImage value="../imagenes/ayuda.png" id="ayudaNombreIva" />
-							<p:tooltip value="#{mensaje.ayudaNombreIva}" trackMouse="true"
-								for="ayudaNombreIva" />
+							
 							<p:message for="txtNombre" />
 
 
 
 
-							<p:outputLabel for="txtValor" value="#{mensaje.valorIva}"
+							<p:outputLabel for="txtValor" value="Valor del impuesto(%)"
 								style="font-weight:bold; font-size:14px" />
 							<p:inputText id="txtValor" style="font-size:14px; width:120px"
 								value="#{hacerMantenimiento.iva.valorIva}" required="true"
-								label="#{mensaje.valorIva}" />
-							<p:graphicImage value="../imagenes/ayuda.png" id="ayudaValorIva" />
-							<p:tooltip value="#{mensaje.ayudaValorIva}" trackMouse="true"
-								for="ayudaValorIva" />
+								label="Valor del impuesto" />
+							
 							<p:message for="txtValor" />
 
 
@@ -98,18 +96,18 @@
 
 				<p:spacer height="30" />
 				<p:accordionPanel id="pnlDtlIva">
-					<p:tab title="#{mensaje.listadoIva}" titleStyle="font-size:16px"
+					<p:tab title="Listado de Iva/Impuestos creados" titleStyle="font-size:16px"
 						closable="true">
 
 						<p:dataTable var="loc" id="dtlIva"
 							value="#{hacerMantenimiento.ivas}" reflow="true" rows="10"
 							paginator="true" paginatorPosition="bottom"
-							draggableColumns="true" emptyMessage="#{mensaje.noExistenciaIva}">
-							<p:column headerText="#{mensaje.nombre}" sortBy="#{loc.nombre}"
+							draggableColumns="true" emptyMessage="No existen impuestos creados">
+							<p:column headerText="Nombre del impuesto" sortBy="#{loc.nombre}"
 								filterBy="#{loc.nombre}" style="font-size:14px">
 								<p:outputLabel value="#{loc.nombre}" style="font-weight:normal" />
 							</p:column>
-							<p:column headerText="#{mensaje.valorIva}"
+							<p:column headerText="Valor del impuesto(%)"
 								sortBy="#{loc.valorIva}" style="font-size:14px">
 								<p:outputLabel value="#{loc.valorIva}"
 									style="font-weight:normal; font-size:12px" />

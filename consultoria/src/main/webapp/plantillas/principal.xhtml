@@ -143,13 +143,36 @@
 
 				<li class=""><a href="#" class="">#{mensaje.parametrosGenerales}</a>
 					<ul class="">
+					
+					<h:panelGroup
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+
+							<li><p:commandLink
+									value="IVA / Impuestos"
+									title="IVA / Impuestos"
+									action="/tablasSoporte/crearIva.xhtml?faces-redirect=true"
+									ajax="false" /></li>
+
+						</h:panelGroup>
+						
+						
+						<h:panelGroup
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+
+							<li><p:commandLink
+									value="Planes consultoría"
+									title="Planes consultoría"
+									action="/tablasSoporte/crearPlan.xhtml?faces-redirect=true"
+									ajax="false" /></li>
+
+						</h:panelGroup>
 
 						<h:panelGroup
 							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
 
 							<li><p:commandLink
-									value="Objetivos, alcance, documentos de referencia"
-									title="Objetivos, alcance, documentos de referencia"
+									value="Objetivos, alcance, documentos referencia auditoría"
+									title="Objetivos, alcance, documentos referencia auditoría"
 									action="/tablasSoporte/crearParametrosAuditoria.xhtml?faces-redirect=true"
 									ajax="false" /></li>
 

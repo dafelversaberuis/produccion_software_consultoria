@@ -54,6 +54,9 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	@ManagedProperty(value = "#{administrarSesionCliente}")
 	private AdministrarSesionCliente	administrarSesionCliente;
 
+	private Plan											arbolito;
+	private Plan											arbolitoTransaccion;
+
 	private String										vistaActual;
 
 	private Estado										estado;
@@ -86,6 +89,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private List<DocumentoActividad>	documentos;
 	private List<Iva>									ivas;
 	private List<SelectItem>					itemsIva;
+	private List<Plan>								arbolitos;
 
 	private List<SelectItem>					itemsProyectos;
 	private List<SelectItem>					itemsConsultores;
@@ -93,6 +97,361 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private List<SelectItem>					itemsConsultoresEdicion;
 
 	// privados
+
+	/**
+	 * Valida un administrador
+	 *
+	 * @param aTransaccion
+	 * @return ok
+	 */
+	private boolean isValidoArbolito(String aTransaccion) {
+		boolean ok = true;
+
+		if (aTransaccion.equals("C")) {
+
+			if (this.isVacio(this.arbolito.getNombre())) {
+				ok = false;
+				this.mostrarMensajeGlobalPersonalizado("ESCRIBA UN NOMBRE DEL PLAN", "advertencia");
+			}
+
+		} else {
+
+			if (this.isVacio(this.arbolitoTransaccion.getNombre())) {
+				ok = false;
+				this.mostrarMensajeGlobalPersonalizado("ESCRIBA UN NOMBRE DEL PLAN", "advertencia");
+			}
+
+		}
+
+		return ok;
+	}
+
+	/**
+	 * Calcula los precios con iva para mostrarlos en pantalla
+	 * 
+	 * @param aTransaccion
+	 */
+	public void calcularPrecios(String aTransaccion) {
+
+		try {
+			List<Iva> ivas = null;
+			if (aTransaccion.equals("C")) {
+
+				if (this.arbolito != null && this.arbolito.getIva() != null && this.arbolito.getIva().getId() != null) {
+
+					ivas = IConsultasDAO.getIvas(this.arbolito.getIva());
+					this.arbolito.getIva().setValorIva(ivas.get(0).getValorIva());
+
+					if (this.arbolito.getPrecioVentaPesos() != null) {
+
+						this.arbolito.setIvaPesos(this.getValorRedondeado(this.arbolito.getPrecioVentaPesos().multiply(this.arbolito.getIva().getValorIva()).divide(new BigDecimal(100)), IConstantes.DECIMALES_REDONDEAR));
+						this.arbolito.setPrecioVentaPesosConIva(this.getValorRedondeado(this.arbolito.getPrecioVentaPesos().add(this.arbolito.getIvaPesos()), IConstantes.DECIMALES_REDONDEAR));
+
+					} else {
+						this.arbolito.setIvaPesos(null);
+						this.arbolito.setPrecioVentaPesosConIva(null);
+
+					}
+
+				} else {
+
+					this.arbolito.setIvaPesos(null);
+					this.arbolito.setPrecioVentaPesosConIva(null);
+
+				}
+
+			} else {
+
+				if (this.arbolitoTransaccion != null && this.arbolitoTransaccion.getIva() != null && this.arbolitoTransaccion.getIva().getId() != null) {
+
+					ivas = IConsultasDAO.getIvas(this.arbolitoTransaccion.getIva());
+					this.arbolitoTransaccion.getIva().setValorIva(ivas.get(0).getValorIva());
+
+					if (this.arbolitoTransaccion.getPrecioVentaPesos() != null) {
+
+						this.arbolitoTransaccion.setIvaPesos(this.getValorRedondeado(this.arbolitoTransaccion.getPrecioVentaPesos().multiply(this.arbolitoTransaccion.getIva().getValorIva()).divide(new BigDecimal(100)), IConstantes.DECIMALES_REDONDEAR));
+						this.arbolitoTransaccion.setPrecioVentaPesosConIva(this.getValorRedondeado(this.arbolitoTransaccion.getPrecioVentaPesos().add(this.arbolitoTransaccion.getIvaPesos()), IConstantes.DECIMALES_REDONDEAR));
+
+					} else {
+						this.arbolitoTransaccion.setIvaPesos(null);
+						this.arbolitoTransaccion.setPrecioVentaPesosConIva(null);
+
+					}
+
+				} else {
+
+					this.arbolitoTransaccion.setIvaPesos(null);
+					this.arbolitoTransaccion.setPrecioVentaPesosConIva(null);
+
+				}
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Crea un nuevo administrador del software
+	 */
+	public void crearArbolito() {
+		Conexion conexion = new Conexion();
+
+		try {
+			if (isValidoArbolito("C")) {
+
+				List<Iva> ivas = IConsultasDAO.getIvas(this.arbolito.getIva());
+				if (ivas != null && ivas.size() > 0) {
+
+					conexion.setAutoCommitBD(false);
+
+					this.arbolito.setNombre(this.getSinEspacios(this.arbolito.getNombre()));
+
+					// Cï¿½LCULOS CON IVA INCLUIDO
+
+					this.arbolito.getIva().setValorIva(ivas.get(0).getValorIva());
+
+					this.arbolito.setIvaPesos(this.getValorRedondeado(this.arbolito.getPrecioVentaPesos().multiply(this.arbolito.getIva().getValorIva()).divide(new BigDecimal(100)), IConstantes.DECIMALES_REDONDEAR));
+					this.arbolito.setPrecioVentaPesosConIva(this.getValorRedondeado(this.arbolito.getPrecioVentaPesos().add(this.arbolito.getIvaPesos()), IConstantes.DECIMALES_REDONDEAR));
+
+					this.arbolito.getCamposBD();
+
+					conexion.insertarBD(this.arbolito.getEstructuraTabla().getTabla(), this.arbolito.getEstructuraTabla().getPersistencia());
+					conexion.commitBD();
+
+					this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+					// reseteo de variables
+					this.arbolito = null;
+					this.getArbolito();
+					this.arbolitos = null;
+					this.getArbolitos();
+
+				} else {
+					this.mostrarMensajeGlobal("transaccionFallida", "error");
+
+				}
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+	}
+
+	/**
+	 * Edita un registro de arbolito
+	 */
+	public void editarArbolito() {
+		Conexion conexion = new Conexion();
+
+		try {
+			if (isValidoArbolito("E")) {
+
+				List<Iva> ivas = IConsultasDAO.getIvas(this.arbolitoTransaccion.getIva());
+				if (ivas != null && ivas.size() > 0) {
+					conexion.setAutoCommitBD(false);
+
+					this.arbolitoTransaccion.setNombre(this.getSinEspacios(this.arbolitoTransaccion.getNombre()));
+
+					this.arbolitoTransaccion.getIva().setValorIva(ivas.get(0).getValorIva());
+
+					this.arbolitoTransaccion.setIvaPesos(this.getValorRedondeado(this.arbolitoTransaccion.getPrecioVentaPesos().multiply(this.arbolitoTransaccion.getIva().getValorIva()).divide(new BigDecimal(100)), IConstantes.DECIMALES_REDONDEAR));
+					this.arbolitoTransaccion.setPrecioVentaPesosConIva(this.getValorRedondeado(this.arbolitoTransaccion.getPrecioVentaPesos().add(this.arbolitoTransaccion.getIvaPesos()), IConstantes.DECIMALES_REDONDEAR));
+
+					this.arbolitoTransaccion.getCamposBD();
+
+					conexion.actualizarBD(this.arbolitoTransaccion.getEstructuraTabla().getTabla(), this.arbolitoTransaccion.getEstructuraTabla().getPersistencia(), this.arbolitoTransaccion.getEstructuraTabla().getLlavePrimaria(), null);
+					conexion.commitBD();
+					this.mostrarMensajeGlobal("edicionExitosa", "exito");
+					this.cerrarModal("panelEdicionArbolito");
+
+					// reseteo de variables
+					this.arbolitoTransaccion = null;
+					this.getArbolitoTransaccion();
+					this.arbolitos = null;
+					this.getArbolitos();
+
+				} else {
+					this.mostrarMensajeGlobal("transaccionFallida", "error");
+				}
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+	}
+
+	/**
+	 * Elimina un registro de arbolito
+	 */
+	public void eliminarArbolito() {
+
+		Conexion conexion = new Conexion();
+		try {
+
+			conexion.setAutoCommitBD(false);
+			this.arbolitoTransaccion.getCamposBD();
+			conexion.eliminarBD(this.arbolitoTransaccion.getEstructuraTabla().getTabla(), this.arbolitoTransaccion.getEstructuraTabla().getLlavePrimaria());
+			conexion.commitBD();
+			this.mostrarMensajeGlobal("eliminacionExitosa", "exito");
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+			this.mostrarMensajeGlobal("eliminacionFallida", "error");
+
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+		// reseteo de variables
+		this.arbolitoTransaccion = null;
+		this.arbolitos = null;
+		this.getArbolitos();
+
+	}
+
+	/**
+	 * Este mï¿½todo borra el formulario de creaciï¿½n de un arbolito
+	 */
+	public void cancelarArbolito() {
+
+		try {
+			this.arbolito = new Plan();
+
+			this.arbolitos = null;
+			this.getArbolitos();
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Este mï¿½todo borra el formulario de ediciï¿½n de un arbolito en transacciï¿½n
+	 */
+	public void cancelarArbolitoTransaccion(String aVista) {
+		try {
+
+			this.arbolitoTransaccion = new Plan();
+			this.arbolitos = null;
+
+			this.getArbolitos();
+
+			if (aVista != null && aVista.equals("MODAL_EDITAR_ARBOLITO")) {
+				this.cerrarModal("panelEdicionArbolito");
+
+			} else if (aVista != null && aVista.equals("MODAL_ELIMINAR_ARBOLITO")) {
+				this.cerrarModal("panelEliminacionArbolito");
+
+			} else {
+				this.vistaActual = null;
+
+			}
+
+		} catch (Exception e) {
+
+			IConstantes.log.error(e, e);
+
+		}
+
+	}
+
+	/**
+	 * Asigna un arbolito para realizar una acciï¿½n
+	 * 
+	 * @param aArbolito
+	 * @param aVista
+	 */
+	public void asignarArbolito(Plan aArbolito, String aVista) {
+
+		try {
+
+			this.arbolitoTransaccion = aArbolito;
+
+			if (aVista != null && aVista.equals("VISTA_FOTOS")) {
+				this.vistaActual = aVista;
+
+			} else if (aVista != null && aVista.equals("MODAL_EDITAR_ARBOLITO")) {
+				this.abrirModal("panelEdicionArbolito");
+
+			} else {
+
+				this.abrirModal("panelEliminacionArbolito");
+
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Obtiene un listado de arbolitos
+	 * 
+	 * @return arbolitos
+	 */
+	public List<Plan> getArbolitos() {
+		try {
+			if (this.arbolitos == null) {
+
+				this.arbolitos = IConsultasDAO.getArbolitos(null);
+
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return arbolitos;
+	}
+
+	/**
+	 * Establece un listado de arbolitos
+	 * 
+	 * @param arbolitos
+	 */
+	public void setArbolitos(List<Plan> arbolitos) {
+		this.arbolitos = arbolitos;
+	}
+
+	public Plan getArbolito() {
+		try {
+			if (this.arbolito == null) {
+				this.arbolito = new Plan();
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return arbolito;
+	}
+
+	public void setArbolito(Plan arbolito) {
+		this.arbolito = arbolito;
+	}
+
+	public Plan getArbolitoTransaccion() {
+		try {
+			if (this.arbolitoTransaccion == null) {
+				this.arbolitoTransaccion = new Plan();
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return arbolitoTransaccion;
+	}
+
+	public void setArbolitoTransaccion(Plan arbolitoTransaccion) {
+		this.arbolitoTransaccion = arbolitoTransaccion;
+	}
 
 	/**
 	 * Validaciones de iva
@@ -106,20 +465,20 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		if (aTransaccion.equals("C")) {
 			if (this.ivas != null && this.ivas.size() > 0 && this.ivas.stream().anyMatch(i -> i.getValorIva().equals(this.iva.getValorIva()))) {
 				ok = false;
-				this.mostrarMensajeGlobal("valorIvaExistente", "advertencia");
+				this.mostrarMensajeGlobalPersonalizado("YA EXISTE EL VALOR DEL IVA", "advertencia");
 			}
 			if (this.isVacio(this.iva.getNombre())) {
 				ok = false;
-				this.mostrarMensajeGlobal("nombreVacio", "advertencia");
+				this.mostrarMensajeGlobalPersonalizado("NOMBRE VACIO", "advertencia");
 			}
 		} else {
 			if (this.ivas != null && this.ivas.size() > 0 && this.ivas.stream().anyMatch(i -> i.getId() != this.ivaTransaccion.getId() && i.getValorIva().equals(this.ivaTransaccion.getValorIva()))) {
 				ok = false;
-				this.mostrarMensajeGlobal("valorIvaExistente", "advertencia");
+				this.mostrarMensajeGlobal("YA EXISTE EL VALOR DEL IVA", "advertencia");
 			}
 			if (this.isVacio(this.ivaTransaccion.getNombre())) {
 				ok = false;
-				this.mostrarMensajeGlobal("nombreVacio", "advertencia");
+				this.mostrarMensajeGlobal("NOMBRE VACIO", "advertencia");
 			}
 		}
 
@@ -184,7 +543,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 				if (arbolitos != null && arbolitos.size() > 0) {
 					for (Plan a : arbolitos) {
 
-						// puede ser que se cambió el valor del iva
+						// puede ser que se cambiï¿½ el valor del iva
 						a.getIva().setValorIva(this.ivaTransaccion.getValorIva());
 
 						a.setIvaPesos(this.getValorRedondeado(a.getPrecioVentaPesos().multiply(a.getIva().getValorIva()).divide(new BigDecimal(100)), IConstantes.DECIMALES_REDONDEAR));
@@ -250,7 +609,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Este método borra el formulario de creación de un iva
+	 * Este mï¿½todo borra el formulario de creaciï¿½n de un iva
 	 */
 	public void cancelarIva() {
 
@@ -266,7 +625,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Este método borra el formulario de edición de un iva en transacción
+	 * Este mï¿½todo borra el formulario de ediciï¿½n de un iva en transacciï¿½n
 	 */
 	public void cancelarIvaTransaccion(String aVista) {
 		try {
@@ -292,7 +651,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Asigna un iva para realizar una acción
+	 * Asigna un iva para realizar una acciï¿½n
 	 * 
 	 * @param aAgrupador
 	 * @param aVista
@@ -354,7 +713,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		try {
 
 			this.itemsIva = new ArrayList<SelectItem>();
-			this.itemsIva.add(new SelectItem("", this.getMensaje("comboVacio")));
+			this.itemsIva.add(new SelectItem("", "Seleccione.."));
 
 			this.ivas = null;
 			this.getIvas();
@@ -1290,8 +1649,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del
-	 * objeto el id para consulta
+	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del objeto
+	 * el id para consulta
 	 * 
 	 * @param event
 	 */
@@ -1339,8 +1698,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del
-	 * objeto el id
+	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del objeto
+	 * el id
 	 * 
 	 * @param event
 	 */

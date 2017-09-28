@@ -7,7 +7,7 @@
 
 
 	<h:form id="formEliminar">
-		<p:dialog header="#{mensaje.eliminarIva}" closable="false" 
+		<p:dialog header="Eliminar impuesto" closable="false" 
 			widgetVar="panelEliminacionIva"  resizable="true"
 			responsive="true">
 			<p:outputPanel id="outputpanelEliminacion">
@@ -15,13 +15,13 @@
 				<div align="center">
 					<p:panelGrid columns="1" cellpadding="5"
 						styleClass="ui-panelgrid-blank">
-						<p:outputLabel value="#{mensaje.nombre}"
+						<p:outputLabel value="Nombre del impuesto"
 							style="font-weight:bold; font-size:14px" />
 						<p:inputText
 							value="#{hacerMantenimiento.ivaTransaccion.nombre}"
 							disabled="true" style="font-size:14px; width:100%" />
 
-						<p:outputLabel value="#{mensaje.valorIva}"
+						<p:outputLabel value="Valor del impuesto(%)"
 							style="font-weight:bold; font-size:14px" />
 
 

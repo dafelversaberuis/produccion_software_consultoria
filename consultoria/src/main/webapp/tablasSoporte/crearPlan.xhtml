@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 20%;
+	vertical-align: text-top;
+}
+
+.columna2 {
+	width: 30%;
+	vertical-align: text-top;
+}
+</style>
+
+
+
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('TODO_PERSONAL')}"
+				autoRun="true" />
+
+
+
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloTablasSoporte}:
+						Planes/Minutos consultoría ofrecidos</h2>
+
+
+
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+
+			<p:outputPanel id="pnlArbolitos">
+
+				<p:spacer height="10" />
+
+				<p:accordionPanel id="pnlCrearArbolito" activeIndex="1">
+					<p:tab title="Crear plan-minutos" titleStyle="font-size:16px"
+						closable="true">
+
+
+						<p:panelGrid columns="3" cellpadding="0" cellspacing="0"
+							style="width:60%" styleClass="ui-panelgrid-blank">
+
+							<p:outputLabel for="txtNombre" value="Nombre del plan"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputText id="txtNombre"
+								value="#{hacerMantenimiento.arbolito.nombre}" required="true"
+								label="Nombre del plan"
+								style=" font-size:14px; width:100%" />
+
+
+
+							<p:message for="txtNombre" />
+
+
+
+
+
+							<p:outputLabel for="lstIndicativo" value="#{mensaje.indicativo}"
+								style="font-weight:bold; font-size:14px;" />
+							<p:selectOneMenu id="lstIndicativo" required="true"
+								style="font-size:14px;"
+								value="#{hacerMantenimiento.arbolito.estadoVigencia}"
+								label="#{mensaje.indicativo}">
+								<f:selectItems value="#{consultarFuncionesAPI.itemsEstados}" />
+							</p:selectOneMenu>
+
+
+							<p:message for="lstIndicativo" />
+
+
+
+							<p:outputLabel for="lstIVA" value="% Impuesto"
+								style="font-weight:bold; font-size:14px;" />
+							<p:selectOneMenu id="lstIVA" required="true"
+								style="font-size:14px;"
+								value="#{hacerMantenimiento.arbolito.iva.id}"
+								label="% Impuesto">
+								<f:selectItems value="#{hacerMantenimiento.itemsIva}" />
+
+								<p:ajax event="change" process="@this"
+									update="txtPrecioConIva, @this"
+									listener="#{hacerMantenimiento.calcularPrecios('C')}" />
+
+							</p:selectOneMenu>
+
+
+							<p:message for="lstIVA" />
+
+							<p:outputLabel for="txtPrecio" value="Precio sin Impuesto"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputText id="txtPrecio"
+								value="#{hacerMantenimiento.arbolito.precioVentaPesos}"
+								required="true" label="Precio sin Impuesto"
+								style="font-size:14px">
+
+								<p:ajax event="change" process="@this"
+									update="txtPrecioConIva, @this"
+									listener="#{hacerMantenimiento.calcularPrecios('C')}" />
+
+							</p:inputText>
+							<p:message for="txtPrecio" />
+
+
+
+
+
+
+							<p:outputLabel for="txtPrecioConIva"
+								value="Precio Impuesto incluido"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputText id="txtPrecioConIva"
+								value="#{hacerMantenimiento.arbolito.precioVentaPesosConIva}"
+								label="Precio Impuesto incluido" disabled="true"
+								style="font-size:14px" />
+
+
+							<p:spacer width="1" />
+
+
+
+
+
+
+
+
+							<p:outputLabel for="txtCantidad"
+								value="Minutos del plan"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputText id="txtCantidad"
+								value="#{hacerMantenimiento.arbolito.minutos}"
+								required="true" label="Minutos del plan"
+								style="font-size:14px" />
+
+
+
+							<p:message for="txtCantidad" />
+
+
+
+						</p:panelGrid>
+						<p:spacer height="10" />
+						<div align="center">
+							<p:commandButton id="btnCrearArbolito"
+								style="font-size:14px; font-weight: normal !important;"
+								action="#{hacerMantenimiento.crearArbolito()}"
+								value="#{mensaje.guardar}" update=":form" />
+
+							<p:spacer width="10" />
+							<p:commandButton id="btnBorrarArbolito"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{hacerMantenimiento.cancelarArbolito()}"
+								process="@this" value="#{mensaje.cancelar}" update=":form">
+
+								<p:resetInput target=":form:pnlArbolitos" />
+
+							</p:commandButton>
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":form:pnlCrearArbolito"
+							trigger="btnCrearArbolito, btnBorrarArbolito">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+					</p:tab>
+				</p:accordionPanel>
+
+				<p:spacer height="30" />
+				<p:accordionPanel id="pnlDtlArbolitos">
+					<p:tab title="Planes-minutos ofrecidos"
+						titleStyle="font-size:16px" closable="true">
+
+						<p:dataTable var="loc" id="dtlArbolitos"
+							value="#{hacerMantenimiento.arbolitos}" reflow="true" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							draggableColumns="true"
+							emptyMessage="No existen planes creados">
+
+
+
+							<p:column headerText="Nombre del plan"
+								sortBy="#{loc.nombre}" filterBy="#{loc.nombre}"
+								filterMatchMode="contains" style="font-size:14px">
+								<p:outputLabel value="#{loc.nombre}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+
+
+
+
+							<p:column headerText="#{mensaje.indicativo}"
+								sortBy="#{loc.estadoVigencia}" style="font-size:14px">
+
+								<p:outputLabel value="#{mensaje.ESTADO_ACTIVO}"
+									style="font-weight:normal; font-size:12px"
+									rendered="#{loc.estadoVigencia == 'A'}" />
+								<p:outputLabel value="#{mensaje.ESTADO_INACTIVO}"
+									style="font-weight:normal; font-size:12px"
+									rendered="#{loc.estadoVigencia == 'I'}" />
+
+
+							</p:column>
+
+
+
+							<p:column headerText="Minutos del plan"
+								sortBy="#{loc.minutos}"
+								style="font-size:14px; text-align:right;">
+								<p:outputLabel value="#{loc.minutos}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+							
+							<p:column headerText="Precio sin Impuesto"
+								sortBy="#{loc.precioVentaPesos}"
+								style="font-size:14px; text-align:right;">
+								<p:outputLabel value="#{loc.precioVentaPesos}"
+									style="font-weight:normal; font-size:12px">
+
+									<f:convertNumber type="currency" currencySymbol="$ " />
+								</p:outputLabel>
+							</p:column>
+							
+							
+							<p:column headerText="% Impuesto"
+								sortBy="#{loc.iva.valorIva}"
+								style="font-size:14px; text-align:right;">
+								<p:outputLabel value="#{loc.iva.valorIva}"
+									style="font-weight:normal; font-size:12px" />
+							</p:column>
+
+
+
+
+							<p:column headerText="Precio Impuesto incluido"
+								sortBy="#{loc.precioVentaPesosConIva}"
+								style="font-size:14px; text-align:right;">
+								<p:outputLabel value="#{loc.precioVentaPesosConIva}"
+									style="font-weight:normal; font-size:12px">
+
+									<f:convertNumber type="currency" currencySymbol="$ " />
+								</p:outputLabel>
+							</p:column>
+
+
+
+
+
+							<p:column headerText="#{mensaje.acciones}"
+								style="font-size:14px; text-align:center;">
+
+
+
+								<p:commandButton id="btnIrEditar"
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{hacerMantenimiento.asignarArbolito(loc,'MODAL_EDITAR_ARBOLITO')}"
+									value="" process=":form:pnlDtlArbolitos" update=":formEditar" />
+
+								<p:commandButton id="btnIrEliminar"
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{hacerMantenimiento.asignarArbolito(loc,'MODAL_ELIMINAR_ARBOLITO')}"
+									process="dtlArbolitos" update=":formEliminar" />
+
+
+
+
+
+								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
+									trackMouse="true" />
+
+
+
+
+							</p:column>
+
+
+
+						</p:dataTable>
+
+					</p:tab>
+				</p:accordionPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+
+
+		<ui:include src="/tablasSoporte/eliminarPlan.xhtml" />
+		<ui:include src="/tablasSoporte/editarPlan.xhtml" />
+
+
+
+
+	</ui:define>
+</ui:composition>
