@@ -62,7 +62,9 @@ import consultoria.beans.Indicador;
 import consultoria.beans.InformacionEtapaIndicador;
 import consultoria.beans.ObjetivoEtapaIndicador;
 import consultoria.beans.PersonaDiagnostico;
+import consultoria.beans.Plan;
 import consultoria.beans.PlanAccionIndicador;
+import consultoria.beans.PlanCliente;
 import consultoria.beans.Planificacion;
 import consultoria.beans.PlanificacionGeneral;
 import consultoria.beans.PreguntaProyecto;
@@ -155,7 +157,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private Cita												citaSeleccionada;
 
 	private int													tiempoConsumido;
+	private int													tiempoMinutos;
 	private boolean											asesoriaIniciada;
+
+	private List<SelectItem>						itemsPlanesDisponiblesCliente;
 
 	/**
 	 * Terminar asesoria
@@ -163,11 +168,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	public void terminarAsesoria() {
 
 		this.asesoriaIniciada = false;
+		this.mostrarMensajeGlobalPersonalizado("ASESORIA TERMINADA", "exito");
+
 	}
 
 	public void iniciarAsesoria() {
-
+		this.mostrarMensajeGlobalPersonalizado("ASESORIA INICIADA", "exito");
 		this.tiempoConsumido = 0;
+		this.tiempoMinutos = 0;
 		this.asesoriaIniciada = true;
 	}
 
@@ -181,6 +189,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		if (this.tiempoConsumido == 60) {
 			// guarda el tiempo y actualiza contador
 			this.tiempoConsumido = 0;
+			this.tiempoMinutos++;
 
 		}
 
@@ -200,6 +209,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			this.abrirModal("panelConferencia");
 
 			this.tiempoConsumido = 0;
+			this.tiempoMinutos = 0;
 
 			this.asesoriaIniciada = false;
 
@@ -6696,6 +6706,53 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	public void setAsesoriaIniciada(boolean asesoriaIniciada) {
 		this.asesoriaIniciada = asesoriaIniciada;
+	}
+
+	public int getTiempoMinutos() {
+		return tiempoMinutos;
+	}
+
+	public void setTiempoMinutos(int tiempoMinutos) {
+		this.tiempoMinutos = tiempoMinutos;
+	}
+
+	public List<SelectItem> getItemsPlanesDisponiblesCliente() {
+		try {
+
+			this.itemsPlanesDisponiblesCliente = new ArrayList<SelectItem>();
+			this.itemsPlanesDisponiblesCliente.add(new SelectItem("", this.getMensaje("comboVacio")));
+
+			if (this.proyectoCliente != null && this.proyectoCliente.getCliente() != null && this.proyectoCliente.getCliente().getId() != null) {
+				PlanCliente planCliente = new PlanCliente();
+				planCliente.getCliente().setId(this.proyectoCliente.getCliente().getId());
+				List<PlanCliente> planes = IConsultasDAO.getPlanesCliente(planCliente);
+
+				if (planes != null && planes.size() > 0) {
+					for (PlanCliente p : planes) {
+
+						// si no está gratis validar luego
+						if ((p.getMinutosComprados().intValue() - p.getMinutosConCosto()) > 0) {
+							this.itemsPlanesDisponiblesCliente.add(new SelectItem(p.getId(), "Minutos del plan: " + (p.getMinutosComprados().intValue() - p.getMinutosConCosto()) + " de "+p.getMinutosComprados() + " "+this.getHoras((p.getMinutosComprados().intValue() - p.getMinutosConCosto())) + ", Precio plan: " + this.getMoneda(p.getPrecioVentaPesosConIva()) + ", Fecha adquirido: " + this.getFechaHoraColombia(p.getFechaCompra())));
+						}
+
+					}
+
+					if (!(this.itemsPlanesDisponiblesCliente != null && this.itemsPlanesDisponiblesCliente.size() > 0)) {
+						this.itemsPlanesDisponiblesCliente = new ArrayList<SelectItem>();
+						this.itemsPlanesDisponiblesCliente.add(new SelectItem("", "EL CLIENTE NO POSEE PLAN CON MINUTOS DISPONIBLES, DEBE IR AL MODULO PERSONAL>CLIENTES Y ADQUIRIR UNO"));
+					}
+
+				}
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return itemsPlanesDisponiblesCliente;
+	}
+
+	public void setItemsPlanesDisponiblesCliente(List<SelectItem> itemsPlanesDisponiblesCliente) {
+		this.itemsPlanesDisponiblesCliente = itemsPlanesDisponiblesCliente;
 	}
 
 }

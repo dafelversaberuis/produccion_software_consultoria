@@ -41,6 +41,7 @@ public class PlanCliente implements Serializable {
 	public PlanCliente() {
 		this.estructuraTabla = new EstructuraTabla();
 		this.plan = new Plan();
+		this.cliente = new Cliente(); //se vuelve ciclico
 
 	}
 

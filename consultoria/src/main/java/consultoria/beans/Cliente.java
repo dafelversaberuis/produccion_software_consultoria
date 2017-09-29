@@ -29,8 +29,12 @@ public class Cliente implements Serializable {
 
 	private EstructuraTabla				estructuraTabla;
 
+	private Integer						TPlanClienteSeleccionado;
+
 	public Cliente() {
 		this.estructuraTabla = new EstructuraTabla();
+
+
 
 	}
 
@@ -149,5 +153,15 @@ public class Cliente implements Serializable {
 	public void settEstado(String tEstado) {
 		this.tEstado = tEstado;
 	}
+
+	public Integer getTPlanClienteSeleccionado() {
+		return TPlanClienteSeleccionado;
+	}
+
+	public void setTPlanClienteSeleccionado(Integer tPlanClienteSeleccionado) {
+		TPlanClienteSeleccionado = tPlanClienteSeleccionado;
+	}
+
+	
 
 }

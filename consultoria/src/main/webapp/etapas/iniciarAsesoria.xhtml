@@ -5,77 +5,131 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<h:form id="formConferencia">    
+	<h:form id="formConferencia">
 
 		<p:dialog header="Asesoría/Conferencia" widgetVar="panelConferencia"
 			resizable="true" closable="false" width="900" responsive="true"
-			height="450">
+			height="600">
+			<div class="ui-message-error ui-corner-all" align="left">
+				<span class="ui-message-error-detail"
+					style="font-size: 12px; width: 100%; font-weight: bold;"> <b><span
+						style="font-size: 14px">INSTRUCCIONES:</span></b><br />(A)Entre el
+					cliente/consultor se debe preparar/cuadrar/iniciar la asesoría
+					física o virtual(usando cualquier software: skype, teamviewer o
+					videochat que ofrece Isoluciones)<br />(B)-El cliente debe
+					seleccionar el plan del cual se descontarán los minutos<br />(C)
+					Cuando el ambiente de trabajo esté preparado y listo el cliente
+					debe presionar 'Aniciar asesoría' donde ésta inicia y acepta las
+					instrucciones<br />(D)Cuando el tiempo disponible venza o el
+					cliente presione 'finalizar asesoría' ésta terminará <br />(E)El
+					tiempo disponible se irá descontando de los disponibles(A menos que
+					Isoluciones decida ofrecerlo gratis)<br />(F) En caso de cerrar
+					interfaz o la internet cae el software respeta los tiempos
+					trasncurridos hasta el incidente
+				</span>
+			</div>
+			<br />
 
+
+			<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+				style="width:100%">
+				<p:outputLabel for="lstArbolito" value="Planes con minutos disponibles"
+					style="font-weight:bold; font-size:14px;" />
+				<p:selectOneMenu id="lstArbolito" required="true" filterMatchMode="contains"
+					style="font-size:14px; width:400px; max-width:400px" disabled="#{administrarEtapa.asesoriaIniciada}"
+					value="#{administrarEtapa.proyectoCliente.cliente.TPlanClienteSeleccionado}"
+					label="Plan con minutos a usar">
+					<f:selectItems
+						value="#{administrarEtapa.itemsPlanesDisponiblesCliente}" />
+						<p:ajax event="change" process="@this" update="pnlBotones"/>
+				</p:selectOneMenu>
+				<p:spacer width="1" />
+				<p:message for="lstArbolito" id="msgArbolito"/>
+			</p:panelGrid>
 
 			<p:outputPanel style="width:100%" id="pnlOutputTiempoGastado">
 				<p:panel id="pnlConferencia">
-					<p:panelGrid style="width:100%" columns="3">
+					<h3>
+						<div align="center">
+							<p:panelGrid style="width:100%; text-align:center" columns="3"
+								styleClass="ui-panelgrid-blank">
 
-						<p:outputLabel style="font-weight:normal; font-size:14px"
-							value="Minutos disponibles del plan" />
-							
-						<p:outputLabel style="font-weight:normal; font-size:14px"
-							value="Minutos gastados en esta asesoría" />
-							   
-						<p:outputLabel style="font-weight:normal; font-size:14px"
-							value="$ esta asesoría" />
+								<p:outputLabel style="font-weight:normal; font-size:14px"
+									value="Minutos disponibles del plan" />
 
+								<p:outputLabel style="font-weight:normal; font-size:14px"
+									value="Minutos gastados en esta asesoría" />
 
-						<p:outputLabel style="font-weight:normal; font-size:22px"
-							value="0" />
-							
-						<p:outputLabel style="font-weight:normal; font-size:14px"
-							value="#{administrarEtapa.tiempoConsumido}" />
-							
-						<p:outputLabel style="font-weight:normal; font-size:22px"
-							value="$1000" />
+								<p:outputLabel style="font-weight:normal; font-size:14px"
+									value="$ esta asesoría" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
+								<p:spacer width="1" />
 
 
+								<p:outputLabel style="font-weight:normal; font-size:72px"
+									value="0" />
+								<p:outputPanel>
 
-					</p:panelGrid>
+									<p:outputLabel style="font-weight:normal; font-size:72px"
+										value="#{administrarEtapa.tiempoMinutos}" />
+
+									<p:outputLabel style="font-weight:normal; font-size:22px"
+										value=":#{administrarEtapa.tiempoConsumido}" />
+								</p:outputPanel>
+								<p:outputLabel style="font-weight:normal; font-size:72px"
+									value="$1000" />
+
+
+
+							</p:panelGrid>
+						</div>
+					</h3>
 					<br />
-
-
-					<div align="center">
-
-						<p:commandButton id="btIniciarConferencia"
-							rendered="#{!administrarEtapa.asesoriaIniciada}"
-							style="font-size:18px; font-weight: bold !important; color:green; height:50px"
-							action="#{administrarEtapa.iniciarAsesoria()}" process="@this"
-							value="Iniciar asesoria/conferencia"
-							update="pnlConferencia, :formPoll">
-
-						</p:commandButton>
-						<p:spacer width="10" />
-
-						<p:commandButton id="btTerminarConferencia"
-							rendered="#{administrarEtapa.asesoriaIniciada}"
-							style="font-size:18px; font-weight: bold !important; color:red; height:50px"
-							action="#{administrarEtapa.terminarAsesoria()}" process="@this"
-							value="Terminar asesoría" update="pnlConferencia, :formPoll">
-
-						</p:commandButton>
-
-						<p:spacer width="10" />
-
-						<p:commandButton id="btnCancelarConferencia"
-							rendered="#{!administrarEtapa.asesoriaIniciada}"
-							style="font-size:14px; font-weight: normal !important;"
-							action="#{consultarFuncionesAPI.cerrarModal('panelConferencia')}"
-							process="@this" value="Cerrar" update="@this">
-
-						</p:commandButton>
-
-
-					</div>
-
 				</p:panel>
 			</p:outputPanel>
+			<br />
+			<br />
+
+			<div align="center">
+				<p:outputPanel id="pnlBotones">
+					<p:commandButton id="btIniciarConferencia"
+						rendered="#{!administrarEtapa.asesoriaIniciada}"
+						disabled="#{!(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.cliente!=null and administrarEtapa.proyectoCliente.cliente.TPlanClienteSeleccionado!=null)}"
+						style="font-size:18px; font-weight: bold !important; color:green; height:50px"
+						action="#{administrarEtapa.iniciarAsesoria()}" process="lstArbolito"
+						value="Iniciar asesoria"
+						update="pnlConferencia, :formPoll, :formAtencion:messages, pnlBotones, lstArbolito, msgArbolito">
+
+					</p:commandButton>
+					<p:spacer width="10" />
+
+					<p:commandButton id="btTerminarConferencia"
+						rendered="#{administrarEtapa.asesoriaIniciada}"
+						style="font-size:18px; font-weight: bold !important; color:red; height:50px"
+						action="#{administrarEtapa.terminarAsesoria()}" process="@this"
+						value="Terminar asesoría"
+						update="pnlConferencia, :formPoll, :formAtencion:messages, pnlBotones, lstArbolito, msgArbolito">
+
+					</p:commandButton>
+
+					<p:spacer width="10" />
+
+					<p:commandButton id="btnCancelarConferencia"
+						rendered="#{!administrarEtapa.asesoriaIniciada}"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{consultarFuncionesAPI.cerrarModal('panelConferencia')}"
+						process="@this" value="Cerrar" update="@this">
+
+					</p:commandButton>
+
+				</p:outputPanel>
+
+
+			</div>
+
+
+
 
 
 
