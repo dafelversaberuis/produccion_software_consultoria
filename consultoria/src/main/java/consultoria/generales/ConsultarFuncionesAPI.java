@@ -84,7 +84,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	}
 
 	/**
-	 * Obtiene la fecha y sumarle el máximo de dias el mes de su MES
+	 * Obtiene la fecha y sumarle el mï¿½ximo de dias el mes de su MES
 	 * 
 	 * @param aFecha
 	 * @param aDias
@@ -115,7 +115,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	// PUBLICOS
 
 	/**
-	 * Guarda la imagen en disco para luego ser leída
+	 * Guarda la imagen en disco para luego ser leï¿½da
 	 * 
 	 * @param aNombre
 	 * @param aSartaBase64
@@ -249,7 +249,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	}
 
 	/**
-	 * Obtiene el mes y el año
+	 * Obtiene el mes y el aï¿½o
 	 * 
 	 * @param aFecha
 	 * @return aFecha
@@ -261,7 +261,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	}
 
 	/**
-	 * Obtiene el mes y el año
+	 * Obtiene el mes y el aï¿½o
 	 * 
 	 * @param aFecha
 	 * @return aFecha
@@ -296,7 +296,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	}
 
 	/**
-	 * Abre un diálogo modal
+	 * Abre un diï¿½logo modal
 	 * 
 	 * @param aVariableWidgetDelModal
 	 */
@@ -311,7 +311,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	}
 
 	/**
-	 * Cierra un diálogo modal
+	 * Cierra un diï¿½logo modal
 	 * 
 	 * @param aVariableWidgetDelModal
 	 */
@@ -350,7 +350,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 
 	/**
 	 * Obtiene un mensaje del properties para poderlo mostrar en capa de
-	 * presentacion con muchos argumentos como parámetros
+	 * presentacion con muchos argumentos como parï¿½metros
 	 * 
 	 * @param aId
 	 * @return mensaje
@@ -505,7 +505,7 @@ public class ConsultarFuncionesAPI implements Serializable {
 	}
 
 	/**
-	 * Valida si una sarta esta vacía o no
+	 * Valida si una sarta esta vacï¿½a o no
 	 * 
 	 * @param aSarta
 	 * @return vacio
@@ -517,9 +517,25 @@ public class ConsultarFuncionesAPI implements Serializable {
 		}
 		return vacio;
 	}
+	
+	
+	
+
+	public String getHoras(Integer aMinutos) {
+		String horas = "";
+		try {
+			if (aMinutos != null) {
+				horas += "(" + this.getValorRedondeado(new BigDecimal(aMinutos).divide(new BigDecimal(60),10,RoundingMode.HALF_UP), IConstantes.DECIMALES_REDONDEAR) + " h)";
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+		return horas;
+	}
 
 	/**
-	 * Retorna la sarta en mayúscula y sin espacios.
+	 * Retorna la sarta en mayï¿½scula y sin espacios.
 	 * 
 	 * @param aSarta
 	 * @return sarta

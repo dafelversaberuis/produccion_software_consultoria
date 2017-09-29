@@ -154,15 +154,15 @@ ui-fieldset-content {
 			<p:growl id="messages" showDetail="true" globalOnly="true" />
 			<p:dialog widgetVar="eventDialog" id="eventDialog"
 				header="Detalles de la cita" showEffect="clip" hideEffect="clip"
-				closable="false"
+				width="1000" closable="false"
 				rendered="#{administrarEtapa.citaSeleccionada!=null}">
-				<p:panelGrid id="eventDetails" columns="2"
+				<p:panelGrid id="eventDetails" columns="4"
 					styleClass="ui-panelgrid-blank  ">
 
 
 
 					<p:outputLabel value="#{mensaje.labelCliente}" for="lstCliente"
-						style="font-weight:normal; font-size:14px" />
+						style="font-weight:bold; font-size:14px" />
 
 
 					<p:selectOneMenu label="#{mensaje.labelCliente}" filter="true"
@@ -183,7 +183,7 @@ ui-fieldset-content {
 
 
 					<p:outputLabel value="#{mensaje.proyectoSimple}" for="lstProyecto"
-						style="font-weight:normal; font-size:14px" />
+						style="font-weight:bold; font-size:14px" />
 
 
 					<p:selectOneMenu label="#{mensaje.proyectoSimple}" required="true"
@@ -202,10 +202,84 @@ ui-fieldset-content {
 
 					</p:selectOneMenu>
 
+					<p:outputLabel for="fechaInicio" value="Inicio cita:"
+						style="font-weight:bold; font-size:14px" />
+					<p:calendar id="fechaInicio"
+						value="#{administrarEtapa.citaSeleccionada.event.startDate}"
+						timeZone="GMT-5" pattern="dd/MM/yyyy HH:mm" required="true"
+						stepMinute="5"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}">
+						<p:ajax event="dateSelect" process="@this" update="fechaFin"
+							listener="#{administrarEtapa.actualizarFecha()}" />
+					</p:calendar>
+
+					<p:outputLabel for="fechaFin" value="Fin cita:"
+						style="font-weight:bold; font-size:14px" />
+					<p:calendar id="fechaFin"
+						value="#{administrarEtapa.citaSeleccionada.event.endDate}"
+						timeZone="GMT-5" pattern="dd/MM/yyyy HH:mm" required="true"
+						stepMinute="5"
+						mindate="#{administrarEtapa.citaSeleccionada.event.startDate}"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}">
+					</p:calendar>
+
+
+
+
+
+
+
+
+
+
+
+
+
+					<p:outputLabel for="txtObservacionesCliente"
+						value="Observaciones generales del cliente sobre la cita"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:inputTextarea
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						value="#{administrarEtapa.citaSeleccionada.observacionesCliente}"
+						rows="2" autoResize="false" id="txtObservacionesCliente"
+						style="font-size:14px; width:100%; min-height:50px" />
+
+					<p:outputLabel for="txtObservacionesConsultor"
+						style="font-weight:bold; font-size:14px"
+						value="Observaciones generales de Isoluciones/consultor sobre la cita" />
+
+					<p:inputTextarea
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						value="#{administrarEtapa.citaSeleccionada.observacionesConsultor}"
+						rows="2" autoResize="false" id="txtObservacionesConsultor"
+						style="font-size:14px; width:100%; min-height:50px" />
+
+
+
+					<p:outputLabel for="estado" value="Estado de cita/reunión:"
+						style="font-weight:bold; font-size:14px" />
+
+					<p:selectOneMenu id="estado" required="true"
+						style="width:100%; font-size:14px;"
+						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
+						value="#{administrarEtapa.citaSeleccionada.estado}" label="Estado">
+						<f:selectItem itemValue="R" itemLabel="Registrado/Programada" />
+						<f:selectItem itemValue="A" itemLabel="Aprobada para atención" />
+						<f:selectItem itemValue="T" itemLabel="En Atención" />
+						<f:selectItem itemValue="C" itemLabel="Cancelada" />
+						<f:selectItem itemValue="P" itemLabel="Aplazada" />
+						<f:selectItem itemValue="F"
+							itemLabel="Finalizada(No podrá modificar en este estado)" />
+					</p:selectOneMenu>
+
+					<p:spacer width="1" />
+					<p:spacer width="1" />
+
 					<p:outputPanel id="pnlProyectoCliente1">
 						<p:outputLabel value="#{mensaje.consultor}"
 							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
-							style="font-weight:normal; font-size:14px" />
+							style="font-weight:bold; font-size:14px" />
 					</p:outputPanel>
 
 					<p:outputPanel id="pnlProyectoCliente2">
@@ -218,7 +292,7 @@ ui-fieldset-content {
 
 						<p:outputLabel value="Vigencia proyecto/norma/proceso"
 							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
-							style="font-weight:normal; font-size:14px" />
+							style="font-weight:bold; font-size:14px" />
 					</p:outputPanel>
 					<p:outputPanel id="pnlProyectoCliente4">
 
@@ -240,62 +314,6 @@ ui-fieldset-content {
 
 
 
-
-					<p:outputLabel for="estado" value="Estado de cita/reunión:" />
-
-					<p:selectOneMenu id="estado" required="true"
-						style="width:100%; font-size:14px;"
-						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
-						value="#{administrarEtapa.citaSeleccionada.estado}" label="Estado">
-						<f:selectItem itemValue="R" itemLabel="Registrado/Programada" />
-						<f:selectItem itemValue="A" itemLabel="Aprobada para atención" />
-						<f:selectItem itemValue="T" itemLabel="En Atención" />
-						<f:selectItem itemValue="C" itemLabel="Cancelada" />
-						<f:selectItem itemValue="P" itemLabel="Aplazada" />
-						<f:selectItem itemValue="F"
-							itemLabel="Finalizada(No podrá modificar en este estado)" />
-					</p:selectOneMenu>
-
-
-					<p:outputLabel for="fechaInicio" value="Desde:" />
-					<p:calendar id="fechaInicio"
-						value="#{administrarEtapa.citaSeleccionada.event.startDate}"
-						timeZone="GMT-5" pattern="dd/MM/yyyy HH:mm" required="true"
-						stepMinute="5"
-						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}">
-						<p:ajax event="dateSelect" process="@this" update="fechaFin"
-							listener="#{administrarEtapa.actualizarFecha()}" />
-					</p:calendar>
-
-					<p:outputLabel for="fechaFin" value="Hasta:" />
-					<p:calendar id="fechaFin"
-						value="#{administrarEtapa.citaSeleccionada.event.endDate}"
-						timeZone="GMT-5" pattern="dd/MM/yyyy HH:mm" required="true"
-						stepMinute="5"
-						mindate="#{administrarEtapa.citaSeleccionada.event.startDate}"
-						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}">
-					</p:calendar>
-
-					<p:outputLabel for="txtObservacionesCliente"
-						value="Observaciones del cliente" />
-
-					<p:inputTextarea
-						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
-						value="#{administrarEtapa.citaSeleccionada.observacionesCliente}"
-						rows="2" autoResize="false" id="txtObservacionesCliente"
-						style="font-size:14px; width:100%; min-height:50px" />
-
-					<p:outputLabel for="txtObservacionesConsultor"
-						value="Observaciones del consultor/Isoluciones" />
-
-					<p:inputTextarea
-						disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
-						value="#{administrarEtapa.citaSeleccionada.observacionesConsultor}"
-						rows="2" autoResize="false" id="txtObservacionesConsultor"
-						style="font-size:14px; width:100%; min-height:50px" />
-
-
-
 				</p:panelGrid>
 				<br />
 				<p:outputPanel id="pnlBotones">
@@ -311,20 +329,21 @@ ui-fieldset-content {
 						<p:spacer width="10" />
 						<p:commandButton id="btnGuardar" process=":formAgenda"
 							rendered="#{!administrarEtapa.citaSeleccionada.modoEdicion}"
-							style="font-size:14px; font-weight:normal !important"
+							style="font-size:14px; font-weight:bold !important"
 							action="#{administrarEtapa.agregarDesdeModal()}"
 							oncomplete="PF('myschedule').update();"
 							update="pnlBotones,:formAtencion:messages, eventDetails"
-							value="Guardar Cita" />
+							value="Guardar información de la cita" />
+						<p:spacer width="10" />
 						<p:commandButton id="btnActualizar" process=":formAgenda"
 							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}"
-							style="font-size:14px; font-weight:normal !important"
+							style="font-size:14px; font-weight:bold !important"
 							action="#{administrarEtapa.agregarDesdeModal()}"
 							disabled="#{administrarEtapa.citaSeleccionada.modoVisualizacion()}"
 							oncomplete="PF('myschedule').update();"
 							update="eventDetails,:formAtencion:messages, eventDetails"
-							value="Actualizar Cita" />
-
+							value="Actualizar información  Cita" />
+						<p:spacer width="10" />
 						<p:commandButton id="btnCorreo" process=":formAgenda"
 							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}"
 							style="font-size:14px; font-weight:normal !important"
@@ -332,6 +351,15 @@ ui-fieldset-content {
 							oncomplete="PF('myschedule').update();"
 							update="eventDetails,:formAtencion:messages, eventDetails"
 							value="Enviar correo recordatorio" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnAsesoria" process=":formAgenda"
+							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}"
+							style="font-size:14px; font-weight:normal !important"
+							action="#{administrarEtapa.abrirAsesoria()}"
+							oncomplete="PF('myschedule').update();"
+							update="eventDetails,:formAtencion:messages, eventDetails, :formConferencia, :formPoll"
+							value="Iniciar asesoría/conferencia" />
 
 						<p:blockUI block="eventDetails" trigger="btnCorreo"
 							rendered="#{administrarEtapa.citaSeleccionada.modoEdicion}">
@@ -345,6 +373,9 @@ ui-fieldset-content {
 			</p:dialog>
 
 		</h:form>
+
+		<ui:include src="/etapas/iniciarAsesoria.xhtml" />
+
 		<script type="text/javascript">
     PrimeFaces.locales['es'] = {
         closeText: 'Cerrar',

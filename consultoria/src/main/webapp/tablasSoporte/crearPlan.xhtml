@@ -53,20 +53,19 @@
 						closable="true">
 
 
-						<p:panelGrid columns="3" cellpadding="0" cellspacing="0"
+						<p:panelGrid columns="4" cellpadding="0" cellspacing="0"
 							style="width:60%" styleClass="ui-panelgrid-blank">
 
 							<p:outputLabel for="txtNombre" value="Nombre del plan"
 								style="font-weight:bold; font-size:14px" />
 							<p:inputText id="txtNombre"
 								value="#{hacerMantenimiento.arbolito.nombre}" required="true"
-								label="Nombre del plan"
-								style=" font-size:14px; width:100%" />
+								label="Nombre del plan" style=" font-size:14px; width:100%" />
 
 
 
 							<p:message for="txtNombre" />
-
+							<p:spacer width="1" />
 
 
 
@@ -82,15 +81,14 @@
 
 
 							<p:message for="lstIndicativo" />
-
+							<p:spacer width="1" />
 
 
 							<p:outputLabel for="lstIVA" value="% Impuesto"
 								style="font-weight:bold; font-size:14px;" />
 							<p:selectOneMenu id="lstIVA" required="true"
 								style="font-size:14px;"
-								value="#{hacerMantenimiento.arbolito.iva.id}"
-								label="% Impuesto">
+								value="#{hacerMantenimiento.arbolito.iva.id}" label="% Impuesto">
 								<f:selectItems value="#{hacerMantenimiento.itemsIva}" />
 
 								<p:ajax event="change" process="@this"
@@ -101,6 +99,9 @@
 
 
 							<p:message for="lstIVA" />
+							<p:spacer width="1" />
+
+
 
 							<p:outputLabel for="txtPrecio" value="Precio sin Impuesto"
 								style="font-weight:bold; font-size:14px" />
@@ -115,7 +116,7 @@
 
 							</p:inputText>
 							<p:message for="txtPrecio" />
-
+							<p:spacer width="1" />
 
 
 
@@ -131,6 +132,7 @@
 
 
 							<p:spacer width="1" />
+							<p:spacer width="1" />
 
 
 
@@ -138,16 +140,16 @@
 
 
 
-
-							<p:outputLabel for="txtCantidad"
-								value="Minutos del plan"
+							<p:outputLabel for="txtCantidad" value="Minutos del plan"
 								style="font-weight:bold; font-size:14px" />
 							<p:inputText id="txtCantidad"
-								value="#{hacerMantenimiento.arbolito.minutos}"
-								required="true" label="Minutos del plan"
-								style="font-size:14px" />
+								value="#{hacerMantenimiento.arbolito.minutos}" required="true"
+								label="Minutos del plan" style="font-size:14px" >
+								<p:ajax event="change" process="@this" update="txtHoras,txtCantidad"></p:ajax>
+							</p:inputText>	
 
-
+							<p:outputLabel  value="#{consultarFuncionesAPI.getHoras(hacerMantenimiento.arbolito.minutos)}"
+								style="font-weight:normal; font-size:14px" id="txtHoras"/>
 
 							<p:message for="txtCantidad" />
 
@@ -187,20 +189,19 @@
 
 				<p:spacer height="30" />
 				<p:accordionPanel id="pnlDtlArbolitos">
-					<p:tab title="Planes-minutos ofrecidos"
-						titleStyle="font-size:16px" closable="true">
+					<p:tab title="Planes-minutos ofrecidos" titleStyle="font-size:16px"
+						closable="true">
 
 						<p:dataTable var="loc" id="dtlArbolitos"
 							value="#{hacerMantenimiento.arbolitos}" reflow="true" rows="10"
 							paginator="true" paginatorPosition="bottom"
-							draggableColumns="true"
-							emptyMessage="No existen planes creados">
+							draggableColumns="true" emptyMessage="No existen planes creados">
 
 
 
-							<p:column headerText="Nombre del plan"
-								sortBy="#{loc.nombre}" filterBy="#{loc.nombre}"
-								filterMatchMode="contains" style="font-size:14px">
+							<p:column headerText="Nombre del plan" sortBy="#{loc.nombre}"
+								filterBy="#{loc.nombre}" filterMatchMode="contains"
+								style="font-size:14px">
 								<p:outputLabel value="#{loc.nombre}"
 									style="font-weight:normal; font-size:12px" />
 							</p:column>
@@ -225,13 +226,13 @@
 
 
 
-							<p:column headerText="Minutos del plan"
-								sortBy="#{loc.minutos}"
+							<p:column headerText="Minutos del plan" sortBy="#{loc.minutos}"
 								style="font-size:14px; text-align:right;">
-								<p:outputLabel value="#{loc.minutos}"
+								<p:outputLabel
+									value="#{loc.minutos} #{consultarFuncionesAPI.getHoras(loc.minutos)}"
 									style="font-weight:normal; font-size:12px" />
 							</p:column>
-							
+
 							<p:column headerText="Precio sin Impuesto"
 								sortBy="#{loc.precioVentaPesos}"
 								style="font-size:14px; text-align:right;">
@@ -241,10 +242,9 @@
 									<f:convertNumber type="currency" currencySymbol="$ " />
 								</p:outputLabel>
 							</p:column>
-							
-							
-							<p:column headerText="% Impuesto"
-								sortBy="#{loc.iva.valorIva}"
+
+
+							<p:column headerText="% Impuesto" sortBy="#{loc.iva.valorIva}"
 								style="font-size:14px; text-align:right;">
 								<p:outputLabel value="#{loc.iva.valorIva}"
 									style="font-weight:normal; font-size:12px" />

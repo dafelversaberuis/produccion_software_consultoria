@@ -154,6 +154,63 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private List<Cita>									citas;
 	private Cita												citaSeleccionada;
 
+	private int													tiempoConsumido;
+	private boolean											asesoriaIniciada;
+
+	/**
+	 * Terminar asesoria
+	 */
+	public void terminarAsesoria() {
+
+		this.asesoriaIniciada = false;
+	}
+
+	public void iniciarAsesoria() {
+
+		this.tiempoConsumido = 0;
+		this.asesoriaIniciada = true;
+	}
+
+	/**
+	 * Procesa el tiempo
+	 */
+	public void procesarTiempo() {
+
+		// por ahora viene segundo
+		this.tiempoConsumido++;
+		if (this.tiempoConsumido == 60) {
+			// guarda el tiempo y actualiza contador
+			this.tiempoConsumido = 0;
+
+		}
+
+	}
+
+	/**
+	 * Inciar conferencia
+	 */
+	public void abrirAsesoria() {
+		try {
+
+			// guarda
+			agregarDesdeModal();
+
+			this.mostrarMensajeGlobalPersonalizado("AREA DE ASESORÍA/CONFERENCIA...LEA LAS INSTRUCCIONES", "advertencia");
+
+			this.abrirModal("panelConferencia");
+
+			this.tiempoConsumido = 0;
+
+			this.asesoriaIniciada = false;
+
+		} catch (Exception e) {
+
+			IConstantes.log.error(e, e);
+
+		}
+
+	}
+
 	/**
 	 * Envía recordatorio de la cita
 	 */
@@ -6623,6 +6680,22 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	public void setDocumentosCronograma(List<DocumentoCronograma> documentosCronograma) {
 		this.documentosCronograma = documentosCronograma;
+	}
+
+	public int getTiempoConsumido() {
+		return tiempoConsumido;
+	}
+
+	public void setTiempoConsumido(int tiempoConsumido) {
+		this.tiempoConsumido = tiempoConsumido;
+	}
+
+	public boolean isAsesoriaIniciada() {
+		return asesoriaIniciada;
+	}
+
+	public void setAsesoriaIniciada(boolean asesoriaIniciada) {
+		this.asesoriaIniciada = asesoriaIniciada;
 	}
 
 }

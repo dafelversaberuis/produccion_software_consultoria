@@ -38,7 +38,7 @@
 
 			<div align="center" class="titulo"></div>
 
-			<p:outputPanel id="pnlCliente">
+			<p:outputPanel id="pnlCliente" rendered="#{administrarPersonal.vistaActual==null or administrarPersonal.vistaActual == 'agrupadores'}">
 
 				<p:spacer height="10" />
 
@@ -314,8 +314,8 @@
 								<p:commandButton id="btnIrPreguntas" title="Planes del cliente"
 									style="background-origin: content-box; background-image: url('../imagenes/p_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 									action="#{administrarPersonal.asignarCliente(loc,'VISTA_PREGUNTAS')}"
-									value="" process=":form:pnlDltRegistros"
-									update=":formAsignarPregunta, :form" />
+									value="" process=":form:pnlDtlClientes"
+									update=":formAsignarPregunta, :form, :formPoll" />
 
 
 							</p:column>

@@ -7,51 +7,20 @@
 
 	<h:form id="formEliminarHijo">
 
-		<p:dialog header="Eliminar plan/cliente" height="400" width="600"
+		<p:dialog header="Eliminar plan/cliente" 
 			widgetVar="panelEliminacionHijo" resizable="true" closable="false"
 			responsive="true">
 			<p:panel id="pnlEliminar">
 				<div align="center">
 
 
-					<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+					<p:panelGrid columns="1" cellpadding="0" cellspacing="0"
 						styleClass="ui-panelgrid-blank">
 
 
-						<p:outputLabel value="Fecha adquisición" style="font-weight:bold" />
+						<p:outputLabel value="¿ Desea eliminar el plan seleccionado?" style="font-weight:bold; font-size:12px" />
 
-						<p:outputLabel style="font-weight:normal"
-							value="#{consultarFuncionesAPI.getFechaHoraColombia(det.fechaCompra)}" />
-
-						<p:outputLabel value="Plan adquirido" style="font-weight:bold" />
-
-
-						<p:outputLabel value="#{det.plan.nombre}"
-							style="font-weight:normal" />
-
-
-
-						<p:outputLabel value="Precio plan (Impuesto incluido)"
-							style="font-weight:bold" />
-
-
-
-						<p:outputLabel value="#{det.precioVentaPesosConIva}"
-							style="font-weight:normal; font-size:12px">
-
-							<f:convertNumber type="currency" currencySymbol="$ " />
-						</p:outputLabel>
-
-
-
-						<p:outputLabel value="Minutos del plan" style="font-weight:bold" />
-
-
-						<p:outputLabel style="font-weight:normal"
-							value="#{det.minutosComprados}" />
-
-
-
+						
 
 
 

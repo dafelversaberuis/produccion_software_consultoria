@@ -1,10 +1,14 @@
 package consultoria.modulos.personal;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -30,27 +34,84 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -2221958861238708985L;
+	private static final long		serialVersionUID	= -2221958861238708985L;
 
-	private Personal					personal;
-	private Personal					personalTransaccion;
-	private Consultor					consultor;
-	private Consultor					consultorTransaccion;
-	private Cliente						clienteConsulta;
-	private Cliente						cliente;
-	private Cliente						clienteTransaccion;
-	private String						vistaActual;
+	private Personal						personal;
+	private Personal						personalTransaccion;
+	private Consultor						consultor;
+	private Consultor						consultorTransaccion;
+	private Cliente							clienteConsulta;
+	private Cliente							cliente;
+	private Cliente							clienteTransaccion;
+	private String							vistaActual;
 
-	private PlanCliente				preguntaProyecto;
-	private PlanCliente				preguntaProyectoTransaccion;
+	private int									minutosGastados;
 
-	private List<Personal>		administradores;
-	private List<Consultor>		consultores;
-	private List<Cliente>			clientes;
-	private List<PlanCliente>	preguntas;
-	private List<SelectItem>	itemsArbolitosDisponibles;
+	private PlanCliente					preguntaProyecto;
+	private PlanCliente					preguntaProyectoTransaccion;
+	private Map<String, Object>	totales;
+
+	private List<Personal>			administradores;
+	private List<Consultor>			consultores;
+	private List<Cliente>				clientes;
+	private List<PlanCliente>		preguntas;
+	private List<SelectItem>		itemsArbolitosDisponibles;
 
 	// nuevos
+	
+	public void contarMinutos(){
+		minutosGastados++;
+	}
+	
+	public int getMinutosGastados() {
+		return minutosGastados;
+	}
+
+	public void setMinutosGastados(int minutosGastados) {
+		this.minutosGastados = minutosGastados;
+	}
+	
+	
+	
+
+	public BigDecimal gePrecioMinutosGastadosB(Integer aMinutosGastados, Integer aMinutosPlan, BigDecimal aValorPlan) {
+		BigDecimal precio = new BigDecimal(0);
+		try {
+			if (aMinutosPlan != null && aValorPlan != null && aMinutosGastados != null) {
+				precio = (this.getValorRedondeado((aValorPlan.divide(new BigDecimal(aMinutosPlan), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(aMinutosGastados)), IConstantes.DECIMALES_REDONDEAR));
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+		return precio;
+	}
+
+	public String gePrecioMinutosGastados(Integer aMinutosGastados, Integer aMinutosPlan, BigDecimal aValorPlan) {
+		String precio = "";
+		try {
+			if (aMinutosPlan != null && aValorPlan != null && aMinutosGastados != null) {
+				precio += this.getMoneda(this.getValorRedondeado((aValorPlan.divide(new BigDecimal(aMinutosPlan), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(aMinutosGastados)), IConstantes.DECIMALES_REDONDEAR));
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+		return precio;
+	}
+
+	public String gePrecioMinuto(Integer aMinutos, BigDecimal aValorPlan) {
+		String precio = "";
+		try {
+			if (aMinutos != null && aValorPlan != null) {
+				precio += this.getMoneda(this.getValorRedondeado(aValorPlan.divide(new BigDecimal(aMinutos), 10, RoundingMode.HALF_UP), IConstantes.DECIMALES_REDONDEAR)) + "/ min";
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+		return precio;
+	}
 
 	/**
 	 * Crea un registro de pregunta de un proyecto
@@ -66,15 +127,14 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 			this.preguntaProyecto.setMinutosConCosto(0);
 			this.preguntaProyecto.setMinutosSinCosto(0);
 			this.preguntaProyecto.setMinutosGastados(0);
-			this.preguntaProyecto.setMinutosComprados(this.preguntaProyecto.getPlan().getMinutos());
 
 			Plan temp = new Plan();
-			temp.setId(this.preguntaProyecto.getId());
+			temp.setId(this.preguntaProyecto.getPlan().getId());
 			planes = IConsultasDAO.getArbolitos(temp);
 			if (planes != null && planes.size() > 0) {
 				this.preguntaProyecto.setPlan(planes.get(0));
 			}
-
+			this.preguntaProyecto.setMinutosComprados(this.preguntaProyecto.getPlan().getMinutos());
 			this.preguntaProyecto.setPrecioVentaPesos(this.preguntaProyecto.getPlan().getPrecioVentaPesos());
 			this.preguntaProyecto.setPrecioVentaPesosConIva(this.preguntaProyecto.getPlan().getPrecioVentaPesosConIva());
 			this.preguntaProyecto.setIvaPesos(this.preguntaProyecto.getPlan().getIvaPesos());
@@ -142,7 +202,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 			conexion.commitBD();
 
 			this.mostrarMensajeGlobal("eliminacionExitosa", "exito");
-			this.mostrarMensajeGlobal("tambienPosiciones", "exito");
+
 			this.cerrarModal("panelEliminacionHijo");
 
 		} catch (Exception e) {
@@ -248,6 +308,36 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 
 				this.preguntas = IConsultasDAO.getPlanesCliente(pregunta);
 
+				this.totales = new HashMap<String, Object>();
+
+				this.totales.put("precioPlan", new BigDecimal(0));
+				this.totales.put("minutosAdquiridos", new Integer(0));
+				this.totales.put("minutosCostoGastado", new Integer(0));
+				this.totales.put("minutosCostoDisponible", new Integer(0));
+				this.totales.put("minutosGratisGastado", new Integer(0));
+				this.totales.put("costoGastado", new BigDecimal(0));
+				this.totales.put("costoAhorrado", new BigDecimal(0));
+
+				if (this.preguntas != null && this.preguntas.size() > 0) {
+					for (PlanCliente a : this.preguntas) {
+
+						this.totales.put("precioPlan", ((BigDecimal) this.totales.get("precioPlan")).add(a.getPrecioVentaPesosConIva()));
+						this.totales.put("minutosAdquiridos", ((Integer) this.totales.get("minutosAdquiridos")) + a.getMinutosComprados().intValue());
+						this.totales.put("minutosCostoGastado", ((Integer) this.totales.get("minutosCostoGastado")) + a.getMinutosConCosto().intValue());
+
+						if ((a.getMinutosComprados().intValue() - a.getMinutosConCosto().intValue()) > 0) {
+							this.totales.put("minutosCostoDisponible", ((Integer) this.totales.get("minutosCostoDisponible")) + (a.getMinutosComprados().intValue() - a.getMinutosConCosto().intValue()));
+
+						}
+
+						this.totales.put("minutosGratisGastado", ((Integer) this.totales.get("minutosGratisGastado")) + a.getMinutosSinCosto().intValue());
+
+						this.totales.put("costoGastado", ((BigDecimal) this.totales.get("costoGastado")).add(gePrecioMinutosGastadosB(a.getMinutosConCosto(), a.getMinutosComprados(), a.getPrecioVentaPesosConIva())));
+						this.totales.put("costoAhorrado", ((BigDecimal) this.totales.get("costoAhorrado")).add(gePrecioMinutosGastadosB(a.getMinutosSinCosto(), a.getMinutosComprados(), a.getPrecioVentaPesosConIva())));
+
+					}
+				}
+
 			}
 		} catch (Exception e) {
 			IConstantes.log.error(e, e);
@@ -267,7 +357,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	// privados
 
 	/**
-	 * Obtiene una clave aleatoria numérica de n dígitos
+	 * Obtiene una clave aleatoria numï¿½rica de n dï¿½gitos
 	 * 
 	 * @return clave
 	 */
@@ -343,7 +433,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Detremina si un cliente es válido
+	 * Detremina si un cliente es vï¿½lido
 	 * 
 	 * @param aTransaccion
 	 * @return ok
@@ -654,7 +744,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Determina si un consultor está vigente
+	 * Determina si un consultor estï¿½ vigente
 	 * 
 	 * @param aConsultor
 	 * @return vigente
@@ -1217,7 +1307,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Este método borra el formulario de creación de un administrador
+	 * Este mï¿½todo borra el formulario de creaciï¿½n de un administrador
 	 */
 	public void cancelarAdministrador() {
 
@@ -1233,7 +1323,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Cancela la creación de un cliente
+	 * Cancela la creaciï¿½n de un cliente
 	 */
 	public void cancelarCliente() {
 
@@ -1247,7 +1337,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Este método cancela la información de un consultor
+	 * Este mï¿½todo cancela la informaciï¿½n de un consultor
 	 */
 	public void cancelarConsultor() {
 
@@ -1263,7 +1353,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Cancela un cliente en transacción
+	 * Cancela un cliente en transacciï¿½n
 	 * 
 	 * @param aVista
 	 */
@@ -1284,9 +1374,9 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 			} else if (aVista != null && aVista.equals("MODAL_ELIMINAR_CLIENTE")) {
 				this.cerrarModal("panelEliminacionCliente");
 
-			}else{
+			} else {
 				this.vistaActual = null;
-				
+
 			}
 
 		} catch (Exception e) {
@@ -1298,7 +1388,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Cancela la edición de un consultor
+	 * Cancela la ediciï¿½n de un consultor
 	 * 
 	 * @param aVista
 	 */
@@ -1332,8 +1422,8 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Este método borra el formulario de edición de un administrador en
-	 * transacción
+	 * Este mï¿½todo borra el formulario de ediciï¿½n de un administrador en
+	 * transacciï¿½n
 	 */
 	public void cancelarAdministradorTransaccion(String aVista) {
 		try {
@@ -1362,7 +1452,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Asigna un cliente para realizar una transacción
+	 * Asigna un cliente para realizar una transacciï¿½n
 	 * 
 	 * @param aCliente
 	 * @param aVista
@@ -1373,6 +1463,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 
 			this.clienteTransaccion = aCliente;
 			this.vistaActual = null;
+			this.minutosGastados = 0;
 
 			if (aVista != null && aVista.equals("VISTA_PREGUNTAS")) {
 				this.vistaActual = aVista;
@@ -1411,7 +1502,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Asigna un consultor para realizar alguna operación sobre el mismo
+	 * Asigna un consultor para realizar alguna operaciï¿½n sobre el mismo
 	 * 
 	 * @param aConsultor
 	 * @param aVista
@@ -1468,7 +1559,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	/**
-	 * Asigna un administrador para realizar una acción
+	 * Asigna un administrador para realizar una acciï¿½n
 	 * 
 	 * @param aAgrupador
 	 * @param aVista
@@ -1699,7 +1790,7 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 			List<Plan> arbolitosActivos = IConsultasDAO.getArbolitos(arbol);
 
 			if (arbolitosActivos != null && arbolitosActivos.size() > 0) {
-				arbolitosActivos.forEach(p -> this.itemsArbolitosDisponibles.add(new SelectItem(p.getId(), p.getMinutos() + " minutos (PRECIO: " + this.getMoneda(p.getPrecioVentaPesosConIva()) + ", PLAN:" + p.getNombre() + ", )")));
+				arbolitosActivos.forEach(p -> this.itemsArbolitosDisponibles.add(new SelectItem(p.getId(), p.getMinutos() + " minutos " + this.getHoras(p.getMinutos()) + ", PRECIO PLAN: " + this.getMoneda(p.getPrecioVentaPesosConIva()) + ", NOMBRE PLAN:" + p.getNombre())));
 			}
 
 		} catch (Exception e) {
@@ -1716,5 +1807,17 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	public void setItemsArbolitosDisponibles(List<SelectItem> itemsArbolitosDisponibles) {
 		this.itemsArbolitosDisponibles = itemsArbolitosDisponibles;
 	}
+
+	public Map<String, Object> getTotales() {
+		return totales;
+	}
+
+	public void setTotales(Map<String, Object> totales) {
+		this.totales = totales;
+	}
+	
+	
+
+	
 
 }

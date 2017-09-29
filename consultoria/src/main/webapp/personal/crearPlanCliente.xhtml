@@ -10,13 +10,21 @@
 			<p:spacer height="5" />
 			<p:panel>
 				<div align="left">
+
 					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 						cellpadding="5">
+
+						<p:outputLabel value="Minutos Gastados sesion"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:outputLabel style="font-weight:normal; font-size:14px" id="outputTiempoGastado"
+							value="#{administrarPersonal.minutosGastados} minutos" />
+
 						<p:outputLabel value="Cliente"
 							style="font-weight:bold; font-size:14px" />
 
 						<p:outputLabel style="font-weight:normal; font-size:14px"
-							value="#{administrarPersonal.cliente.cliente}" />
+							value="#{administrarPersonal.clienteTransaccion.cliente}" />
 
 
 					</p:panelGrid>
@@ -95,8 +103,8 @@
 							</f:facet>
 
 
-							<p:column headerText="Fecha compra/adquisición"
-								style="font-size:14px" sortBy="#{det.fechaCompra}">
+							<p:column headerText="Fecha compra/ adquisición"
+								style="font-size:12px" sortBy="#{det.fechaCompra}">
 								<p:outputLabel style="font-weight:normal"
 									value="#{consultarFuncionesAPI.getFechaHoraColombia(det.fechaCompra)}" />
 
@@ -104,14 +112,14 @@
 
 							<p:column headerText="Plan adquirido" sortBy="#{det.plan.nombre}"
 								filterBy="#{det.plan.nombre}" filterMatchMode="contains"
-								filterStyle="display:none" style="font-size:14px">
+								filterStyle="display:none" style="font-size:12px">
 								<p:outputLabel value="#{det.plan.nombre}"
 									style="font-weight:normal" />
 							</p:column>
 
 							<p:column headerText="Precio plan(Impuesto incluido)"
 								sortBy="#{det.precioVentaPesosConIva}"
-								style="font-size:14px; text-align:right;">
+								style="font-size:12px; text-align:right; color:blue">
 								<p:outputLabel value="#{det.precioVentaPesosConIva}"
 									style="font-weight:normal; font-size:12px">
 
@@ -122,41 +130,75 @@
 
 
 							<p:column headerText="Minutos adquiridos"
-								style="font-size:14px; text-align:right"
+								style="font-size:12px; text-align:right; color:blue"
 								sortBy="#{det.minutosComprados}"
 								filterBy="#{det.minutosComprados}" filterMatchMode="contains"
 								filterStyle="display:none">
 
 								<p:outputLabel style="font-weight:normal"
-									value="#{det.minutosComprados}" />
+									value="#{det.minutosComprados} #{consultarFuncionesAPI.getHoras(det.minutosComprados)}" />
+							</p:column>
+
+							<p:column headerText="$/min plan"
+								style="font-size:12px; text-align:right">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{administrarPersonal.gePrecioMinuto(det.minutosComprados,det.precioVentaPesosConIva)}" />
+							</p:column>
+
+							<p:column headerText="Minutos con costo disponibles"
+								style="font-size:12px; text-align:right; color:green">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{(det.minutosComprados - det.minutosConCosto) > 0 ? (det.minutosComprados - det.minutosConCosto): 0} #{(det.minutosComprados - det.minutosConCosto) > 0 ? consultarFuncionesAPI.getHoras((det.minutosComprados - det.minutosConCosto)): '(0 hrs)'}" />
 							</p:column>
 
 
 							<p:column headerText="Minutos con costo gastados"
-								style="font-size:14px; text-align:right"
+								style="font-size:12px; text-align:right; color:red"
 								sortBy="#{det.minutosConCosto}"
-								filterBy="#{det.minutosComprados}" filterMatchMode="contains"
+								filterBy="#{det.minutosConCosto}" filterMatchMode="contains"
 								filterStyle="display:none">
 
 								<p:outputLabel style="font-weight:normal"
-									value="#{det.minutosConCosto}" />
+									value="#{det.minutosConCosto} #{consultarFuncionesAPI.getHoras(det.minutosConCosto)}" />
 							</p:column>
 
-							<p:column headerText="Minutos sin costo gastados(Sin afectar plan)"
-								style="font-size:14px; text-align:right"
+
+
+
+
+							<p:column headerText="($) Gastado Minutos con costo"
+								style="font-size:12px; text-align:right; color:red">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{administrarPersonal.gePrecioMinutosGastados(det.minutosConCosto,det.minutosComprados,det.precioVentaPesosConIva)}" />
+							</p:column>
+
+
+
+							<p:column
+								headerText="Minutos sin costo gastados(Sin afectar plan)"
+								style="font-size:12px; text-align:right; color:orange"
 								sortBy="#{det.minutosSinCosto}"
 								filterBy="#{det.minutosSinCosto}" filterMatchMode="contains"
 								filterStyle="display:none">
 
 								<p:outputLabel style="font-weight:normal"
-									value="#{det.minutosSinCosto}" />
+									value="#{det.minutosSinCosto} #{consultarFuncionesAPI.getHoras(det.minutosSinCosto)}" />
 							</p:column>
 
-							
+							<p:column headerText="($) Ahorrado Minutos sin costo"
+								style="font-size:12px; text-align:right; color:orange">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{administrarPersonal.gePrecioMinutosGastados(det.minutosSinCosto,det.minutosComprados,det.precioVentaPesosConIva)}" />
+							</p:column>
+
 
 
 							<p:column headerText="#{mensaje.acciones}"
-								style="font-size:14px; text-align:center;">
+								style="font-size:12px; text-align:center;">
 
 
 
@@ -176,16 +218,73 @@
 
 							</p:column>
 
+							<p:columnGroup type="footer">
+								<p:row>
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold"
+										footerText="TOTAL" colspan="2" />
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold; color:blue"
+										footerText="#{consultarFuncionesAPI.getMoneda(administrarPersonal.totales.get('precioPlan'))}" />
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold;color:blue"
+										footerText="#{administrarPersonal.totales.get('minutosAdquiridos')} #{consultarFuncionesAPI.getHoras(administrarPersonal.totales.get('minutosAdquiridos'))}" />
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold"
+										footerText=" " />
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold; color:green"
+										footerText="#{administrarPersonal.totales.get('minutosCostoDisponible')} #{consultarFuncionesAPI.getHoras(administrarPersonal.totales.get('minutosCostoDisponible'))}" />
+
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold; color:red"
+										footerText="#{administrarPersonal.totales.get('minutosCostoGastado')} #{consultarFuncionesAPI.getHoras(administrarPersonal.totales.get('minutosCostoGastado'))}" />
+
+
+
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold; color:red"
+										footerText="#{consultarFuncionesAPI.getMoneda(administrarPersonal.totales.get('costoGastado'))}" />
+
+
+
+
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold; color:orange"
+										footerText="#{administrarPersonal.totales.get('minutosGratisGastado')} #{consultarFuncionesAPI.getHoras(administrarPersonal.totales.get('minutosGratisGastado'))}" />
+
+
+									<p:column
+										style="text-align:right; font-size:12px; font-weight:bold; color:orange"
+										footerText="#{consultarFuncionesAPI.getMoneda(administrarPersonal.totales.get('costoAhorrado'))} #{consultarFuncionesAPI.getHoras(det.minutosComprados)}" />
+
+									<p:column style="text-align:right; font-size:14px" />
+
+
+
+
+								</p:row>
+							</p:columnGroup>
+
 
 						</p:dataTable>
 
-					
+
+						<br />
+
 
 
 						<div align="center">
 
 							<p:commandButton id="btnRegresarAProyecto"
-								style="font-size:14px; font-weight: normal !important;" 
+								style="font-size:14px; font-weight: normal !important;"
 								action="#{administrarPersonal.cancelarClienteTransaccion(null)}"
 								process="@this" value="#{mensaje.regresar}"
 								update=":formAsignarPregunta, :form">
@@ -199,4 +298,14 @@
 			</p:outputPanel>
 		</p:outputPanel>
 	</h:form>
+
+	<h:form id="formPoll">
+
+		<p:outputPanel
+			rendered="#{administrarPersonal.vistaActual == 'VISTA_PREGUNTAS'}">  
+			<p:poll interval="3"
+				listener="#{administrarPersonal.contarMinutos()}" update=":formAsignarPregunta:outputTiempoGastado" />
+		</p:outputPanel>
+	</h:form>
+
 </ui:composition>
