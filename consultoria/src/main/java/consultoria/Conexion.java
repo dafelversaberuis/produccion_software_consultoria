@@ -3,6 +3,7 @@ package consultoria;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 
 import consultoria.generales.IConstantes;
 
@@ -37,19 +35,19 @@ public class Conexion implements Serializable {
 		try {
 
 			// **************openshuftV3********************
-//			String DB_driver = "org.postgresql.Driver";
-//
-//			String url = "jdbc:postgresql://postgresql:5432/produccion_consultoria";
-//			String username = "dannypipe_consultoria";
-//			String password = "meli0523_consultoria";
-//			Class.forName(DB_driver);
-//			con = DriverManager.getConnection(url, username, password);
+			String DB_driver = "org.postgresql.Driver";
+
+			String url = "jdbc:postgresql://postgresql:5432/produccion_consultoria";
+			String username = "dannypipe_consultoria";
+			String password = "meli0523_consultoria";
+			Class.forName(DB_driver);
+			con = DriverManager.getConnection(url, username, password);
 			// ***************************************
 
 			// *********Datasource_local***************************
-			 InitialContext ctx = new InitialContext();
-			 DataSource ds = (DataSource) ctx.lookup("java:/consultoriaDS");
-			 con = ds.getConnection();
+//			 InitialContext ctx = new InitialContext();
+//			 DataSource ds = (DataSource) ctx.lookup("java:/consultoriaDS");
+//			 con = ds.getConnection();
 			// ***************************************************
 
 			// **************openshuftV2********************
