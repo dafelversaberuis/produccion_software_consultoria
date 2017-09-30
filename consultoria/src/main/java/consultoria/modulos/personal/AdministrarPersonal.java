@@ -88,10 +88,10 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 	}
 
 	public String gePrecioMinutosGastados(Integer aMinutosGastados, Integer aMinutosPlan, BigDecimal aValorPlan) {
-		String precio = "";
+		String precio = this.getMoneda(new BigDecimal(0));
 		try {
 			if (aMinutosPlan != null && aValorPlan != null && aMinutosGastados != null) {
-				precio += this.getMoneda(this.getValorRedondeado((aValorPlan.divide(new BigDecimal(aMinutosPlan), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(aMinutosGastados)), IConstantes.DECIMALES_REDONDEAR));
+				precio = this.getMoneda(this.getValorRedondeado((aValorPlan.divide(new BigDecimal(aMinutosPlan), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(aMinutosGastados)), IConstantes.DECIMALES_REDONDEAR));
 			}
 		} catch (Exception e) {
 			IConstantes.log.error(e, e);

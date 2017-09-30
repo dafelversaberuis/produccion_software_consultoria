@@ -162,6 +162,35 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	private List<SelectItem>						itemsPlanesDisponiblesCliente;
 
+	public void actualizarPlanCliente() {
+
+		Conexion conexion = new Conexion();
+		Map<String, Object> condiciones = new HashMap<String, Object>();
+		condiciones.put("id", this.citaSeleccionada.getTPlanSeleccionado().getId());
+		PlanCliente pc = new PlanCliente();
+		// con costo y total
+		Map<String, Object> actualizables = new HashMap<String, Object>();
+		actualizables.put("minutos_con_costo", this.citaSeleccionada.getTPlanSeleccionado().getMinutosConCosto().intValue() + 1);
+		actualizables.put("minutos_gastados", this.citaSeleccionada.getTPlanSeleccionado().getMinutosConCosto().intValue() + 1);
+
+		try {
+			conexion.setAutoCommitBD(false);
+
+			pc.getCamposBD();
+			conexion.actualizarBD(pc.getEstructuraTabla().getTabla(), actualizables, condiciones, null);
+			
+			conexion.commitBD();
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+			this.mostrarMensajeGlobal("eliminacionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+	}
+
 	/**
 	 * Terminar asesoria
 	 */
@@ -172,24 +201,67 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	}
 
+	public void cambiarPlan() {
+		try {
+
+			this.citaSeleccionada.setTPlanSeleccionado(new PlanCliente());
+			if (this.proyectoCliente.getCliente().getTPlanClienteSeleccionado() != null) {
+
+				PlanCliente pc = new PlanCliente();
+				pc.setId(this.proyectoCliente.getCliente().getTPlanClienteSeleccionado());
+				this.citaSeleccionada.setTPlanSeleccionado(IConsultasDAO.getPlanesCliente(pc).get(0));
+			}
+
+		} catch (Exception e) {
+
+			IConstantes.log.error(e, e);
+
+		}
+	}
+
 	public void iniciarAsesoria() {
-		this.mostrarMensajeGlobalPersonalizado("ASESORIA INICIADA", "exito");
-		this.tiempoConsumido = 0;
-		this.tiempoMinutos = 0;
-		this.asesoriaIniciada = true;
+
+		try {
+			this.mostrarMensajeGlobalPersonalizado("ASESORIA INICIADA", "exito");
+			this.tiempoConsumido = 0;
+			this.tiempoMinutos = 0;
+			this.asesoriaIniciada = true;
+
+			this.citaSeleccionada.setTPlanSeleccionado(new PlanCliente());
+			PlanCliente pc = new PlanCliente();
+			pc.setId(this.proyectoCliente.getCliente().getTPlanClienteSeleccionado());
+			this.citaSeleccionada.setTPlanSeleccionado(IConsultasDAO.getPlanesCliente(pc).get(0));
+		} catch (Exception e) {
+
+			IConstantes.log.error(e, e);
+
+		}
+
 	}
 
 	/**
 	 * Procesa el tiempo
 	 */
 	public void procesarTiempo() {
+		try {
+			// por ahora viene segundo
+			this.tiempoConsumido++;
+			if (this.tiempoConsumido == 60) {
+				// guarda el tiempo y actualiza contador
+				this.tiempoConsumido = 0;
+				this.tiempoMinutos++;
 
-		// por ahora viene segundo
-		this.tiempoConsumido++;
-		if (this.tiempoConsumido == 60) {
-			// guarda el tiempo y actualiza contador
-			this.tiempoConsumido = 0;
-			this.tiempoMinutos++;
+				actualizarPlanCliente();
+
+				this.citaSeleccionada.setTPlanSeleccionado(new PlanCliente());
+				PlanCliente pc = new PlanCliente();
+				pc.setId(this.proyectoCliente.getCliente().getTPlanClienteSeleccionado());
+				this.citaSeleccionada.setTPlanSeleccionado(IConsultasDAO.getPlanesCliente(pc).get(0));
+
+			}
+		} catch (Exception e) {
+
+			IConstantes.log.error(e, e);
 
 		}
 
@@ -204,7 +276,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			// guarda
 			agregarDesdeModal();
 
-			this.mostrarMensajeGlobalPersonalizado("AREA DE ASESORÍA/CONFERENCIA...LEA LAS INSTRUCCIONES", "advertencia");
+			this.mostrarMensajeGlobalPersonalizado("AREA DE ASESORï¿½A/CONFERENCIA...LEA LAS INSTRUCCIONES", "advertencia");
 
 			this.abrirModal("panelConferencia");
 
@@ -212,6 +284,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			this.tiempoMinutos = 0;
 
 			this.asesoriaIniciada = false;
+
+			this.citaSeleccionada.setTPlanSeleccionado(new PlanCliente());
 
 		} catch (Exception e) {
 
@@ -222,7 +296,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Envía recordatorio de la cita
+	 * Envï¿½a recordatorio de la cita
 	 */
 	public void enviarCorreoCitas() {
 		try {
@@ -255,10 +329,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				return "Registrado/Programada";
 
 			if (estado.equals("A"))
-				return "Aprobada para atención";
+				return "Aprobada para atenciï¿½n";
 
 			if (estado.equals("T"))
-				return "En Atención";
+				return "En Atenciï¿½n";
 
 			if (estado.equals("C"))
 				return "Cancelada";
@@ -386,7 +460,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	public void agregarCita() {
 		getCitas();
 		// Actualizo el evento con el nombre del paciente
-		// this.mostrarMensajeGlobal("Entró a guardar cita", "exito");
+		// this.mostrarMensajeGlobal("Entrï¿½ a guardar cita", "exito");
 		Conexion conexion = new Conexion();
 		if (this.citaSeleccionada.getProyectoCliente() != null && this.citaSeleccionada.getProyectoCliente().getId() != null) {
 			((DefaultScheduleEvent) this.citaSeleccionada.getEvent()).setTitle(this.citaSeleccionada.getProyectoCliente().getCliente().getCliente() + "-" + this.citaSeleccionada.getProyectoCliente().getProyecto().getNombre());
@@ -466,7 +540,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	public List<Cita> getCitas() {
-		Integer tiempoConsulta = 10000; // 3 días
+		Integer tiempoConsulta = 10000; // 3 dï¿½as
 		Calendar fechaFin = Calendar.getInstance();
 		fechaFin.setTime(new Date()); // Configuramos la fecha que se recibe
 		fechaFin.add(Calendar.MINUTE, tiempoConsulta);
@@ -823,7 +897,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Cancela la eliminacion de un docuemnto en transacción
+	 * Cancela la eliminacion de un docuemnto en transacciï¿½n
 	 * 
 	 * @param aVista
 	 */
@@ -3062,8 +3136,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Verfica que posea documentaciï¿½n, aunque solamente falta que muestre las
-	 * que el consultor ingresï¿½. Completar en la parte del comentario 1=2 las
+	 * Verfica que posea documentaciï¿½n, aunque solamente falta que muestre las que
+	 * el consultor ingresï¿½. Completar en la parte del comentario 1=2 las
 	 * validaciones del que ingersï¿½ el propio ocnsultor
 	 * 
 	 * @return ok
@@ -4542,8 +4616,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Retrocede al inicio del mes anterior, para ello se supone que estï¿½ en mes
-	 * y dï¿½a 01, entonces resta un dia, saca el mes y arma el inicio nuevo
+	 * Retrocede al inicio del mes anterior, para ello se supone que estï¿½ en mes y
+	 * dï¿½a 01, entonces resta un dia, saca el mes y arma el inicio nuevo
 	 * 
 	 * @param aFecha
 	 */
@@ -6159,7 +6233,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Valida la creación de un documento
+	 * Valida la creaciï¿½n de un documento
 	 * 
 	 * @return ok
 	 */
@@ -6182,7 +6256,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Valida la creación de un documento
+	 * Valida la creaciï¿½n de un documento
 	 * 
 	 * @return ok
 	 */
@@ -6730,9 +6804,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				if (planes != null && planes.size() > 0) {
 					for (PlanCliente p : planes) {
 
-						// si no está gratis validar luego
+						// si no estï¿½ gratis validar luego
 						if ((p.getMinutosComprados().intValue() - p.getMinutosConCosto()) > 0) {
-							this.itemsPlanesDisponiblesCliente.add(new SelectItem(p.getId(), "Minutos del plan: " + (p.getMinutosComprados().intValue() - p.getMinutosConCosto()) + " de "+p.getMinutosComprados() + " "+this.getHoras((p.getMinutosComprados().intValue() - p.getMinutosConCosto())) + ", Precio plan: " + this.getMoneda(p.getPrecioVentaPesosConIva()) + ", Fecha adquirido: " + this.getFechaHoraColombia(p.getFechaCompra())));
+							this.itemsPlanesDisponiblesCliente.add(new SelectItem(p.getId(), "Minutos del plan: " + (p.getMinutosComprados().intValue() - p.getMinutosConCosto()) + " de " + p.getMinutosComprados() + " " + this.getHoras((p.getMinutosComprados().intValue() - p.getMinutosConCosto())) + ", Precio plan: " + this.getMoneda(p.getPrecioVentaPesosConIva()) + ", Fecha adquirido: " + this.getFechaHoraColombia(p.getFechaCompra())));
 						}
 
 					}

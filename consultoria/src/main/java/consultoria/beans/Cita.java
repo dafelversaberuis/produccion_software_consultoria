@@ -25,6 +25,8 @@ public class Cita implements Serializable {
 	private ScheduleEvent				event;
 	private Date								fechaActual;
 
+	private PlanCliente					TPlanSeleccionado;
+
 	public final static String	MAX								= "SELECT MAX(id) consecutivo  FROM cita";
 
 	public Cita(ScheduleEvent event) {
@@ -35,6 +37,9 @@ public class Cita implements Serializable {
 		this.modoEdicion = false;
 		this.estado = "R";
 		this.fechaActual = new Date();
+		this.TPlanSeleccionado = new  PlanCliente();
+		
+	
 	}
 
 	public Cita() {
@@ -42,7 +47,7 @@ public class Cita implements Serializable {
 		this.proyectoCliente = new ProyectoCliente();
 		this.modoEdicion = false;
 		this.estado = "R";
-
+		this.TPlanSeleccionado = new  PlanCliente();
 	}
 
 	public void getCamposBD() {
@@ -152,10 +157,10 @@ public class Cita implements Serializable {
 				return "Registrado/Programada";
 
 			if (this.estado.equals("A"))
-				return "Aprobada para atención";
+				return "Aprobada para atenciï¿½n";
 
 			if (this.estado.equals("T"))
-				return "En Atención";
+				return "En Atenciï¿½n";
 
 			if (this.estado.equals("C"))
 				return "Cancelada";
@@ -185,6 +190,14 @@ public class Cita implements Serializable {
 
 	public void setObservacionesConsultor(String observacionesConsultor) {
 		this.observacionesConsultor = observacionesConsultor;
+	}
+
+	public PlanCliente getTPlanSeleccionado() {
+		return TPlanSeleccionado;
+	}
+
+	public void setTPlanSeleccionado(PlanCliente tPlanSeleccionado) {
+		TPlanSeleccionado = tPlanSeleccionado;
 	}
 
 }

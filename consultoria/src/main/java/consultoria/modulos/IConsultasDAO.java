@@ -67,6 +67,12 @@ public interface IConsultasDAO {
 			sql.append("  FROM planes_cliente p ");
 			sql.append("  INNER JOIN planes pl ON p.id_plan = pl.id ");
 			sql.append("  WHERE 1=1");
+			
+			if (aPregunta != null && aPregunta.getId() != null) {
+
+				sql.append("  AND p.id = ? ");
+				parametros.add(aPregunta.getId());
+			}
 
 			if (aPregunta != null && aPregunta.getCliente() != null && aPregunta.getCliente().getId() != null) {
 
@@ -116,7 +122,7 @@ public interface IConsultasDAO {
 	}
 
 	/**
-	 * Obtiene los registros de iva de acuerdo a los parámetros especificados
+	 * Obtiene los registros de iva de acuerdo a los parï¿½metros especificados
 	 * 
 	 * @param aIva
 	 * @return ivas
@@ -669,7 +675,7 @@ public interface IConsultasDAO {
 	}
 
 	/**
-	 * Obtiene el adjunto de un documento si éste existe
+	 * Obtiene el adjunto de un documento si ï¿½ste existe
 	 * 
 	 * @param aDocumento
 	 * @return documento

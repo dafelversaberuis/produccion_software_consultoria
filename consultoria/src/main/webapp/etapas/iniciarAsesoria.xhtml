@@ -33,57 +33,63 @@
 
 			<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 				style="width:100%">
-				<p:outputLabel for="lstArbolito" value="Planes con minutos disponibles"
+				<p:outputLabel for="lstArbolito"
+					value="Elija un plan de consultoría"
 					style="font-weight:bold; font-size:14px;" />
-				<p:selectOneMenu id="lstArbolito" required="true" filterMatchMode="contains"
-					style="font-size:14px; width:400px; max-width:400px" disabled="#{administrarEtapa.asesoriaIniciada}"
+				<p:selectOneMenu id="lstArbolito" filterMatchMode="contains"
+					style="font-size:14px; width:400px; max-width:400px"
+					disabled="#{administrarEtapa.asesoriaIniciada}"
 					value="#{administrarEtapa.proyectoCliente.cliente.TPlanClienteSeleccionado}"
 					label="Plan con minutos a usar">
 					<f:selectItems
 						value="#{administrarEtapa.itemsPlanesDisponiblesCliente}" />
-						<p:ajax event="change" process="@this" update="pnlBotones"/>
+					<p:ajax event="change" process="@this"
+						update="pnlBotones, pnlOutputTiempoGastado"
+						listener="#{administrarEtapa.cambiarPlan()}" />
 				</p:selectOneMenu>
 				<p:spacer width="1" />
-				<p:message for="lstArbolito" id="msgArbolito"/>
+				<p:message for="lstArbolito" id="msgArbolito" />
 			</p:panelGrid>
 
+
+<!-- plan aplicado -->    
 			<p:outputPanel style="width:100%" id="pnlOutputTiempoGastado">
 				<p:panel id="pnlConferencia">
 					<h3>
-						<div align="center">
-							<p:panelGrid style="width:100%; text-align:center" columns="3"
-								styleClass="ui-panelgrid-blank">
 
-								<p:outputLabel style="font-weight:normal; font-size:14px"
-									value="Minutos disponibles del plan" />
+						<p:panelGrid style="width:100%; text-align:center" columns="3"
+							styleClass="ui-panelgrid-blank">
 
-								<p:outputLabel style="font-weight:normal; font-size:14px"
-									value="Minutos gastados en esta asesoría" />
+							<p:outputLabel style="font-weight:normal; font-size:14px"
+								value="Minutos disponibles del plan" />
 
-								<p:outputLabel style="font-weight:normal; font-size:14px"
-									value="$ esta asesoría" />
-								<p:spacer width="1" />
-								<p:spacer width="1" />
-								<p:spacer width="1" />
+							<p:outputLabel style="font-weight:normal; font-size:14px"
+								value="Minutos gastados en esta asesoría" />
 
+							<p:outputLabel style="font-weight:normal; font-size:14px"
+								value="$ esta asesoría" />
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+
+
+							<p:outputLabel style="font-weight:normal; font-size:72px"
+								value="#{administrarEtapa.citaSeleccionada.TPlanSeleccionado.minutosComprados-administrarEtapa.citaSeleccionada.TPlanSeleccionado.minutosConCosto}" />
+							<p:outputPanel>
 
 								<p:outputLabel style="font-weight:normal; font-size:72px"
-									value="0" />
-								<p:outputPanel>
+									value="#{administrarEtapa.tiempoMinutos}" />
 
-									<p:outputLabel style="font-weight:normal; font-size:72px"
-										value="#{administrarEtapa.tiempoMinutos}" />
-
-									<p:outputLabel style="font-weight:normal; font-size:22px"
-										value=":#{administrarEtapa.tiempoConsumido}" />
-								</p:outputPanel>
-								<p:outputLabel style="font-weight:normal; font-size:72px"
-									value="$1000" />
+								<p:outputLabel style="font-weight:normal; font-size:22px"
+									value=":#{administrarEtapa.tiempoConsumido}" />
+							</p:outputPanel>
+							<p:outputLabel style="font-weight:normal; font-size:52px"
+								value="#{administrarPersonal.gePrecioMinutosGastados(administrarEtapa.tiempoMinutos,administrarEtapa.citaSeleccionada.TPlanSeleccionado.minutosComprados,administrarEtapa.citaSeleccionada.TPlanSeleccionado.precioVentaPesosConIva)}" />
 
 
 
-							</p:panelGrid>
-						</div>
+						</p:panelGrid>
+
 					</h3>
 					<br />
 				</p:panel>
@@ -97,9 +103,9 @@
 						rendered="#{!administrarEtapa.asesoriaIniciada}"
 						disabled="#{!(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.cliente!=null and administrarEtapa.proyectoCliente.cliente.TPlanClienteSeleccionado!=null)}"
 						style="font-size:18px; font-weight: bold !important; color:green; height:50px"
-						action="#{administrarEtapa.iniciarAsesoria()}" process="lstArbolito"
-						value="Iniciar asesoria"
-						update="pnlConferencia, :formPoll, :formAtencion:messages, pnlBotones, lstArbolito, msgArbolito">
+						action="#{administrarEtapa.iniciarAsesoria()}"
+						process="@this, lstArbolito" value="Iniciar asesoria"
+						update="pnlConferencia, :formPoll, :formAtencion:messages, pnlBotones, lstArbolito, msgArbolito, pnlOutputTiempoGastado">
 
 					</p:commandButton>
 					<p:spacer width="10" />
@@ -109,7 +115,7 @@
 						style="font-size:18px; font-weight: bold !important; color:red; height:50px"
 						action="#{administrarEtapa.terminarAsesoria()}" process="@this"
 						value="Terminar asesoría"
-						update="pnlConferencia, :formPoll, :formAtencion:messages, pnlBotones, lstArbolito, msgArbolito">
+						update="pnlConferencia, :formPoll, :formAtencion:messages, pnlBotones, lstArbolito, msgArbolito, pnlOutputTiempoGastado">
 
 					</p:commandButton>
 
