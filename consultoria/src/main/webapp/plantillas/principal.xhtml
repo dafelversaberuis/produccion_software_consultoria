@@ -56,11 +56,10 @@
 			<ul>
 
 				<h:panelGroup
-					rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+					rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
-					<li class=""><p:commandLink value="Agenda"
-							ajax="false" title="Agenda"
-							action="/etapas/agenda.xhtml?faces-redirect=true" /></li>
+					<li class=""><p:commandLink value="Agenda" ajax="false"
+							title="Agenda" action="/etapas/agenda.xhtml?faces-redirect=true" /></li>
 
 				</h:panelGroup>
 
@@ -69,7 +68,7 @@
 					<ul class="">
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 							<li><p:commandLink value="Auditoría" title="Auditoría"
@@ -80,7 +79,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 
@@ -114,7 +113,7 @@
 
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 
@@ -127,7 +126,7 @@
 
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 
@@ -141,81 +140,85 @@
 
 					</ul></li>
 
-				<li class=""><a href="#" class="">#{mensaje.parametrosGenerales}</a>
-					<ul class="">
-					
-					<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
-
-							<li><p:commandLink
-									value="IVA / Impuestos"
-									title="IVA / Impuestos"
-									action="/tablasSoporte/crearIva.xhtml?faces-redirect=true"
-									ajax="false" /></li>
-
-						</h:panelGroup>
-						
-						
-						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
-
-							<li><p:commandLink
-									value="Planes consultoría"
-									title="Planes consultoría"
-									action="/tablasSoporte/crearPlan.xhtml?faces-redirect=true"
-									ajax="false" /></li>
-
-						</h:panelGroup>
-
-						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
-
-							<li><p:commandLink
-									value="Objetivos, alcance, documentos referencia auditoría"
-									title="Objetivos, alcance, documentos referencia auditoría"
-									action="/tablasSoporte/crearParametrosAuditoria.xhtml?faces-redirect=true"
-									ajax="false" /></li>
-
-						</h:panelGroup>
-
-						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+				<h:panelGroup
+					rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='A' or administrarSesionCliente.personalSesion.tipoUsuario=='CO')}">
 
 
-							<li><p:commandLink value="Clientes" title="Clientes"
-									action="/personal/crearCliente.xhtml?faces-redirect=true"
-									ajax="false" /></li>
-						</h:panelGroup>
+					<li class=""><a href="#" class="">#{mensaje.parametrosGenerales}</a>
+						<ul class="">
 
-						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+							<h:panelGroup
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
 
-							<li><p:commandLink
-									value="Proyectos/Normas y sus preguntas,actividades"
-									title="Proyectos/Normas y sus preguntas,actividades"
-									action="/tablasSoporte/crearProyecto.xhtml?faces-redirect=true"
-									ajax="false" /></li>
+								<li><p:commandLink value="IVA / Impuestos"
+										title="IVA / Impuestos"
+										action="/tablasSoporte/crearIva.xhtml?faces-redirect=true"
+										ajax="false" /></li>
 
-						</h:panelGroup>
+							</h:panelGroup>
 
 
+							<h:panelGroup
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
 
-						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+								<li><p:commandLink value="Planes consultoría"
+										title="Planes consultoría"
+										action="/tablasSoporte/crearPlan.xhtml?faces-redirect=true"
+										ajax="false" /></li>
 
-							<li><p:commandLink
-									value="Relación cliente / consultor / norma"
-									title="Relación cliente / consultor / norma"
-									action="/tablasSoporte/crearProyectoCliente.xhtml?faces-redirect=true"
-									ajax="false" /></li>
+							</h:panelGroup>
 
-						</h:panelGroup>
+							<h:panelGroup
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+
+								<li><p:commandLink
+										value="Objetivos, alcance, documentos referencia auditoría"
+										title="Objetivos, alcance, documentos referencia auditoría"
+										action="/tablasSoporte/crearParametrosAuditoria.xhtml?faces-redirect=true"
+										ajax="false" /></li>
+
+							</h:panelGroup>
+
+							<h:panelGroup
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+
+
+								<li><p:commandLink value="Clientes" title="Clientes"
+										action="/personal/crearCliente.xhtml?faces-redirect=true"
+										ajax="false" /></li>
+							</h:panelGroup>
+
+							<h:panelGroup
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+
+								<li><p:commandLink
+										value="Proyectos/Normas y sus preguntas,actividades"
+										title="Proyectos/Normas y sus preguntas,actividades"
+										action="/tablasSoporte/crearProyecto.xhtml?faces-redirect=true"
+										ajax="false" /></li>
+
+							</h:panelGroup>
 
 
 
+							<h:panelGroup
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+
+								<li><p:commandLink
+										value="Relación cliente / consultor / norma"
+										title="Relación cliente / consultor / norma"
+										action="/tablasSoporte/crearProyectoCliente.xhtml?faces-redirect=true"
+										ajax="false" /></li>
+
+							</h:panelGroup>
 
 
-					</ul></li>
+
+
+
+						</ul></li>
+
+				</h:panelGroup>
 
 				<h:panelGroup
 					rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">

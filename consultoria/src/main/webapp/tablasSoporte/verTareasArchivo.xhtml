@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formArchivo">
+
+		<p:dialog header="ACTIVIDADES DEL ARCHIVO" width="930"
+			height="500" widgetVar="panelVerArchivo" resizable="true"
+			closable="false" responsive="true">
+			<p:outputPanel id="pnlArchivo">
+
+				<p:accordionPanel id="pnlDtlPersonas">
+					<p:tab title="ACTIVIDADES DEL ARCHIVO"
+						titleStyle="font-size:16px; text-align:center" closable="true">
+  
+						<p:dataTable var="loc" id="dtlPersonas"
+							rowStyleClass="#{loc.tConcepto!='OK' ? 'amarillo':null}"
+							value="#{hacerMantenimiento.tareasArchivo}" reflow="true"
+							rows="10" paginator="true" paginatorPosition="bottom"
+							draggableColumns="true" style="width:95%"
+							emptyMessage="NO EXISTEN ACTIVIDADES">
+
+							<p:column headerText=""
+								style="font-size:12px; text-align:center; width:50px">
+
+								<p:selectBooleanCheckbox value="#{loc.tApto}"
+									disabled="#{loc.tConcepto!='OK'}">
+
+									<p:ajax process="@this" />
+								</p:selectBooleanCheckbox>
+
+
+							</p:column>
+
+
+							<p:column headerText="*Actividad" sortBy="#{loc.tarea}"
+								style="font-size:14px">
+								<p:outputLabel value="#{loc.tarea}" style="font-weight:normal"
+									title="#{hacerMantenimiento.getEtapaAplicada(det)}" />
+
+
+
+
+							</p:column>
+
+
+							<p:column headerText="*Responsable" style="font-size:14px"
+								sortBy="#{loc.responsable}">
+								<p:outputLabel rendered="#{loc.responsable == 'A'}"
+									style="font-weight:normal" value="Isoluciones y Cliente" />
+
+								<p:outputLabel rendered="#{loc.responsable == 'CO'}"
+									style="font-weight:normal" value="Isoluciones" />
+
+								<p:outputLabel rendered="#{loc.responsable == 'CL'}"
+									style="font-weight:normal" value="Cliente" />
+									
+								<p:outputLabel rendered="#{loc.responsable != 'CL' and loc.responsable != 'CO' and loc.responsable != 'A'}"
+									style="font-weight:normal" value="Cliente" />	
+
+							</p:column>
+
+
+							<p:column headerText="*Entregables" style="font-size:14px; "
+								sortBy="#{loc.producto}">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{loc.producto}" />
+							</p:column>
+							
+							
+							<p:column headerText="Requisitos" style="font-size:14px; "
+								sortBy="#{loc.requisito}">
+
+								<p:outputLabel style="font-weight:normal"
+									value="#{loc.requisito}" />
+							</p:column>
+
+
+							<p:column headerText="Observaciones"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.tConcepto}" filterBy="#{loc.tConcepto}"
+								style="font-size:14px">
+
+
+								<p:outputLabel value="#{loc.tConcepto}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+
+
+
+						</p:dataTable>
+
+						<p:spacer height="10" />
+						<div align="center">
+
+							<p:commandButton id="btnCrearA" style="font-size:14px;"
+								action="#{hacerMantenimiento.crearTareaProyecto2()}"
+								value="#{mensaje.guardar}"
+								update=":formAsignarTarea:pnlTareas, :form:messages, :formArchivo:pnlArchivo" />
+
+							<p:spacer width="10" />
+
+							<p:commandButton id="btnBorrarA"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{consultarFuncionesAPI.cerrarModal('panelVerArchivo')}"
+								process="@this" value="#{mensaje.regresar}" update="@this">
+
+							</p:commandButton>
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formArchivo:pnlArchivo"
+							trigger="btnCrearA, btnBorrarA">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+
+					</p:tab>
+
+
+				</p:accordionPanel>
+
+			</p:outputPanel>
+
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -41,6 +42,8 @@ import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
+
+import com.google.zxing.client.result.AddressBookDoCoMoResultParser;
 
 import consultoria.Conexion;
 import consultoria.beans.Cita;
@@ -178,7 +181,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			pc.getCamposBD();
 			conexion.actualizarBD(pc.getEstructuraTabla().getTabla(), actualizables, condiciones, null);
-			
+
 			conexion.commitBD();
 
 		} catch (Exception e) {
@@ -553,7 +556,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					proyectoClienteConsulta = new ProyectoCliente();
 					proyectoClienteConsulta.getConsultor().setId(this.administrarSesionCliente.getPersonalSesion().getId());
 				} else {
-					if (this.administrarSesionCliente != null && this.administrarSesionCliente.getPersonalSesion() != null && this.administrarSesionCliente.getPersonalSesion().getId() != null && this.administrarSesionCliente.getPersonalSesion().getTipoUsuario().equals("C")) {
+					if (this.administrarSesionCliente != null && this.administrarSesionCliente.getPersonalSesion() != null && this.administrarSesionCliente.getPersonalSesion().getId() != null && this.administrarSesionCliente.getPersonalSesion().getTipoUsuario().equals("CL")) {
 						proyectoClienteConsulta = new ProyectoCliente();
 						proyectoClienteConsulta.getCliente().setId(this.administrarSesionCliente.getPersonalSesion().getId());
 					} else {
@@ -592,6 +595,26 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	public void setCitaSeleccionada(Cita citaSeleccionada) {
 		this.citaSeleccionada = citaSeleccionada;
+	}
+
+	public void guardarArchivoDisco(String directorio_ruta_con_nombre_archivo, byte[] array) {
+
+		if (array != null) {
+			FileOutputStream fileOuputStream = null;
+			try {
+				fileOuputStream = new FileOutputStream(directorio_ruta_con_nombre_archivo);
+				fileOuputStream.write(array);
+			} catch (Exception e) {
+
+			} finally {
+				try {
+					fileOuputStream.close();
+				} catch (IOException e) {
+
+				}
+			}
+		}
+
 	}
 
 	// privados
@@ -985,6 +1008,39 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		this.getDocumentoDiagnosticoTransaccion();
 		this.documentosDiagnostico = null;
 		this.getDocumentosDiagnostico();
+
+	}
+
+	public void editarDocumento() {
+
+		Conexion conexion = new Conexion();
+		try {
+
+			Map<String, Object> act = new HashMap<String, Object>();
+			act.put("estado", this.documentoActividadTransaccion.getEstado());
+			act.put("fecha", new Date());
+
+			conexion.setAutoCommitBD(false);
+			this.documentoActividadTransaccion.getCamposBD();
+			conexion.actualizarBD(this.documentoActividadTransaccion.getEstructuraTabla().getTabla(), act, this.documentoActividadTransaccion.getEstructuraTabla().getLlavePrimaria(), null);
+			conexion.commitBD();
+			this.mostrarMensajeGlobal("edicionExitosa", "exito");
+
+			this.cerrarModal("panelEdicionDocumento");
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+		// reseteo de variables
+		this.documentoActividadTransaccion = null;
+		this.getDocumentoActividadTransaccion();
+		this.documentos = null;
+		this.getDocumentos();
 
 	}
 
@@ -2044,7 +2100,11 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			this.documentoActividadTransaccion = aDocumentoEquipo;
 			DocumentoActividad temp = IConsultasDAO.getAdjuntoDocumento(aDocumentoEquipo);
 			if (temp != null) {
-				hacerMantenimiento.crearPdf(temp.getArchivo(), aDocumentoEquipo);
+				if (aDocumentoEquipo.getDescargable() != null && aDocumentoEquipo.getDescargable().trim().equals("N")) {
+					descargarAdjunto(temp.getArchivo(), temp.getExtensionArchivo(), temp.getContentType());
+				} else {
+					hacerMantenimiento.crearPdf(temp.getArchivo(), aDocumentoEquipo);
+				}
 
 			}
 
@@ -3136,8 +3196,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Verfica que posea documentaci�n, aunque solamente falta que muestre las que
-	 * el consultor ingres�. Completar en la parte del comentario 1=2 las
+	 * Verfica que posea documentaci�n, aunque solamente falta que muestre las
+	 * que el consultor ingres�. Completar en la parte del comentario 1=2 las
 	 * validaciones del que ingers� el propio ocnsultor
 	 * 
 	 * @return ok
@@ -4616,8 +4676,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	/**
-	 * Retrocede al inicio del mes anterior, para ello se supone que est� en mes y
-	 * d�a 01, entonces resta un dia, saca el mes y arma el inicio nuevo
+	 * Retrocede al inicio del mes anterior, para ello se supone que est� en mes
+	 * y d�a 01, entonces resta un dia, saca el mes y arma el inicio nuevo
 	 * 
 	 * @param aFecha
 	 */
@@ -5707,9 +5767,17 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 				if (this.administrarSesionCliente != null && this.administrarSesionCliente.getPersonalSesion() != null && this.administrarSesionCliente.getPersonalSesion().getId() != null && this.administrarSesionCliente.getPersonalSesion().getTipoUsuario().equals("CO")) {
 					proyectoCliente.getConsultor().setId(this.administrarSesionCliente.getPersonalSesion().getId());
+					proyectoCliente.setCliente(null);
 				} else {
 
-					proyectoCliente.setConsultor(null);
+					if (this.administrarSesionCliente != null && this.administrarSesionCliente.getPersonalSesion() != null && this.administrarSesionCliente.getPersonalSesion().getId() != null && this.administrarSesionCliente.getPersonalSesion().getTipoUsuario().equals("CL")) {
+						proyectoCliente.getCliente().setId(this.administrarSesionCliente.getPersonalSesion().getId());
+						proyectoCliente.setConsultor(null);
+					} else {
+						proyectoCliente.setCliente(null);
+						proyectoCliente.setConsultor(null);
+
+					}
 				}
 
 				List<Cliente> clientes = IConsultasDAO.getClientesNormas(proyectoCliente);
@@ -6202,6 +6270,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			this.documentoActividad.settFile(event.getFile());
 			this.documentoActividad.setArchivo(event.getFile().getContents());
 
+			this.documentoActividad.setContentType(event.getFile().getContentType());
+			this.documentoActividad.setExtensionArchivo(this.getTipoArchivo(event.getFile().getFileName()));
+
 			this.mostrarMensajeGlobalPersonalizado("Archivo recibido, guárdelo.", "advertencia");
 		} catch (Exception e) {
 			IConstantes.log.error(e, e);
@@ -6227,6 +6298,11 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		if (this.documentoActividad.getArchivo() == null) {
 			ok = false;
 			this.mostrarMensajeGlobal("archivoAdjuntoRequerido", "advertencia");
+		}
+
+		if (this.documentoActividad.getDescargable().trim().equals("S") && !this.documentoActividad.getExtensionArchivo().equals("pdf")) {
+			ok = false;
+			this.mostrarMensajeGlobal("SOLO DEBE SER PDF PUES ES DE SOLO LECTURA", "advertencia");
 		}
 
 		return ok;
@@ -6355,8 +6431,29 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			if (isValidoDocumento()) {
 				conexion.setAutoCommitBD(false);
 
+				// if (this.administrarSesionCliente != null &&
+				// this.administrarSesionCliente.getPersonalSesion() != null &&
+				// this.administrarSesionCliente.getPersonalSesion().getTipoUsuario() !=
+				// null &&
+				// this.administrarSesionCliente.getPersonalSesion().getTipoUsuario().equals("CL"))
+				// {
+				// this.documentoActividad.getProyectoCliente().setId(this.proyectoCliente.getId());
+				// } else {
+				// // EL CONSULTOR ASIGNADO EN EL MOMENTO
+				// this.documentoActividad.getConsultor().setId(this.proyectoCliente.getConsultor().getId());
+				// }
+
 				if (this.tipoDocumentoSeleccionado != null && this.tipoDocumentoSeleccionado.equals("CLIENTE")) {
 					this.documentoActividad.getProyectoCliente().setId(this.proyectoCliente.getId());
+
+					// si se logueo alguien que no es cliente significa que es pal cliente
+					// el doc pero responsable consultor
+					if (this.administrarSesionCliente != null && this.administrarSesionCliente.getPersonalSesion() != null && this.administrarSesionCliente.getPersonalSesion().getTipoUsuario() != null && !this.administrarSesionCliente.getPersonalSesion().getTipoUsuario().equals("CL")) {
+
+						// no teine fk
+						this.documentoActividad.getPersonal().setId(this.proyectoCliente.getConsultor().getId());
+					}
+
 				} else {
 					// EL CONSULTOR ASIGNADO EN EL MOMENTO
 					this.documentoActividad.getConsultor().setId(this.proyectoCliente.getConsultor().getId());

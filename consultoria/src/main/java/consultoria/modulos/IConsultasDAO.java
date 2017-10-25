@@ -67,7 +67,7 @@ public interface IConsultasDAO {
 			sql.append("  FROM planes_cliente p ");
 			sql.append("  INNER JOIN planes pl ON p.id_plan = pl.id ");
 			sql.append("  WHERE 1=1");
-			
+
 			if (aPregunta != null && aPregunta.getId() != null) {
 
 				sql.append("  AND p.id = ? ");
@@ -741,7 +741,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT archivo");
+			sql.append("  SELECT archivo, p.content_type, p.extension_archivo");
 			sql.append("  FROM documentos_actividad p");
 			sql.append("  WHERE 1=1 ");
 
@@ -756,6 +756,8 @@ public interface IConsultasDAO {
 
 				documento = new DocumentoActividad();
 				documento.setArchivo(rs.getBytes("archivo"));
+				documento.setContentType((String) rs.getObject("content_type"));
+				documento.setExtensionArchivo((String) rs.getObject("extension_archivo"));
 
 			}
 
@@ -790,7 +792,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT p.id, p.nombre, p.descargable, p.id_tarea_proyecto, p.fecha, p.id_consultor, p.id_administrador, p.id_proyecto_cliente, co.nombres nombre_consultor, co.apellidos apellido_consultor, ad.nombres nombre_administrador, ad.apellidos apellido_administrador, cl.representante, cl.cliente");
+			sql.append("  SELECT p.id, p.nombre, p.descargable, p.id_tarea_proyecto, p.fecha, p.id_consultor, p.id_administrador, p.id_proyecto_cliente, co.nombres nombre_consultor, co.apellidos apellido_consultor, ad.nombres nombre_administrador, ad.apellidos apellido_administrador, cl.representante, cl.cliente, p.extension_archivo, p.estado");
 			sql.append("  FROM documentos_actividad p");
 			sql.append("  LEFT JOIN consultores co ON co.id = p.id_consultor");
 			sql.append("  LEFT JOIN personal ad ON ad.id = p.id_administrador");
@@ -823,6 +825,8 @@ public interface IConsultasDAO {
 				documento.setNombre((String) rs.getObject("nombre"));
 				documento.setDescargable((String) rs.getObject("descargable"));
 				documento.setFecha((Date) rs.getObject("fecha"));
+				documento.setExtensionArchivo((String) rs.getObject("extension_archivo"));
+				documento.setEstado((String) rs.getObject("estado"));
 				documento.getTareaProyecto().setId((Integer) rs.getObject("id_tarea_proyecto"));
 
 				documento.getConsultor().setId((Integer) rs.getObject("id_consultor"));
@@ -1761,6 +1765,11 @@ public interface IConsultasDAO {
 				sql.append("  AND p.id_consultor = ? ");
 				prametros.add(aProyectoCliente.getConsultor().getId());
 			}
+			
+			if (aProyectoCliente != null && aProyectoCliente.getCliente() != null && aProyectoCliente.getCliente().getId() != null) {
+				sql.append("  AND c.id = ? ");
+				prametros.add(aProyectoCliente.getCliente().getId());
+			}
 
 			sql.append("  UNION ALL");
 
@@ -1772,6 +1781,11 @@ public interface IConsultasDAO {
 			if (aProyectoCliente != null && aProyectoCliente.getConsultor() != null && aProyectoCliente.getConsultor().getId() != null) {
 				sql.append("  AND p.id_consultor = ? ");
 				prametros.add(aProyectoCliente.getConsultor().getId());
+			}
+			
+			if (aProyectoCliente != null && aProyectoCliente.getCliente() != null && aProyectoCliente.getCliente().getId() != null) {
+				sql.append("  AND c.id = ? ");
+				prametros.add(aProyectoCliente.getCliente().getId());
 			}
 
 			sql.append("  AND c.id NOT IN(");

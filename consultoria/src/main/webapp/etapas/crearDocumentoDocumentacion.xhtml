@@ -12,14 +12,17 @@
 			responsive="true">
 
 			<p:outputPanel id="pnlDocumento">
-				
-				<p:outputPanel rendered="#{administrarEtapa.tipoDocumentoSeleccionado=='CLIENTE' and administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario!='C'}">
-				<div class="ui-message-warn ui-corner-all" align="left">
-					<span class="ui-message-warn-detail"
-						style="font-size: 12px; width: 100%; font-weight: bold;"> <b><span
-							style="font-size: 14px">Información importante:</span></b><br />***Esta ingresando como consultor y puede editar documentos del cliente. Recuerde que éste lo puede hacer desde su cuenta.
-					</span>
-				</div>
+
+				<p:outputPanel
+					rendered="#{administrarEtapa.tipoDocumentoSeleccionado=='CLIENTE' and administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario!='C'}">
+					<div class="ui-message-warn ui-corner-all" align="left">
+						<span class="ui-message-warn-detail"
+							style="font-size: 12px; width: 100%; font-weight: bold;">
+							<b><span style="font-size: 14px">Información
+									importante:</span></b><br />***ESTOS DOCUMENTOS LOS VISUALIZA ISOLUCIONES
+							Y CLIENTE.
+						</span>
+					</div>
 				</p:outputPanel>
 				<p:panel>
 
@@ -59,7 +62,8 @@
 						<p:outputLabel value="Tipo de documentos"
 							style="font-weight:bold; font-size:14px" />
 
-						<p:outputLabel value="Ejemplos para Isoluciones/Consultores(No los ve el cliente)"
+						<p:outputLabel
+							value="Ejemplos para Isoluciones/Consultores(No los ve el cliente)"
 							rendered="#{administrarEtapa.tipoDocumentoSeleccionado!='CLIENTE'}"
 							style="font-weight:bold; font-size:14px; color: orange" />
 
@@ -98,12 +102,12 @@
 
 
 								<p:outputLabel for="lstDescargable"
-									rendered="#{administrarEtapa.tipoDocumentoSeleccionado!='CLIENTE'}"
+									rendered="#{administrarSesionCliente.personalSesion.tipoUsuario !='CL'}"
 									value="Archivo solo lectura"
 									style="font-weight:bold; font-size:14px" />
 
 								<p:selectOneMenu
-									rendered="#{administrarEtapa.tipoDocumentoSeleccionado!='CLIENTE'}"
+									rendered="#{administrarSesionCliente.personalSesion.tipoUsuario !='CL'}"
 									label="Archivo solo lectura"
 									style="width:100%; font-size:14px;" id="lstDescargable"
 									required="true"
@@ -119,7 +123,7 @@
 
 								<p:outputPanel id="pnlCargado2">
 
-									<p:outputLabel for="fileCrear" value="Archivo"
+									<p:outputLabel value="Archivo"
 										style="font-weight:bold; font-size:14px" />
 
 								</p:outputPanel>
@@ -131,19 +135,21 @@
 							<p:outputPanel id="pnlCargado">
 								<p:panelGrid columns="5" style="width:100%;"
 									styleClass="ui-panelgrid-blank">
+
+
 									<p:fileUpload id="fileCrear" cancelLabel="true"
 										dragDropSupport="true" style="width:100%;"
 										rendered="#{administrarEtapa.documentoActividad.tFile==null}"
 										fileUploadListener="#{administrarEtapa.recibirArchivo}"
 										multiple="false" fileLimit="1"
 										fileLimitMessage="Sólo 1 archivo"
-										label="Busque aquí un pdf o arrástrelo" required="true"
+										label="Busque aquí un archivo o arrástrelo" required="true"
 										mode="advanced" update=":form:messages, pnlCargado"
 										auto="true" sizeLimit="1000000"
 										requiredMessage="Información requerida"
 										invalidSizeMessage="Excede el tamaño  permitido de 1024KB!"
 										invalidFileMessage="Extensión de archivo incorrecta, solo archivos pdf"
-										allowTypes="/(\.|\/)(pdf)$/" />
+										allowTypes="/(\.|\/)(JPG|PNG|JPEG|PDF|amr|opus|jpg|jp?g|gif|png|pdf|doc|docx|xls|xlsx|ppt|pps|pptx|ppsx|zip|rar|7z|mp4|mov|avi|3gp)$/" />
 
 
 									<p:outputLabel
@@ -159,7 +165,7 @@
 									<p:graphicImage value="../imagenes/ayuda.png"
 										id="ayudaCargarArchivo" />
 									<p:tooltip
-										value="Sólo se permite archivos  pdf, al indicarle o no restricción el software se encargará de éstas"
+										value="Si el archivo es de solo lectura, sólo se permite archivos  pdf, de lo contrario varios tipos(imagenes, pdf, archivos office, etc)"
 										trackMouse="true" for="ayudaCargarArchivo" />
 								</p:panelGrid>
 
@@ -203,7 +209,8 @@
 							emptyMessage="No existen documentos cargados">
 
 
-							<p:column headerText="#{mensaje.nombre}"
+							<p:column
+								headerText="#{mensaje.nombre}/titulo doc Y fecha de su estado"
 								filterMatchMode="contains" filterStyle="display:none"
 								sortBy="#{loc.nombre}" filterBy="#{loc.nombre}"
 								style="font-size:12px">
@@ -218,10 +225,28 @@
 								filterMatchMode="contains" filterStyle="display:none"
 								sortBy="#{loc.descargable}" filterBy="#{loc.descargable}"
 								style="font-size:12px">
-								<p:outputLabel value="SI" rendered="#{loc.descargable=='S'}"
+								<p:outputLabel value="SI (#{loc.extensionArchivo})"
+									rendered="#{loc.descargable=='S'}"
 									style="font-weight:normal; font-size:12px" />
-								<p:outputLabel value="NO" rendered="#{loc.descargable=='N'}"
+								<p:outputLabel value="NO (#{loc.extensionArchivo})"
+									rendered="#{loc.descargable=='N'}"
 									style="font-weight:normal; font-size:12px" />
+							</p:column>
+							
+							
+							<p:column headerText="Estado actual"  rendered="#{administrarEtapa.tipoDocumentoSeleccionado=='CLIENTE'}"
+								filterMatchMode="contains" filterStyle="display:none"
+								sortBy="#{loc.estado}" filterBy="#{loc.estado}"
+								style="font-size:12px">
+								<p:outputLabel value="ELABORADO"
+									rendered="#{loc.estado==null or loc.estado=='E'}"
+									style="font-weight:normal; font-size:12px" />
+								<p:outputLabel value="REVISADO"
+									rendered="#{loc.estado!=null and loc.estado=='R'}"
+									style="font-weight:normal; font-size:12px" />
+								<p:outputLabel value="APROBADO"
+									rendered="#{loc.estado!=null and loc.estado=='A'}"
+									style="font-weight:normal; font-size:12px" />	
 							</p:column>
 
 
@@ -230,16 +255,15 @@
 								filterBy="#{loc.descargable}" style="font-size:12px">
 
 								<p:outputLabel
-									value="#{loc.consultor.nombres} #{loc.consultor.apellidos} (Consultor Isoluciones)"
+									value="#{loc.consultor.nombres} #{loc.consultor.apellidos}(Consultor Isoluciones)"
 									rendered="#{loc.consultor!=null and loc.consultor.id!=null}"
 									style="font-weight:normal; font-size:12px" />
-								<p:outputLabel
-									value="#{loc.proyectoCliente.cliente.cliente} (#{loc.proyectoCliente.cliente.representante})"
-									rendered="#{loc.proyectoCliente!=null and loc.proyectoCliente.id!=null}"
+								<p:outputLabel value="#{loc.proyectoCliente.cliente.cliente}"
+									rendered="#{loc.proyectoCliente!=null and loc.proyectoCliente.id!=null and !(loc.personal!=null and loc.personal.id!=null)}"
 									style="font-weight:normal; font-size:12px" />
 
-								<p:outputLabel value="Administrador/Gerencia Isoluciones"
-									rendered="#{!(loc.proyectoCliente!=null and loc.proyectoCliente.id!=null) and !(loc.consultor!=null and loc.consultor.id!=null)}"
+								<p:outputLabel value="(Consultor Isoluciones.)"
+									rendered="#{loc.personal!=null and loc.personal.id!=null}"
 									style="font-weight:normal; font-size:12px" />
 
 							</p:column>
@@ -253,16 +277,31 @@
 									style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 									action="#{administrarEtapa.descargarDocumento(loc)}"
 									process=":formDocumento:pnlDtlDocumentos"
+									rendered="#{loc.descargable!=null and loc.descargable=='S'}"
 									update=":formVerDocumento" value="" />
 
 
+
+
+
+
 								<p:tooltip for="btnIrDescargar" value="Ver documento"
+									rendered="#{loc.extensionArchivo==null or (loc.extensionArchivo!=null and loc.extensionArchivo.trim()=='pdf')}"
 									trackMouse="true" />
 
 
+								<p:commandButton id="btnIrDescargar2"
+									rendered="#{!(loc.descargable!=null and loc.descargable=='S')}"
+									style="background-origin: content-box; background-image: url('../imagenes/flecha_abajo.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.descargarDocumento(loc)}"
+									ajax="false" immediate="true" value="" />
 
+								<p:tooltip for="btnIrDescargar2" value="Ver documento"
+									rendered="#{!(loc.extensionArchivo==null or (loc.extensionArchivo!=null and loc.extensionArchivo.trim()=='pdf'))}"
+									trackMouse="true" />
 
-								<p:commandButton id="btnIrEliminar" rendered="#{(administrarEtapa.tipoDocumentoSeleccionado!='CLIENTE' and administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A') or  administrarEtapa.tipoDocumentoSeleccionado=='CLIENTE' or (administrarEtapa.tipoDocumentoSeleccionado!='CLIENTE' and administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='CO'  and loc.consultor!=null and loc.consultor.id!=null and  administrarSesionCliente.personalSesion.id.intValue()==loc.consultor.id)}"
+								<p:commandButton id="btnIrEliminar"
+									
 									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 									action="#{administrarEtapa.asignarDocumento(loc,'MODAL_ELIMINAR_DOCUMENTO')}"
 									value="" process=":formDocumento:pnlDtlDocumentos"
@@ -270,6 +309,17 @@
 
 
 								<p:tooltip for="btnIrEliminar" value="#{mensaje.eliminar}"
+									trackMouse="true" />
+
+
+								<p:commandButton id="btnIrEditar" rendered="#{administrarEtapa.tipoDocumentoSeleccionado=='CLIENTE'}"
+									style="background-origin: content-box; background-image: url('../imagenes/editar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									action="#{administrarEtapa.asignarDocumento(loc,'MODAL_EDITAR_DOCUMENTO')}"
+									value="" process=":formDocumento:pnlDtlDocumentos"
+									update=":formEditarDocumento, :formDocumento:pnlDtlDocumentos, :form:pnlEstructuraPlanificacion" />
+
+
+								<p:tooltip for="btnIrEditar" value="Editar estado"
 									trackMouse="true" />
 
 							</p:column>

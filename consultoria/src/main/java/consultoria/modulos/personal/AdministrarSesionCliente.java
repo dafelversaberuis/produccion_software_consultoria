@@ -7,6 +7,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import consultoria.beans.Cliente;
 import consultoria.beans.Consultor;
 import consultoria.beans.Personal;
 import consultoria.generales.ConsultarFuncionesAPI;
@@ -65,7 +66,16 @@ public class AdministrarSesionCliente extends ConsultarFuncionesAPI implements S
 
 			} else if (this.personalSesion.getTipoUsuario().equals(IConstantes.ROL_CLIENTE)) {
 
-				sw = 2;
+				if (aInterfaz != null && aInterfaz.equals("DIAGNOSTICO")) {
+					sw = 0;
+				
+				}else if (aInterfaz != null && aInterfaz.equals("PLANIFICACION")) {
+					sw = 0;
+				}else if (aInterfaz != null && aInterfaz.equals("INDICADORES")) {
+					sw = 0;
+				}else if (aInterfaz != null && aInterfaz.equals("DOCUMENTACION")) {
+					sw = 0;
+				}
 
 			}
 
@@ -142,7 +152,7 @@ public class AdministrarSesionCliente extends ConsultarFuncionesAPI implements S
 
 		List<Personal> administradores = null;
 		List<Consultor> consultores = null;
-		// List<Cliente> clientes = null;
+		List<Cliente> clientes = null;
 		try {
 
 			if (this.personal != null && this.personal.getCorreoElectronico() != null && !this.personal.getCorreoElectronico().trim().equals("") && this.personal.getClave() != null && !this.personal.getClave().trim().equals("")) {
@@ -209,6 +219,37 @@ public class AdministrarSesionCliente extends ConsultarFuncionesAPI implements S
 				} else if (this.personal.getTipoUsuario() != null && this.personal.getTipoUsuario().equals(IConstantes.ROL_CLIENTE)) {
 
 					// falata garegar
+					
+					Cliente cliente = new Cliente();
+					cliente.setClave(this.personal.getClave());
+					cliente.setCorreoElectronico(this.personal.getCorreoElectronico().trim());
+					
+					clientes = IConsultasDAO.getClientes(cliente);
+					
+					
+					
+					if (clientes != null && clientes.size() > 0 && clientes.get(0) != null && clientes.get(0).getId() != null) {
+
+						this.personalSesion = new Personal();
+						this.personalSesion.setCorreoElectronico(clientes.get(0).getCorreoElectronico().trim());
+						this.personalSesion.setNombreCompleto(clientes.get(0).getCliente().trim());
+						this.personalSesion.setTipoUsuario(this.personal.getTipoUsuario());
+						this.personalSesion.setId(clientes.get(0).getId());
+
+						this.mostrarMensajeGlobal("ingresoCorrecto", "exito");
+						this.personal = null;
+
+						pagina = IConstantes.PAGINA_HOME;
+
+						// Guarda el mensaje antes de redireccionar y lo muestra
+						FacesContext context = FacesContext.getCurrentInstance();
+						context.getExternalContext().getFlash().setKeepMessages(true);
+
+					} else {
+						this.mostrarMensajeGlobal("noCoincideCredenciales", "advertencia");
+					}
+					
+					
 
 				} else {
 

@@ -32,6 +32,11 @@ public class DocumentoActividad implements Serializable {
 	private Consultor					consultor;
 	private Personal					personal;
 
+	private String						contentType;
+	private String						extensionArchivo;
+
+	private String						estado;
+
 	private EstructuraTabla		estructuraTabla;
 
 	public DocumentoActividad() {
@@ -53,6 +58,12 @@ public class DocumentoActividad implements Serializable {
 		this.estructuraTabla.getPersistencia().put("descargable", this.descargable);
 
 		this.estructuraTabla.getPersistencia().put("fecha", this.fecha);
+		
+		
+		this.estructuraTabla.getPersistencia().put("estado", this.estado);
+
+		this.estructuraTabla.getPersistencia().put("content_type", this.contentType);
+		this.estructuraTabla.getPersistencia().put("extension_archivo", this.extensionArchivo);
 
 		if (this.tareaProyecto != null && this.tareaProyecto.getId() != null) {
 			this.estructuraTabla.getPersistencia().put("id_tarea_proyecto", this.tareaProyecto.getId());
@@ -175,6 +186,30 @@ public class DocumentoActividad implements Serializable {
 
 	public void setPersonal(Personal personal) {
 		this.personal = personal;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getExtensionArchivo() {
+		return extensionArchivo;
+	}
+
+	public void setExtensionArchivo(String extensionArchivo) {
+		this.extensionArchivo = extensionArchivo;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
 }

@@ -42,17 +42,45 @@
 					<p:tab title="Crear información de la actividad" id="tabTarea"
 						titleStyle="font-size:16px" closable="true">
 
-						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+
+
+
+
+
+
+
+
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank" id="hola"
 							style="width:100%">
 
+							<p:outputLabel value="Forma de agregar  *"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:selectOneMenu label="Forma de agregar"
+								title="Forma de agregar" style="width:94%; font-size:14px;"
+								id="lstFormaAgregar" required="true"
+								requiredMessage="#{mensaje.campoRequerido}"
+								value="#{hacerMantenimiento.tareaProyecto.tFormaAgregar}">
+								<f:selectItem itemValue="I" itemLabel="Por interfaz" />
+								<f:selectItem itemValue="C" itemLabel="Por archivo plano excel" />
 
 
+								<p:ajax event="change" process="@this"
+									update="@this, :formAsignarTarea:pnlCrearTarea" />
+
+							</p:selectOneMenu>
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+							<p:message for="lstFormaAgregar" />
+							<p:spacer width="1" />
 
 							<p:outputLabel for="txtNombreTarea" value="Actividad"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								style="font-weight:bold; font-size:14px;" />
 
 
 							<p:inputTextarea label="Actividad"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								value="#{hacerMantenimiento.tareaProyecto.tarea}" rows="2"
 								id="txtNombreTarea" autoResize="false" required="true"
 								style="font-size:14px; width:100%; min-height:50px" />
@@ -63,27 +91,35 @@
 
 
 							<p:outputLabel for="txtProductoGeneral" value="Entregables"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								style="font-weight:bold; font-size:14px;" />
 
 
 							<p:inputTextarea label="Entregables"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								value="#{hacerMantenimiento.tareaProyecto.producto}" rows="2"
 								id="txtProductoGeneral" autoResize="false" required="true"
 								style="font-size:14px; width:100%; min-height:50px" />
 
 
-							<p:spacer width="1" />
-							<p:message for="txtNombreTarea" />
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtNombreTarea"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
 
-							<p:spacer width="1" />
-							<p:message for="txtProductoGeneral" />
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtProductoGeneral"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
 
 
 
 							<p:outputLabel for="lstResponsable" value="Responsables"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								style="font-weight:bold; font-size:14px;" />
 
 							<p:selectOneMenu label="Responsable" required="true"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								style="width:100%; font-size:14px;" id="lstResponsable"
 								value="#{hacerMantenimiento.tareaProyecto.responsable}">
 
@@ -97,20 +133,83 @@
 							</p:selectOneMenu>
 
 							<p:outputLabel for="txtRequisitos" value="Requisitos"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								style="font-weight:bold; font-size:14px;" />
 
 
 							<p:inputTextarea label="Requisito(s)"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
 								value="#{hacerMantenimiento.tareaProyecto.requisito}" rows="2"
 								id="txtRequisitos" autoResize="false"
 								style="font-size:14px; width:100%; min-height:50px" />
 
-							<p:spacer width="1" />
-							<p:message for="lstResponsable" />
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="lstResponsable"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
 
 
-							<p:spacer width="1" />
-							<p:message for="txtRequisitos" />
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtRequisitos"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}" />
+
+							<p:panelGrid columns="1" style="width:100%;"
+								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar!=null and hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"
+								styleClass="ui-panelgrid-blank">
+
+
+
+								<a style="text-decoration: underline; color: #0000FF;"
+									href="#{hacerMantenimiento.host}/consultoria/tablasSoporte/formato_actividades.csv">DESCARGUE
+									PLANTILLA AQUI</a>
+
+							</p:panelGrid>
+
+							<p:outputPanel id="pnlCargado">
+
+								<p:panelGrid columns="6" style="width:100%;"
+									rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar!=null and hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"
+									styleClass="ui-panelgrid-blank">
+
+									<p:outputLabel value="#{mensaje.archivo} *"
+										rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar!=null and hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"
+										style="font-weight:bold; font-size:14px" />
+
+
+									<p:fileUpload id="fileCrear" cancelLabel="true"
+										dragDropSupport="true" style="width:100%;"
+										rendered="#{hacerMantenimiento.tareaProyecto.tFile==null}"
+										fileUploadListener="#{hacerMantenimiento.recibirArchivoCSV}"
+										multiple="false" fileLimit="1"
+										fileLimitMessage="Sólo 1 archivo"
+										label="#{mensaje.busqueArchivo}" required="true"
+										requiredMessage="Campo requerido" mode="advanced"
+										update=":form:messages, pnlCargado" auto="true"
+										sizeLimit="1000000"
+										invalidSizeMessage="Excede el tamaño  permitido de 1024KB!"
+										invalidFileMessage="Extensión de archivo incorrecta, solo archivos CSV de excel"
+										allowTypes="/(\.|\/)(csv)$/" />
+
+
+									<p:outputLabel
+										value="#{hacerMantenimiento.tareaProyecto.tFile.fileName}"
+										rendered="#{hacerMantenimiento.tareaProyecto.archivo != null}" />
+
+									<p:commandLink value="#{mensaje.limpiar}"
+										style="font-weight:bold; font-size:14px"
+										action="#{hacerMantenimiento.limpiarArchivoCargadoCSV()}"
+										process="@this" update="pnlCargado"
+										rendered="#{hacerMantenimiento.tareaProyecto.archivo != null}" />
+
+									<p:graphicImage value="../imagenes/ayuda.png"
+										id="ayudaCargarArchivo2" />
+									<p:tooltip value="Solo archivos CSV (REVISE EL FORMATO)"
+										trackMouse="true" for="ayudaCargarArchivo2" />
+								</p:panelGrid>
+
+
+							</p:outputPanel>
 
 
 
@@ -123,7 +222,7 @@
 								style="font-size:14px; font-weight: normal !important;"
 								action="#{hacerMantenimiento.crearTareaProyecto()}"
 								process=":formAsignarTarea" value="#{mensaje.guardar}"
-								update=":formAsignarTarea, :form" />
+								update=":formAsignarTarea, :form, :formArchivo" />
 
 						</div>
 
@@ -181,10 +280,10 @@
 							<p:column headerText="Responsable" style="font-size:14px"
 								sortBy="#{det.responsable}">
 								<p:outputLabel rendered="#{det.responsable == 'A'}"
-									style="font-weight:normal" value="Consultor y Cliente" />
+									style="font-weight:normal" value="Isoluciones y Cliente" />
 
 								<p:outputLabel rendered="#{det.responsable == 'CO'}"
-									style="font-weight:normal" value="Consultor" />
+									style="font-weight:normal" value="Isoluciones" />
 
 								<p:outputLabel rendered="#{det.responsable == 'CL'}"
 									style="font-weight:normal" value="Cliente" />

@@ -26,6 +26,7 @@ public interface IConstantes {
 	public static String				VALIDACION_MONEDA								= "Sólo pesos colombianos ó dólares";
 	public static Integer				NUMERO_DIGITOS_CLAVE_ALEATORIA	= 6;
 
+	public static Integer				FILA_INICIO_PERSONA_CSV					= 7;
 	public static Integer				DECIMALES_REDONDEAR							= 2;
 	public static String				AFIRMACION											= "S";
 	public static String				NEGACION												= "N";
@@ -72,6 +73,8 @@ public interface IConstantes {
 	public static String				ID_USUARIO_SESION								= "dafelver";
 
 	public static final String	PAQUETE_MODULO_REPORTES					= "/reportes/";
+
+	public static final String	HOST														= "http://www.consultoriaisoluciones.com";
 	public static final String	PAQUETE_IMAGENES								= "/imagenes/";
 	public static final String	LOGO1														= "iconsulting_software.png";
 	public static final String	LOGO2														= "calidad.png";

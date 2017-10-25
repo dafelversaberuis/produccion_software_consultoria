@@ -185,7 +185,7 @@
 										<p:column rowspan="2" headerText="Explicación ejemplos"
 											width="300" />
 
-										<p:column width="300" colspan="2"
+										<p:column width="300" colspan="2" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}"
 											headerText="Documentos ejemplo para consultores/Isoluciones(No los visualiza el cliente)" />
 
 										<p:column width="600" colspan="4"
@@ -197,11 +197,11 @@
 
 
 									</p:row>
-									<p:row>
+									<p:row >
 
-										<p:column width="150"
+										<p:column width="150" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}"
 											headerText="Disponibilidad (Verde:Si, Rojo:No)" />
-										<p:column width="150" headerText="** Ver/Cargar documentos" />
+										<p:column width="150" headerText="** Ver/Cargar documentos" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}"/>
 
 										<p:column width="150"
 											headerText="Disponibilidad (Verde:Si, Rojo:No)" />
@@ -268,9 +268,9 @@
 
 
 
-								<p:column style="vertical-align:middle; text-align:center">
+								<p:column style="vertical-align:middle; text-align:center" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}">
 									<div align="center">
-										<p:commandButton title="Documentos ejemplos disponibles"
+										<p:commandButton title="Documentos ejemplos disponibles" 
 											rendered="#{loc.tareaProyecto!=null and loc.tareaProyecto.id!=null and administrarEtapa.isExisteDocumentos(loc.tareaProyecto,'ISOLUCIONES')}"
 											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:top; border:0; background-color:transparent"
 											value="" />
@@ -283,7 +283,7 @@
 									</div>
 
 								</p:column>
-								<p:column style="vertical-align:middle; text-align:center">
+								<p:column style="vertical-align:middle; text-align:center" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}">
 									<div align="center">
 										<p:commandButton
 											title="DOCUMENTOS EJEMPLO ELABORADOS POR ISOLUCIONES"
@@ -311,7 +311,7 @@
 								</p:column>
 								<p:column style="vertical-align:middle">
 									<div align="center">
-										<p:commandButton title="DOCUMENTOS ELABORADOS POR CLIENTE"
+										<p:commandButton title="DOCUMENTOS ELABORADOS POR-PARA CLIENTE"
 											style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 											action="#{administrarEtapa.asignarDocumentacion(loc,'CLIENTE')}"
 											value="" process="@this" update=":formDocumento" />
@@ -344,15 +344,7 @@
 
 							<br />
 
-							<p:outputLabel value="** Sólo el consultor edita/registra"
-								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
-								style="font-size:12px" />
-
-							<br />
-							<p:outputLabel
-								value="*** Información a registrar por el cliente (El administrador/consultor puede ingresársela, úsela sólo en casos especiales)"
-								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
-								style="font-size:12px" />
+						
 
 
 
@@ -404,6 +396,7 @@
 		<ui:include src="/etapas/guardarDocumentacion.xhtml" />
 		<ui:include src="/etapas/mostrarResumenGuardadoDocumentacion.xhtml" />
 		<ui:include src="/etapas/eliminarDocumentacion.xhtml" />
+		<ui:include src="/etapas/editarDocumento.xhtml" />
 
 		<ui:include src="/etapas/crearDocumentoDocumentacion.xhtml" />
 		<ui:include src="/etapas/verDocumento.xhtml" />

@@ -1,9 +1,13 @@
 package consultoria.modulos.tablasSoporte;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,10 +23,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ReorderEvent;
 import org.primefaces.event.SelectEvent;
+
+import com.csvreader.CsvReader;
 
 import consultoria.Conexion;
 import consultoria.beans.Cliente;
@@ -90,6 +97,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private List<Iva>									ivas;
 	private List<SelectItem>					itemsIva;
 	private List<Plan>								arbolitos;
+	private List<TareaProyecto>				tareasArchivo;
 
 	private List<SelectItem>					itemsProyectos;
 	private List<SelectItem>					itemsConsultores;
@@ -337,7 +345,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Este mï¿½todo borra el formulario de ediciï¿½n de un arbolito en transacciï¿½n
+	 * Este mï¿½todo borra el formulario de ediciï¿½n de un arbolito en
+	 * transacciï¿½n
 	 */
 	public void cancelarArbolitoTransaccion(String aVista) {
 		try {
@@ -1347,6 +1356,27 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		this.documentoActividad.setArchivo(null);
 	}
 
+	public void recibirArchivoCSV(FileUploadEvent event) {
+
+		try {
+			this.tareaProyecto.settFile(event.getFile());
+			this.tareaProyecto.setArchivo(event.getFile().getContents());
+
+			this.mostrarMensajeGlobal("archivoRecibido", "advertencia");
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Limpia el archivo cargado para volver a ingresar otro
+	 */
+	public void limpiarArchivoCargadoCSV() {
+		this.tareaProyecto.settFile(null);
+		this.tareaProyecto.setArchivo(null);
+	}
+
 	/**
 	 * Recibir el archivo y lo asigna al objeto
 	 * 
@@ -1441,41 +1471,221 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 	}
 
+	public String getHost() {
+		return IConstantes.HOST;
+	}
+
+	/**
+	 * Crea un registro de tarea de un proyecto
+	 */
+	public void crearTareaProyecto2() {
+		Conexion conexion = new Conexion();
+
+		try {
+
+			conexion.setAutoCommitBD(false);
+			int pos = this.tareas.size();
+			int sw = 0;
+			for (TareaProyecto t : this.tareasArchivo) {
+				if (t.istApto()) {
+					sw = 1;
+					break;
+
+				}
+
+			}
+
+			if (sw == 1) {
+				for (TareaProyecto t : this.tareasArchivo) {
+					if (t.istApto()) {
+						pos++;
+						t.setProyecto(this.tareaProyecto.getProyecto());
+						t.setEstado(IConstantes.ACTIVO);
+						t.setFechaEstado(new Date());
+						t.setNumeroEtapa(2); // todo el ciclo del proyecto
+						t.setPosicion(pos);
+						t.getCamposBD();
+						conexion.insertarBD(t.getEstructuraTabla().getTabla(), t.getEstructuraTabla().getPersistencia());
+					}
+
+				}
+				conexion.commitBD();
+				this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+				// reseteo de variables
+				this.tareasArchivo = null;
+				this.tareasArchivo = new ArrayList<TareaProyecto>();
+				this.tareaProyecto = null;
+				this.getTareaProyecto();
+				this.tareas = null;
+				this.getTareas();
+				this.cerrarModal("panelVerArchivo");
+
+			} else {
+				this.mostrarMensajeGlobalPersonalizado("NO CHEQUEO NINGUNA ACTIVIDAD, DEBE SELECCIONAR AL MENOS UNA", "exito");
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+
+			conexion.cerrarConexion();
+		}
+	}
+
 	/**
 	 * Crea un registro de tarea de un proyecto
 	 */
 	public void crearTareaProyecto() {
 		Conexion conexion = new Conexion();
+		InputStream input = null;
+		CsvReader archivoLeido = null;
+
+		Integer cuentaFilas = 0;
+		TareaProyecto tareaArchivo = null;
+		String valorCelda = null;
 
 		try {
+			this.tareasArchivo = new ArrayList<TareaProyecto>();
+			if (this.tareaProyecto.gettFormaAgregar() == null || this.tareaProyecto.gettFormaAgregar().trim().equals("I")) {
 
-			if (isTareaOK("C")) {
+				if (isTareaOK("C")) {
 
-				conexion.setAutoCommitBD(false);
+					conexion.setAutoCommitBD(false);
 
-				this.tareaProyecto.setEstado(IConstantes.ACTIVO);
-				this.tareaProyecto.setFechaEstado(new Date());
-				this.tareaProyecto.setNumeroEtapa(2); // todo el ciclo del proyecto
+					this.tareaProyecto.setEstado(IConstantes.ACTIVO);
+					this.tareaProyecto.setFechaEstado(new Date());
+					this.tareaProyecto.setNumeroEtapa(2); // todo el ciclo del proyecto
 
-				if (this.tareas != null && this.tareas.size() > 0) {
-					this.tareaProyecto.setPosicion(this.tareas.size() + 1);
-				} else {
+					if (this.tareas != null && this.tareas.size() > 0) {
+						this.tareaProyecto.setPosicion(this.tareas.size() + 1);
+					} else {
 
-					this.tareaProyecto.setPosicion(1);
+						this.tareaProyecto.setPosicion(1);
+					}
+
+					this.tareaProyecto.getCamposBD();
+					conexion.insertarBD(this.tareaProyecto.getEstructuraTabla().getTabla(), this.tareaProyecto.getEstructuraTabla().getPersistencia());
+
+					conexion.commitBD();
+					this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+					// reseteo de variables
+					this.tareaProyecto = null;
+					this.getTareaProyecto();
+					this.tareas = null;
+					this.getTareas();
+
 				}
 
-				this.tareaProyecto.getCamposBD();
-				conexion.insertarBD(this.tareaProyecto.getEstructuraTabla().getTabla(), this.tareaProyecto.getEstructuraTabla().getPersistencia());
+			} else {
 
-				conexion.commitBD();
-				this.mostrarMensajeGlobal("creacionExitosa", "exito");
+				if (this.tareaProyecto.getArchivo() == null) {
+					// ok = false;
+					this.mostrarMensajeGlobalPersonalizado("ARCHIVO PLANO REQUERIDO", "advertencia");
+				} else {
 
-				// reseteo de variables
-				this.tareaProyecto = null;
-				this.getTareaProyecto();
-				this.tareas = null;
-				this.getTareas();
+					// aquí va la revisión y armado de csv
 
+					input = new ByteArrayInputStream(this.tareaProyecto.getArchivo());
+					Charset inputCharset = Charset.forName("ISO-8859-1");
+					archivoLeido = new CsvReader(new InputStreamReader(input, inputCharset), ';');
+
+					archivoLeido.setDelimiter(';');
+
+					while (archivoLeido.readRecord()) {
+						cuentaFilas++;
+						if (cuentaFilas.intValue() >= IConstantes.FILA_INICIO_PERSONA_CSV.intValue()) {
+							tareaArchivo = new TareaProyecto();
+
+							valorCelda = archivoLeido.get(0);// actividad
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+
+								tareaArchivo.setTarea(valorCelda.trim());
+
+							}
+
+							valorCelda = archivoLeido.get(1);// entregables
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								tareaArchivo.setProducto(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(2);// responsables
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								tareaArchivo.setResponsable(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(3);// requisitos
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								tareaArchivo.setRequisito(valorCelda.trim());
+							}
+
+							tareaArchivo.settConcepto("");
+							tareaArchivo.settApto(true);
+
+							this.tareasArchivo.add(tareaArchivo);
+
+						}
+
+					}
+
+					if (this.tareasArchivo != null && this.tareasArchivo.size() > 0) {
+
+						// analizamos la información
+						for (TareaProyecto p : this.tareasArchivo) {
+
+							// analizamos si falta información
+							if (!(p.getTarea() != null && !p.getTarea().trim().equals("")) || !(p.getProducto() != null && !p.getProducto().trim().equals("")) || !(p.getResponsable() != null && !p.getResponsable().trim().equals(""))) {
+								if (p.gettConcepto() != null && !p.gettConcepto().trim().equals("")) {
+									p.settConcepto(p.gettConcepto() + "; " + "INFORMACION INCOMPLETA REVISE CAMPOS (*) REQUERIDOS");
+								} else {
+									p.settConcepto("" + "INFORMACION INCOMPLETA REVISE CAMPOS (*) REQUERIDOS");
+								}
+
+								p.settApto(false);
+
+							}
+
+							// revisa q haya escrito lo que debe
+							if (p.getResponsable() != null && !p.getResponsable().trim().equals("")) {
+								if (p.getResponsable().trim().toUpperCase().equals("AMBOS")) {
+									p.setResponsable("A");
+								} else if (p.getResponsable().trim().toUpperCase().equals("ISOLUCIONES")) {
+									p.setResponsable("CO");
+								} else if (p.getResponsable().trim().toUpperCase().equals("CLIENTE")) {
+									p.setResponsable("CL");
+								} else {
+									p.settApto(false);
+									if (p.gettConcepto() != null && !p.gettConcepto().trim().equals("")) {
+										p.settConcepto(p.gettConcepto() + "; " + "LAS UNICAS PALABRAS PERMITIDAS PARA RESPONSABLES SON: ISOLUCIONES, CLIENTE, AMBOS");
+									} else {
+										p.settConcepto("" + "LAS UNICAS PALABRAS PERMITIDAS PARA RESPONSABLES SON: ISOLUCIONES, CLIENTE, AMBOS");
+									}
+								}
+							}
+
+						}
+
+						for (TareaProyecto p : this.tareasArchivo) {
+							if (p.istApto()) {
+
+								p.settConcepto("OK");
+
+							}
+
+						}
+
+						this.abrirModal("panelVerArchivo");
+						this.mostrarMensajeGlobalPersonalizado("RESUMEN DE ACTIVIDADES DEL ARCHIVO. REVISE LAS QUE DESEE Y TENGASLAS CHEQUEADAS", "advertencia");
+
+					} else {
+
+						this.mostrarMensajeGlobalPersonalizado("EL ARCHIVO NO POSEE ACTIVIDADES O TAREAS", "advertencia");
+					}
+
+				}
 			}
 
 		} catch (Exception e) {
@@ -1649,8 +1859,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del objeto
-	 * el id para consulta
+	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del
+	 * objeto el id para consulta
 	 * 
 	 * @param event
 	 */
@@ -1698,8 +1908,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	}
 
 	/**
-	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del objeto
-	 * el id
+	 * Mï¿½todo que me selecciona el nombre del cliente, lo busca y llena del
+	 * objeto el id
 	 * 
 	 * @param event
 	 */
@@ -3378,6 +3588,14 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 	public void setAdministrarSesionCliente(AdministrarSesionCliente administrarSesionCliente) {
 		this.administrarSesionCliente = administrarSesionCliente;
+	}
+
+	public List<TareaProyecto> getTareasArchivo() {
+		return tareasArchivo;
+	}
+
+	public void setTareasArchivo(List<TareaProyecto> tareasArchivo) {
+		this.tareasArchivo = tareasArchivo;
 	}
 
 }

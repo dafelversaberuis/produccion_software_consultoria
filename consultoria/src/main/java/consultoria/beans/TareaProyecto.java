@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.validation.constraints.Pattern;
 
+import org.primefaces.model.UploadedFile;
+
 import consultoria.generales.IConstantes;
 
 public class TareaProyecto implements Serializable {
@@ -26,9 +28,16 @@ public class TareaProyecto implements Serializable {
 	private String						producto;
 	private Integer						numeroEtapa;
 
+	private String						tFormaAgregar;
+
 	private String						requisito;
 
 	private EstructuraTabla		estructuraTabla;
+
+	private byte[]						archivo;
+	private UploadedFile			tFile;
+	private String						tConcepto;
+	private boolean						tApto;
 
 	public TareaProyecto() {
 		this.estructuraTabla = new EstructuraTabla();
@@ -151,6 +160,46 @@ public class TareaProyecto implements Serializable {
 
 	public void setRequisito(String requisito) {
 		this.requisito = requisito;
+	}
+
+	public String gettFormaAgregar() {
+		return tFormaAgregar;
+	}
+
+	public void settFormaAgregar(String tFormaAgregar) {
+		this.tFormaAgregar = tFormaAgregar;
+	}
+
+	public byte[] getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(byte[] archivo) {
+		this.archivo = archivo;
+	}
+
+	public UploadedFile gettFile() {
+		return tFile;
+	}
+
+	public void settFile(UploadedFile tFile) {
+		this.tFile = tFile;
+	}
+
+	public String gettConcepto() {
+		return tConcepto;
+	}
+
+	public void settConcepto(String tConcepto) {
+		this.tConcepto = tConcepto;
+	}
+
+	public boolean istApto() {
+		return tApto;
+	}
+
+	public void settApto(boolean tApto) {
+		this.tApto = tApto;
 	}
 
 }

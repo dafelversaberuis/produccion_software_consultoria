@@ -45,9 +45,9 @@ public class Conexion implements Serializable {
 			// ***************************************
 
 			// *********Datasource_local***************************
-//			 InitialContext ctx = new InitialContext();
-//			 DataSource ds = (DataSource) ctx.lookup("java:/consultoriaDS");
-//			 con = ds.getConnection();
+			// InitialContext ctx = new InitialContext();
+			// DataSource ds = (DataSource) ctx.lookup("java:/consultoriaDS");
+			// con = ds.getConnection();
 			// ***************************************************
 
 			// **************openshuftV2********************
