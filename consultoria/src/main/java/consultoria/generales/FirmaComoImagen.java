@@ -41,12 +41,12 @@ public class FirmaComoImagen {
 	 * @param aSarta
 	 * @return archivo
 	 */
-	public byte[] getImagenComoByte(String aSarta) {
+	public byte[] getImagenComoByte(String aSarta) throws Exception{
 		byte[] archivo = null;
 		try {
 			archivo = redrawSignature(extractSignature(aSarta));
 		} catch (IOException e) {
-
+			throw new Exception(e);
 		}
 
 		return archivo;

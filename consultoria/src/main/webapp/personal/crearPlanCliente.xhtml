@@ -14,12 +14,7 @@
 					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 						cellpadding="5">
 
-						<p:outputLabel value="Minutos Gastados sesion"
-							style="font-weight:bold; font-size:14px" />
-
-						<p:outputLabel style="font-weight:normal; font-size:14px" id="outputTiempoGastado"
-							value="#{administrarPersonal.minutosGastados} minutos" />
-
+				
 						<p:outputLabel value="Cliente"
 							style="font-weight:bold; font-size:14px" />
 
@@ -299,13 +294,6 @@
 		</p:outputPanel>
 	</h:form>
 
-	<h:form id="formPoll">
-
-		<p:outputPanel
-			rendered="#{administrarPersonal.vistaActual == 'VISTA_PREGUNTAS'}">  
-			<p:poll interval="3"
-				listener="#{administrarPersonal.contarMinutos()}" update=":formAsignarPregunta:outputTiempoGastado" />
-		</p:outputPanel>
-	</h:form>
+	
 
 </ui:composition>

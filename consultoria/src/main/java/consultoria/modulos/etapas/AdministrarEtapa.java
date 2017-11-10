@@ -2864,6 +2864,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				reporte = "imprimirInformeDiagnosticoV1G.jasper";
 				// el nuevo reporte
 				// ORDENA
+				
+
+				
 				Collections.sort(diagnosticoImpresion, (o1, o2) -> o1.gettHallazgoSeleccionado().compareTo(o2.gettHallazgoSeleccionado()));
 
 			} else {

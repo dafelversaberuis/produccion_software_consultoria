@@ -187,9 +187,8 @@
 										action="/personal/crearCliente.xhtml?faces-redirect=true"
 										ajax="false" /></li>
 							</h:panelGroup>
-
 							<h:panelGroup
-								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 								<li><p:commandLink
 										value="Proyectos/Normas y sus preguntas,actividades"
