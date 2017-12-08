@@ -54,6 +54,7 @@ public interface IConstantes {
 	public static String				ROL_ADMINISTRADOR								= "A";
 
 	public static Integer				MAXIMOS_REMITENTES_CORREO				= 100;
+	public static Integer				ID_ESTADO_NO_CONFORMIDAD				= 9;
 	public static Integer				ID_ESTADO_NO_APLICA							= 6;
 	public static Integer				ID_ESTADO_CUMPLE								= 10;
 	public static Integer				NUMERO_SEMANAS									= 5;

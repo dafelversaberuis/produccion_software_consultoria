@@ -43,8 +43,6 @@ import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
-import com.google.zxing.client.result.AddressBookDoCoMoResultParser;
-
 import consultoria.Conexion;
 import consultoria.beans.Cita;
 import consultoria.beans.Cliente;
@@ -65,7 +63,6 @@ import consultoria.beans.Indicador;
 import consultoria.beans.InformacionEtapaIndicador;
 import consultoria.beans.ObjetivoEtapaIndicador;
 import consultoria.beans.PersonaDiagnostico;
-import consultoria.beans.Plan;
 import consultoria.beans.PlanAccionIndicador;
 import consultoria.beans.PlanCliente;
 import consultoria.beans.Planificacion;
@@ -1169,6 +1166,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private boolean isValidoDiagnostico() {
 		boolean ok = true;
 		boolean evidenciaCompleta = true;
+		boolean analisisCausas = true;
 		boolean alMenosUnEstado = true;
 		int indice = 0;
 		int sw = 0;
@@ -1187,10 +1185,23 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					sw = 1;
 				}
 
+				if (!(d.getAnalisisCausa() != null && !d.getAnalisisCausa().trim().equals(""))) {
+					analisisCausas = false;
+					// sw = 1;
+				}
+				if (!(d.getAccionesRealizar() != null && !d.getAccionesRealizar().trim().equals(""))) {
+					analisisCausas = false;
+					// sw = 1;
+				}
+
 				if (sw == 1) {
 					indicesIncompletos.add(indice);
 				}
 
+			}
+
+			if (!analisisCausas) {
+				this.mostrarMensajeGlobalPersonalizado("EXISTEN ANALISIS CAUSAS O ACCIONES REALIZAR SIN DILIGENCIAR. RECUERDE QUE SI HAY NO CONFORMIDAD DEBE DILIGENCIARLOS. IGUALMENTE SE DEJA SEGUIR", "advertencia");
 			}
 
 			if (!evidenciaCompleta || !alMenosUnEstado) {
@@ -2426,6 +2437,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			// NUEVO
 			this.personaDiagnostico.settTipoReporte("G");
 
+		} else if (aDecision != null && aDecision.equals("P")) {
+			// NUEVO PLAN DE ACCION
+			this.personaDiagnostico.settTipoReporte("P");
+
 		} else {
 			// LISTA CHEQUEO
 			this.personaDiagnostico.settTipoReporte("L");
@@ -2797,6 +2812,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			int sw = 0;
 			int swNuevo = 0;
+			int swnNoConforme = 0;
 
 			for (Diagnostico d : this.diagnostico) {
 
@@ -2806,6 +2822,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				d.getPreguntaProyecto().settNoAplica("N");
 				sw = 0;
 				swNuevo = 0;
+				swnNoConforme = 0;
 				d.settHallazgoSeleccionado(null);
 				for (EstadoDiagnostico e : d.gettEstadosDiagnostico()) {
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 7) {
@@ -2826,6 +2843,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 						d.getPreguntaProyecto().settNoConformidad("S");
 
 						d.settHallazgoSeleccionado("3");
+						swnNoConforme = 1;
 
 					}
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 6) {
@@ -2847,6 +2865,11 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					if (sw == 0 && swNuevo == 0) {
 						diagnosticoImpresion.add(d);
 					}
+				} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("P")) {
+					if (swnNoConforme == 1) {
+						// plan de accion solo no conformes
+						diagnosticoImpresion.add(d);
+					}
 				} else {
 					if (this.personaDiagnostico.gettAperece() != null && this.personaDiagnostico.gettAperece().equals("N")) {
 						if (sw == 0) {
@@ -2860,18 +2883,47 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			}
 
+			List<EstadoProyectoCliente> estadosGrafica = new ArrayList<EstadoProyectoCliente>();
+			List<EstadoProyectoCliente> estadosGraficaSinNoAplica = new ArrayList<EstadoProyectoCliente>();
+			EstadoProyectoCliente estadoGrafica = null;
+			if (this.proyectoCliente != null && this.proyectoCliente.gettEstadosProyecto() != null && this.proyectoCliente.gettEstadosProyecto().size() > 0) {
+				int numeroEstados = 0;
+				for (EstadoProyectoCliente e : this.proyectoCliente.gettEstadosProyecto()) {
+					numeroEstados = 0;
+					for (Diagnostico d : this.diagnostico) {
+						numeroEstados += d.gettEstadosDiagnostico().stream().filter(ed -> ed.istSeleccionado() && ed.getEstado().getId().intValue() == e.getEstado().getId().intValue()).count();
+					}
+					estadoGrafica = new EstadoProyectoCliente();
+					estadoGrafica.getEstado().setNombre(e.getEstado().getNombre());
+					estadoGrafica.settNumeroVeces(numeroEstados);
+
+					estadosGrafica.add(estadoGrafica);
+					if (e.getEstado().getId().intValue() != IConstantes.ID_ESTADO_NO_APLICA.intValue() && e.getEstado().getId().intValue() != IConstantes.ID_ESTADO_CUMPLE.intValue()) {
+						estadosGraficaSinNoAplica.add(estadoGrafica);
+					}
+
+				}
+
+			}
+
 			if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("G")) {
 				reporte = "imprimirInformeDiagnosticoV1G.jasper";
 				// el nuevo reporte
 				// ORDENA
-				
 
-				
 				Collections.sort(diagnosticoImpresion, (o1, o2) -> o1.gettHallazgoSeleccionado().compareTo(o2.gettHallazgoSeleccionado()));
+
+				parametros.put("pEstadosGrafica", estadosGraficaSinNoAplica);
+
+			} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("P")) {
+				reporte = "imprimirInformePlanAccionDiagnostico.jasper";
+				// el nuevo reporte PLAN DE ACCION
 
 			} else {
 				reporte = "imprimirInformeDiagnosticoV1.jasper";
 				// el anterior
+
+				parametros.put("pEstadosGrafica", estadosGrafica);
 
 			}
 
@@ -2879,6 +2931,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
 			parametros.put("pProyectoCliente", this.proyectoCliente);
 			parametros.put("pCliente", this.proyectoCliente.getCliente());
+
 			parametros.put("pParametroAuditoria", IConsultasDAO.getParametroAuditoria());
 			parametros.put("pPersonaDiagnostico", this.personaDiagnostico);
 			parametros.put("pNombreCompletoConsultor", this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos());
@@ -4133,6 +4186,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					aDiagnostico.setEvidenciaEncontrada("CUMPLE");
 				}
 
+				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD) {
+					aDiagnostico.setAnalisisCausa("-");
+					aDiagnostico.setAccionesRealizar("-");
+				} else {
+					aDiagnostico.setAnalisisCausa("NO APLICA");
+					aDiagnostico.setAccionesRealizar("NO APLICA");
+				}
+
 				aEstados.stream().filter(p -> p.getEstado().getId().intValue() != aEstado.getEstado().getId().intValue()).forEach(p -> {
 					p.settSeleccionado(false);
 				});
@@ -4140,6 +4201,21 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			}
 
 		}
+
+	}
+
+	public boolean isActivoCausasRealizar(Diagnostico aDiagnostico) {
+		boolean ok = false;
+		if (aDiagnostico.gettEstadosDiagnostico() != null && aDiagnostico.gettEstadosDiagnostico().size() > 0) {
+			for (EstadoDiagnostico e : aDiagnostico.gettEstadosDiagnostico()) {
+				if (e.istSeleccionado() && e.getEstado() != null && e.getEstado().getId() != null && e.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue()) {
+					ok = true;
+					break;
+				}
+			}
+		}
+
+		return ok;
 
 	}
 

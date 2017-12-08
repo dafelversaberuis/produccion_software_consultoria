@@ -197,7 +197,7 @@
 							</ui:repeat>
 						</p:column>
 
-						<p:column headerText="Descripción hallazgo*"
+						<p:column headerText="Descripción hallazgo*" 
 							style="font-size:14px;">
 							<p:inputTextarea value="#{loc.evidenciaEncontrada}" rows="3"
 								disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
@@ -211,6 +211,34 @@
 
 							<p:message for="txtEvidenciaEncontrada" />
 						</p:column>
+						<p:column headerText="Análisis causas y acciones a Realizar(Aplica solo para No Conformidad)**"
+							style="font-size:14px; vertical-align:top">
+							<p:outputLabel value="Análisis causas:" style="color:#356e9c"/>
+							<p:inputTextarea value="#{loc.analisisCausa}" rows="3"
+								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
+								autoResize="false" id="txtAnalisisCausas"
+								style="font-size:14px; width:100%; min-height:50px">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputTextarea>
+
+
+
+							<p:message for="txtAnalisisCausas" />
+							<p:outputLabel value="Acciones realizar:" style="color:#356e9c"/>
+							<p:inputTextarea value="#{loc.accionesRealizar}" rows="3"
+								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
+								autoResize="false" id="txtAccionesRealizar"
+								style="font-size:14px; width:100%; min-height:50px">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputTextarea>
+
+
+
+							<p:message for="txtAccionesRealizar" />
+						</p:column>
+						
 						<p:column
 							headerText="Archivos soporte (Fotos, audios, documentos, etc)"
 							style="font-size:13px; vertical-align:middle !important"

@@ -21,6 +21,14 @@ public class Diagnostico implements Serializable {
 	private List<DocumentoDiagnostico>	tDocumentos;
 
 	private EstructuraTabla							estructuraTabla;
+	
+	//nuevos
+	
+	private String analisisCausa;
+	private String accionesRealizar;
+	
+	
+	//
 
 	public Diagnostico() {
 		this.proyectoCliente = new ProyectoCliente();
@@ -44,6 +52,9 @@ public class Diagnostico implements Serializable {
 		} else {
 			this.estructuraTabla.getPersistencia().put("id_pregunta_proyecto", null);
 		}
+		
+		this.estructuraTabla.getPersistencia().put("analisis_causas", this.analisisCausa);
+		this.estructuraTabla.getPersistencia().put("accciones_realizar", this.accionesRealizar);
 
 	}
 
@@ -118,5 +129,23 @@ public class Diagnostico implements Serializable {
 	public void settDocumentos(List<DocumentoDiagnostico> tDocumentos) {
 		this.tDocumentos = tDocumentos;
 	}
+
+	public String getAnalisisCausa() {
+		return analisisCausa;
+	}
+
+	public void setAnalisisCausa(String analisisCausa) {
+		this.analisisCausa = analisisCausa;
+	}
+
+	public String getAccionesRealizar() {
+		return accionesRealizar;
+	}
+
+	public void setAccionesRealizar(String accionesRealizar) {
+		this.accionesRealizar = accionesRealizar;
+	}
+	
+	
 
 }

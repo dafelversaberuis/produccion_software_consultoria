@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import consultoria.generales.IConstantes;
 
 public class Conexion implements Serializable {
@@ -36,7 +39,7 @@ public class Conexion implements Serializable {
 
 			// **************openshuftV3********************
 			String DB_driver = "org.postgresql.Driver";
-
+//
 			String url = "jdbc:postgresql://postgresql:5432/produccion_consultoria";
 			String username = "dannypipe_consultoria";
 			String password = "meli0523_consultoria";
@@ -45,9 +48,9 @@ public class Conexion implements Serializable {
 			// ***************************************
 
 			// *********Datasource_local***************************
-			// InitialContext ctx = new InitialContext();
-			// DataSource ds = (DataSource) ctx.lookup("java:/consultoriaDS");
-			// con = ds.getConnection();
+//			 InitialContext ctx = new InitialContext();
+//			 DataSource ds = (DataSource) ctx.lookup("java:/consultoriaDS");
+//			 con = ds.getConnection();
 			// ***************************************************
 
 			// **************openshuftV2********************

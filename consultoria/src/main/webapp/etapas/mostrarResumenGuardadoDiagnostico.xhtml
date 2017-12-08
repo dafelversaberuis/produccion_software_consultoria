@@ -19,9 +19,15 @@
 
 					<p:commandButton id="btnResumen1" process="@this" ajax="false"
 						update=":form, :formResumen:pnlResumen" immediate="true"
-						style="font-size:16px; font-weight: normal !important; width:100%"
+						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('G')}"
-						value="IMPRIMIR INFORME DE HALLAZGOS" />
+						value="IMPRIMIR INFORME AUDITORIA/EVALUACION (HALLAZGOS)" />
+						
+					<p:commandButton id="btnResumen6" process="@this" ajax="false"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('P')}"
+						value="IMPRIMIR PLAN DE ACCION" />	
 
 					<p:commandButton id="btnResumen4" process="@this" ajax="false"
 						update=":form, :formResumen:pnlResumen" immediate="true"
@@ -45,7 +51,7 @@
 						update=":form, :formResumen:pnlResumen"
 						style="font-size:16px; font-weight: normal !important; width:100%"
 						action="#{consultarFuncionesAPI.cerrarModal('panelResumen')}"
-						value="Cerrar ventana y continuar trabajando en este Diagnóstico" />
+						value="Cerrar ventana y continuar trabajando en este Diagnóstico-Auditoria" />
 
 
 				</p:panelGrid>

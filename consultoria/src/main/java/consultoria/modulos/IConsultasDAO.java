@@ -1627,6 +1627,12 @@ public interface IConsultasDAO {
 				registro.getPreguntaProyecto().setPosicion((Integer) rs.getObject("posicion"));
 				registro.getPreguntaProyecto().setPregunta((String) rs.getObject("pregunta"));
 				registro.getPreguntaProyecto().setId((Integer) rs.getObject("id_pregunta_proyecto"));
+				
+				
+				registro.setAnalisisCausa((String) rs.getObject("analisis_causas"));
+				registro.setAccionesRealizar((String) rs.getObject("accciones_realizar"));
+				
+				
 				listadoDiagnostico.add(registro);
 			}
 

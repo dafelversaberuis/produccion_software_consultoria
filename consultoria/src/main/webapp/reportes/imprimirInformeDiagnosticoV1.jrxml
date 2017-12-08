@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirInformeDiagnosticoV1" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="bcb2e825-cef4-45b6-8931-7c5f78f9611f">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="12"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\workspaceJEE\\optimo\\src\\main\\webapp\\reportes\\"]]></defaultValueExpression>
 	</parameter>
@@ -17,6 +17,7 @@
 	<parameter name="pCliente" class="java.lang.Object"/>
 	<parameter name="pNombreCompletoConsultor" class="java.lang.String"/>
 	<parameter name="pProyectoCliente" class="java.lang.Object"/>
+	<parameter name="pEstadosGrafica" class="java.util.List"/>
 	<field name="id" class="java.lang.Integer"/>
 	<field name="evidenciaEncontrada" class="java.lang.String"/>
 	<field name="proyectoCliente" class="java.lang.Object"/>
@@ -61,9 +62,9 @@
 			<staticText>
 				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="21" width="261" height="20"/>
 				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[INFORME DE AUDITORIA]]></text>
+				<text><![CDATA[INFORME DE AUDITORIA Y/O EVALUACIÓN]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement uuid="552b7d2f-e580-4158-bb36-091ac6b01179" x="458" y="25" width="114" height="25"/>
@@ -87,7 +88,7 @@
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[VERSIÃ“N:]]></text>
+				<text><![CDATA[VERSIÓN:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="5334f247-1d82-452e-ad09-d0ccd397f86e" x="494" y="37" width="73" height="20"/>
@@ -101,7 +102,7 @@
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PAGINA:]]></text>
+				<text><![CDATA[PÁGINA:]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="848d857e-c10c-4d7a-86a0-0c569cdf7e87" x="470" y="60" width="80" height="20"/>
@@ -124,7 +125,7 @@
 			<staticText>
 				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="40" width="261" height="20"/>
 				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[LISTA DE CHEQUEO]]></text>
 			</staticText>
@@ -170,7 +171,7 @@
 				<textElement textAlignment="Center">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DSECRIPCIÃ“N HALLAZGOS]]></text>
+				<text><![CDATA[DSECRIPCIÓN HALLAZGOS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="9ebea257-e896-44c7-89a2-24ce10480567" x="136" y="26" width="20" height="20"/>
@@ -343,21 +344,21 @@
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ElaborÃ³:]]></text>
+				<text><![CDATA[Elaboró:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="73cd6d08-eb4e-4588-967d-53910f084163" x="191" y="5" width="100" height="15" forecolor="#808080"/>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RevisÃ³:]]></text>
+				<text><![CDATA[Revisó:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="73cd6d08-eb4e-4588-967d-53910f084163" x="391" y="5" width="100" height="15" forecolor="#808080"/>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[AprobÃ³:]]></text>
+				<text><![CDATA[Aprobó:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="73cd6d08-eb4e-4588-967d-53910f084163" x="391" y="22" width="100" height="15" forecolor="#808080"/>
@@ -406,7 +407,7 @@
 				<textElement markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{pNombreCompletoConsultor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( 1==2 ? $P{pNombreCompletoConsultor} : "Consultor(a) Isoluciones" )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="cd9bd202-061f-46d3-b1a7-a6545827ba47" x="46" y="22" width="136" height="15" forecolor="#808080"/>
@@ -420,7 +421,7 @@
 				<textElement markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{pNombreCompletoConsultor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( 1==2 ? $P{pNombreCompletoConsultor} : "Consultor(a) Isoluciones" )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="d2ea5ca9-11c2-425b-b178-a05ef1d0487e" x="232" y="22" width="149" height="15" forecolor="#808080"/>
@@ -441,7 +442,7 @@
 				<textElement markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["LÃ­der de Sostenibilidad/Encargado"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Líder de Sostenibilidad/Encargado"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="15d2da72-7262-4de9-99f8-710392c15ebb" x="46" y="39" width="138" height="15" forecolor="#808080"/>
@@ -476,7 +477,7 @@
 				<text><![CDATA[CONCLUSIONES:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6bb61dfa-0df3-4309-94df-b565f4d5cf42" positionType="Float" x="206" y="115" width="172" height="32">
+				<reportElement uuid="6bb61dfa-0df3-4309-94df-b565f4d5cf42" positionType="Float" x="206" y="123" width="172" height="32">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S"))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -485,13 +486,13 @@
 				<text><![CDATA[FIRMA CONSULTOR/REPRESENTANTE ISOLUCIONES]]></text>
 			</staticText>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Bottom" onErrorType="Blank">
-				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="212" y="56" width="163" height="56">
+				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="212" y="64" width="163" height="56">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S"))]]></printWhenExpression>
 				</reportElement>
 				<imageExpression><![CDATA[$P{rutaFirmas}+"cliente"+$P{pProyectoCliente}.id+".png"]]></imageExpression>
 			</image>
 			<line>
-				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="206" y="111" width="171" height="1">
+				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="206" y="119" width="171" height="1">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S"))]]></printWhenExpression>
 				</reportElement>
 			</line>
@@ -505,6 +506,22 @@
 			<line>
 				<reportElement uuid="0bd2a2b0-d2a2-46c1-9826-473e32c9c6b3" x="0" y="26" width="100" height="1"/>
 			</line>
+			<subreport>
+				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" positionType="Float" x="0" y="55" width="572" height="4"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$P{pEstadosGrafica})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporteAuditoriaGrafica.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</summary>
+	<noData>
+		<band height="30">
+			<staticText>
+				<reportElement uuid="4db8a772-38f7-4577-8e29-324feb35b314" x="0" y="7" width="572" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NO EXISTEN HALLAZGOS  PARA GENERAR UN INFORME]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>
