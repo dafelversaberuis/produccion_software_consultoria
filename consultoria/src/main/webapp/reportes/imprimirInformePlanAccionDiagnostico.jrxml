@@ -403,7 +403,7 @@
 				<textElement textAlignment="Center">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[NO EXISTEN HALLAZGOS CLASIFICADOS COMO NO CUMPLE PARA GENERAR UN PLAN DE ACCIÓN]]></text>
+				<text><![CDATA[NO EXISTEN HALLAZGOS CLASIFICADOS COMO NO CONFORMIDAD PARA GENERAR UN PLAN DE ACCIÓN]]></text>
 			</staticText>
 		</band>
 	</noData>

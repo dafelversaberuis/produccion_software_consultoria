@@ -2421,7 +2421,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			}
 
 		} catch (Exception e) {
-			IConstantes.log.error(e, e);
+			//IConstantes.log.error(e, e);
 
 		}
 	}
@@ -2807,7 +2807,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			String reporte = "";
 			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			// firma del representante del cliente
+			if(this.personaDiagnostico.getFirma()!=null){
 			this.guardarFirmaComoImagen(this.personaDiagnostico.getFirma(), "cliente" + this.proyectoCliente.getId());
+			}
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			int sw = 0;
@@ -4179,14 +4181,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		if (aEstado != null && aEstado.getEstado() != null && aEstado.getEstado().getId() != null) {
 			if (aEstado.istSeleccionado()) {
 
-				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_APLICA) {
+				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_APLICA.intValue()) {
 					aDiagnostico.setEvidenciaEncontrada("NO APLICA");
 				}
-				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_CUMPLE) {
+				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_CUMPLE.intValue()) {
 					aDiagnostico.setEvidenciaEncontrada("CUMPLE");
 				}
 
-				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD) {
+				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue()) {
 					aDiagnostico.setAnalisisCausa("-");
 					aDiagnostico.setAccionesRealizar("-");
 				} else {
@@ -5536,6 +5538,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				tempEstado = new Estado();
 				tempEstado.setIndicativoVigencia(IConstantes.ACTIVO);
 				estados = IConsultasDAO.getEstados(tempEstado);
+
+				EstadoDiagnostico en = null;
+
 				if (estados != null && estados.size() > 0) {
 
 					for (Estado e : estados) {
@@ -5552,17 +5557,36 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 							registroDiagnostico.getProyectoCliente().setId(this.proyectoCliente.getId());
 							registroDiagnostico.settEstadosDiagnostico(new ArrayList<EstadoDiagnostico>());
 
+							en = null;
 							for (EstadoProyectoCliente e : this.proyectoCliente.gettEstadosProyecto()) {
 
 								estadoDiagnostico = new EstadoDiagnostico();
 								estadoDiagnostico.getDiagnostico().setId(e.getId());
 								estadoDiagnostico.setEstado(e.getEstado());
-								estadoDiagnostico.settSeleccionado(false);
+
+								if (e.getEstado() != null && e.getEstado().getId() != null && e.getEstado().getId().intValue() == IConstantes.ID_ESTADO_CUMPLE.intValue()) {
+
+									en = estadoDiagnostico;
+
+									// por defecto cumple
+									estadoDiagnostico.settSeleccionado(true);
+									// registroDiagnostico.setEvidenciaEncontrada("CUMPLE");
+									// registroDiagnostico.setAccionesRealizar("NO APLICA");
+									// registroDiagnostico.setAnalisisCausa("NO APLICA");
+								} else {
+									estadoDiagnostico.settSeleccionado(false);
+								}
+
 								registroDiagnostico.gettEstadosDiagnostico().add(estadoDiagnostico);
 
 							}
 							contadorRegistrosDiagnistico++;
 							registroDiagnostico.settIdRegistro(contadorRegistrosDiagnistico);
+
+							if (en != null) {
+								vaidarNoAplica(registroDiagnostico.gettEstadosDiagnostico(), en, registroDiagnostico);
+							}
+
 							this.diagnostico.add(registroDiagnostico);
 
 						}

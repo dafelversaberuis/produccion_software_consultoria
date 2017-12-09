@@ -48,8 +48,9 @@
 							value="#{administrarEtapa.personaDiagnostico.requiereFirma}">
 
 
-							<f:selectItem itemValue="S" itemLabel="SI" />
+							
 							<f:selectItem itemValue="N" itemLabel="NO" />
+							<f:selectItem itemValue="S" itemLabel="SI" />
 
 							<p:ajax process="@this" update="pnlFirma1, pnlFirma2" />
 
@@ -59,7 +60,7 @@
 
 
 						<p:outputPanel id="pnlFirma1">
-							<p:outputLabel rendered="#{administrarEtapa.personaDiagnostico.requiereFirma==null or administrarEtapa.personaDiagnostico.requiereFirma == 'S'}"
+							<p:outputLabel rendered="#{administrarEtapa.personaDiagnostico.requiereFirma!=null and administrarEtapa.personaDiagnostico.requiereFirma == 'S'}"
 								value="Puede agregar en el espacio de abajo la firma del consultor, se guardará en base de datos y saldrá en el reporte pdf(Para ello mantenga el clic izquierdo presionado sobre el cuadro y haga la firma respectiva)"
 								style="font-size:12px" />
 						</p:outputPanel>
@@ -69,7 +70,7 @@
 
 						<p:outputPanel id="pnlFirma2">
 
-							<p:panelGrid columns="2" style="width:100%" rendered="#{administrarEtapa.personaDiagnostico.requiereFirma==null or administrarEtapa.personaDiagnostico.requiereFirma == 'S'}"
+							<p:panelGrid columns="2" style="width:100%" rendered="#{administrarEtapa.personaDiagnostico.requiereFirma!=null and administrarEtapa.personaDiagnostico.requiereFirma == 'S'}"
 								styleClass="ui-panelgrid-blank">
 
 								<p:signature id="sigFirma" style="width:450px; height:200px" 
