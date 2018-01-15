@@ -2864,8 +2864,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 						d.getPreguntaProyecto().settRecomendacion("S");
 
 						d.settHallazgoSeleccionado("2");
-						
-						swnNoConforme = 1; // COMO SE HABILITA PARA PLAN DE ACCION TAMBIEN RECOMENDACION LO MANEJA ESTA BANDERA
+
+						swnNoConforme = 1; // COMO SE HABILITA PARA PLAN DE ACCION TAMBIEN
+																// RECOMENDACION LO MANEJA ESTA BANDERA
 					}
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 9) {
 						// noconformidad
@@ -4334,6 +4335,11 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue() || aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue()) {
 					aDiagnostico.setAnalisisCausa("-");
 					aDiagnostico.setAccionesRealizar("-");
+
+					if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue()) {
+						aDiagnostico.setAnalisisCausa("NO APLICA");
+					}
+
 				} else {
 					aDiagnostico.setAnalisisCausa("NO APLICA");
 					aDiagnostico.setAccionesRealizar("NO APLICA");
@@ -5315,7 +5321,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			// numero_etapa, producto, etc que no lo tiene
 
 			this.cronogramas = IConsultasDAO.getCronograma(registroCronograma);
-			
+
 			this.itemsIndicadores = null;
 			this.getItemsIndicadores();
 
