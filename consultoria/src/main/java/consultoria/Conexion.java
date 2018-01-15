@@ -13,9 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import consultoria.generales.IConstantes;
 
 public class Conexion implements Serializable {

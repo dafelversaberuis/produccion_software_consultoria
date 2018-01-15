@@ -330,13 +330,21 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT p.id, p.nombre, p.id_cronograma, p.extension_archivo");
+			sql.append("  SELECT p.id, p.nombre, p.id_cronograma, p.extension_archivo, p.etapa");
 			sql.append("  FROM documentos_cronograma p");
 			sql.append("  WHERE 1=1 ");
 
 			if (aDocumento != null && aDocumento.getCronograma() != null && aDocumento.getCronograma().getId() != null) {
 				sql.append("  AND p.id_cronograma =  ? ");
 				prametros.add(aDocumento.getCronograma().getId());
+			}
+
+			if (aDocumento.getEtapa() != null && !aDocumento.getEtapa().equals("") && !aDocumento.getEtapa().equals("CRONOGRAMA")) {
+				sql.append("  AND p.etapa =  ?");
+				prametros.add(aDocumento.getEtapa());
+			} else {
+				sql.append("  AND (p.etapa IS NULL OR p.etapa =  ?)");
+				prametros.add("CRONOGRAMA");
 			}
 
 			sql.append("  ORDER BY nombre");
@@ -348,6 +356,7 @@ public interface IConsultasDAO {
 				documento.setId((Integer) rs.getObject("id"));
 				documento.setNombre((String) rs.getObject("nombre"));
 				documento.setExtensionArchivo((String) rs.getObject("extension_archivo"));
+				documento.setEtapa((String) rs.getObject("etapa"));
 				documento.getCronograma().setId((Integer) rs.getObject("id_cronograma"));
 				documentos.add(documento);
 			}
@@ -473,6 +482,58 @@ public interface IConsultasDAO {
 
 		}
 		return planes;
+
+	}
+
+	public static List<Indicador> getIndicadoresProyectoCliente(Indicador aIndicador) throws Exception {
+		List<Indicador> indicadores = new ArrayList<Indicador>();
+		List<Object> prametros = new ArrayList<Object>();
+		Indicador registro = null;
+		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		try {
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("  SELECT d.*, o.objetivo");
+			sql.append("  FROM indicadores_objetivo d, informacion_etapa_indicadores ii, objetivos_etapa_indicadores o");
+			sql.append("  WHERE d.id_objetivo = o.id");
+			sql.append("  AND o.id_informacion_etapa = ii.id");
+
+
+
+			sql.append("  AND d.nombre_indicador IS NOT NULL AND ii.id_proyecto_cliente = ?");
+			prametros.add(aIndicador.getObjetivo().getInformacionEtapaIndicador().getProyectoCliente().getId());
+
+			sql.append("  ORDER BY d.id");
+
+			rs = conexion.consultarBD(sql.toString(), prametros);
+
+			while (rs.next()) {
+				registro = new Indicador();
+				registro.setId((Integer) rs.getObject("id"));
+
+
+				registro.setNombreIndicador((String) rs.getObject("nombre_indicador"));
+				registro.setFormula((String) rs.getObject("formula"));
+		
+
+				registro.getObjetivo().setObjetivo((String) rs.getObject("objetivo"));
+
+				indicadores.add(registro);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e);
+
+		} finally {
+
+			if (rs != null) {
+				rs.close();
+			}
+			conexion.cerrarConexion();
+
+		}
+		return indicadores;
 
 	}
 
@@ -639,7 +700,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT archivo, p.content_type, p.extension_archivo");
+			sql.append("  SELECT archivo, p.content_type, p.extension_archivo, p.etapa");
 			sql.append("  FROM documentos_cronograma p");
 			sql.append("  WHERE 1=1 ");
 
@@ -656,6 +717,7 @@ public interface IConsultasDAO {
 				documento.setArchivo(rs.getBytes("archivo"));
 				documento.setContentType((String) rs.getObject("content_type"));
 				documento.setExtensionArchivo((String) rs.getObject("extension_archivo"));
+				documento.setEtapa((String) rs.getObject("etapa"));
 
 			}
 
@@ -977,6 +1039,11 @@ public interface IConsultasDAO {
 				registro.setObservaciones((String) rs.getObject("observaciones"));
 				registro.setRequiereFirma((String) rs.getObject("requiere_firma"));
 				registro.setFirma((String) rs.getObject("firma"));
+
+				registro.setImplementacionObservaciones((String) rs.getObject("implementacion_observaciones"));
+				registro.setImplementacionRequiereFirma((String) rs.getObject("implementacion_requiere_firma"));
+				registro.setImplementacionFirma((String) rs.getObject("implementacion_firma"));
+
 				registro.setMetaSuperiorDocumentacion((BigDecimal) rs.getObject("meta_superior_documentacion"));
 				registro.setMetaSuperiorSocializacion((BigDecimal) rs.getObject("meta_superior_socializacion"));
 				registro.setMetaSuperiorImplementacion((BigDecimal) rs.getObject("meta_superior_implementacion"));
@@ -1350,9 +1417,12 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito");
+			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito, i.nombre_indicador, i.formula, o.objetivo, d.id_indicador");
 			sql.append("  FROM cronograma d");
 			sql.append("  INNER JOIN tareas_proyecto p ON p.id = d.id_tarea");
+			sql.append("  LEFT JOIN indicadores_objetivo i ON i.id = d.id_indicador");
+			sql.append("  LEFT JOIN objetivos_etapa_indicadores o ON o.id = i.id_objetivo");
+
 			sql.append("  WHERE 1=1 ");
 
 			if (aCronograma != null && aCronograma.getProyectoCliente() != null && aCronograma.getProyectoCliente().getId() != null) {
@@ -1399,6 +1469,15 @@ public interface IConsultasDAO {
 				registro.setResponsableSocializacion((String) rs.getObject("responsable_socializacion"));
 				registro.setResponsableImplementacion((String) rs.getObject("responsable_implementacion"));
 				registro.setResponsableAuditoria((String) rs.getObject("responsable_auditoria"));
+
+				registro.setImplementacionComentariosCliente((String) rs.getObject("implementacion_comentarios_cliente"));
+				registro.setImplementacionComentariosConsultor((String) rs.getObject("implementacion_comentarios_consultor"));
+				registro.setImplementacionEvidencias((String) rs.getObject("implementacion_evidencias"));
+
+				registro.getIndicador().setId((Integer) rs.getObject("id_indicador"));
+				registro.getIndicador().setNombreIndicador((String) rs.getObject("nombre_indicador"));
+				registro.getIndicador().setFormula((String) rs.getObject("formula"));
+				registro.getIndicador().getObjetivo().setObjetivo((String) rs.getObject("objetivo"));
 
 				listado.add(registro);
 			}
@@ -1627,12 +1706,10 @@ public interface IConsultasDAO {
 				registro.getPreguntaProyecto().setPosicion((Integer) rs.getObject("posicion"));
 				registro.getPreguntaProyecto().setPregunta((String) rs.getObject("pregunta"));
 				registro.getPreguntaProyecto().setId((Integer) rs.getObject("id_pregunta_proyecto"));
-				
-				
+
 				registro.setAnalisisCausa((String) rs.getObject("analisis_causas"));
 				registro.setAccionesRealizar((String) rs.getObject("accciones_realizar"));
-				
-				
+
 				listadoDiagnostico.add(registro);
 			}
 
@@ -1771,7 +1848,7 @@ public interface IConsultasDAO {
 				sql.append("  AND p.id_consultor = ? ");
 				prametros.add(aProyectoCliente.getConsultor().getId());
 			}
-			
+
 			if (aProyectoCliente != null && aProyectoCliente.getCliente() != null && aProyectoCliente.getCliente().getId() != null) {
 				sql.append("  AND c.id = ? ");
 				prametros.add(aProyectoCliente.getCliente().getId());
@@ -1788,7 +1865,7 @@ public interface IConsultasDAO {
 				sql.append("  AND p.id_consultor = ? ");
 				prametros.add(aProyectoCliente.getConsultor().getId());
 			}
-			
+
 			if (aProyectoCliente != null && aProyectoCliente.getCliente() != null && aProyectoCliente.getCliente().getId() != null) {
 				sql.append("  AND c.id = ? ");
 				prametros.add(aProyectoCliente.getCliente().getId());

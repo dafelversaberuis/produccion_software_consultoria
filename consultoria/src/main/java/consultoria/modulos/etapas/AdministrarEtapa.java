@@ -137,6 +137,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	private List<SelectItem>						itemsMesesAno;
 	private List<SelectItem>						itemsClientes;
+	private List<SelectItem>						itemsIndicadores;
 	private List<SelectItem>						itemsProyectosCliente;
 	private List<Diagnostico>						diagnostico;
 	private List<Planificacion>					planificacion;
@@ -159,6 +160,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private int													tiempoConsumido;
 	private int													tiempoMinutos;
 	private boolean											asesoriaIniciada;
+
+	private String											etapaCompartida;
 
 	private List<SelectItem>						itemsPlanesDisponiblesCliente;
 
@@ -869,6 +872,29 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	}
 
+	public void asignarIndicador(Cronograma aCronograma) {
+		try {
+
+			this.cronogramaTransaccion = aCronograma;
+
+			guardarTemporalCronograma();
+
+			this.documentoCronograma = null;
+			this.getDocumentoCronograma();
+			this.documentoCronogramaTransaccion = null;
+			this.getDocumentoCronogramaTransaccion();
+			this.documentosCronograma = null;
+
+			this.getDocumentosCronograma();
+
+			this.abrirModal("panelVerDocumento");
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
 	/**
 	 * Asigna un documento de diagnostico
 	 * 
@@ -1201,7 +1227,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			}
 
 			if (!analisisCausas) {
-				this.mostrarMensajeGlobalPersonalizado("EXISTEN ANALISIS CAUSAS O ACCIONES REALIZAR SIN DILIGENCIAR. RECUERDE QUE SI HAY NO CONFORMIDAD DEBE DILIGENCIARLOS. IGUALMENTE SE DEJA SEGUIR", "advertencia");
+				this.mostrarMensajeGlobalPersonalizado("EXISTEN ANALISIS CAUSAS O ACCIONES REALIZAR SIN DILIGENCIAR. RECUERDE QUE SI HAY NO CONFORMIDAD O RECOMENDACION DEBE DILIGENCIARLOS. IGUALMENTE SE DEJA SEGUIR", "advertencia");
 			}
 
 			if (!evidenciaCompleta || !alMenosUnEstado) {
@@ -1616,7 +1642,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			conexion.commitBD();
 
-			this.mostrarMensajeGlobalPersonalizado("Planificaciï¿½n/Cronograma detallado actualizado (Conclusiones y/o firma). Revise diï¿½logo", "exito");
+			this.mostrarMensajeGlobalPersonalizado("ETAPA ACTUALIZADA (Conclusiones y/o firma).REVISE DIALOGO", "exito");
 
 			// vuelve y consulta lo ï¿½ltimo
 			armarEstructuraCronograma();
@@ -2421,7 +2447,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			}
 
 		} catch (Exception e) {
-			//IConstantes.log.error(e, e);
+			// IConstantes.log.error(e, e);
 
 		}
 	}
@@ -2807,8 +2833,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			String reporte = "";
 			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			// firma del representante del cliente
-			if(this.personaDiagnostico.getFirma()!=null){
-			this.guardarFirmaComoImagen(this.personaDiagnostico.getFirma(), "cliente" + this.proyectoCliente.getId());
+			if (this.personaDiagnostico.getFirma() != null) {
+				this.guardarFirmaComoImagen(this.personaDiagnostico.getFirma(), "cliente" + this.proyectoCliente.getId());
 			}
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
@@ -2838,7 +2864,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 						d.getPreguntaProyecto().settRecomendacion("S");
 
 						d.settHallazgoSeleccionado("2");
-
+						
+						swnNoConforme = 1; // COMO SE HABILITA PARA PLAN DE ACCION TAMBIEN RECOMENDACION LO MANEJA ESTA BANDERA
 					}
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 9) {
 						// noconformidad
@@ -2869,7 +2896,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					}
 				} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("P")) {
 					if (swnNoConforme == 1) {
-						// plan de accion solo no conformes
+						// plan de accion solo no conformes Y RECOMEDACIONES
 						diagnosticoImpresion.add(d);
 					}
 				} else {
@@ -3123,7 +3150,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			conexion.eliminarBD(cronogramaGeneral.getEstructuraTabla().getTabla(), condiciones);
 
 			conexion.commitBD();
-			this.mostrarMensajeGlobalPersonalizado("Planificaciï¿½n/Cronograma detallado eliminado con ï¿½xito", "exito");
+			this.mostrarMensajeGlobalPersonalizado("PLANIFICACION DETALLADA E IMPLEMENTACION ELIMINADAS CON EXITO", "exito");
 
 			this.cronogramaGeneral = null;
 			this.getCronogramaGeneral();
@@ -3381,6 +3408,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	public void limpiarFirmaCronograma() {
 		this.cronogramaGeneral.setFirma(null);
+	}
+
+	public void limpiarFirmaImplementacion() {
+		this.cronogramaGeneral.setImplementacionFirma(null);
 	}
 
 	public void limpiarFirmaDocumentacion() {
@@ -3673,6 +3704,118 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			} else {
 
 				this.mostrarMensajeGlobalPersonalizado("Revise las fechas. La fecha de aprobaciï¿½n debe ser mayor o igual a la de revisiï¿½n", "advertencia");
+
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+			conexion.cerrarConexion();
+		}
+	}
+
+	public void actualizarImplementacion() {
+		Conexion conexion = new Conexion();
+		List<Cronograma> temps = null;
+
+		try {
+			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+			// validaciones
+			boolean ok = true;
+			if (this.cronogramas != null && this.cronogramas.size() > 0) {
+				for (Cronograma p : this.cronogramas) {
+
+					// implementaciï¿½n
+					if (p.getFechaInicioImplementacion() != null) {
+						if (p.getFechaFinImplementacion() != null) {
+							if (!(formato.format(p.getFechaInicioImplementacion()).compareTo(formato.format(p.getFechaFinImplementacion())) <= 0)) {
+								ok = false;
+								break;
+							}
+						}
+					}
+					if (p.getFechaFinImplementacion() != null) {
+						if (p.getFechaInicioImplementacion() != null) {
+							if (!(formato.format(p.getFechaFinImplementacion()).compareTo(formato.format(p.getFechaInicioImplementacion())) >= 0)) {
+								ok = false;
+								break;
+							}
+						}
+					}
+					if (p.getFechaSeguimientoImplementacion() != null) {
+						if (p.getFechaInicioImplementacion() != null) {
+							if (!(formato.format(p.getFechaSeguimientoImplementacion()).compareTo(formato.format(p.getFechaInicioImplementacion())) >= 0)) {
+								ok = false;
+								break;
+							}
+						}
+						if (p.getFechaFinImplementacion() != null) {
+							if (!(formato.format(p.getFechaSeguimientoImplementacion()).compareTo(formato.format(p.getFechaFinImplementacion())) <= 0)) {
+								ok = false;
+								break;
+							}
+						}
+
+					}
+
+				}
+			} else {
+				ok = false;
+
+			}
+
+			if (ok) {
+
+				conexion.setAutoCommitBD(false);
+
+				if (this.cronogramaGeneral.getFechaGeneracionTodo() == null) {
+					this.cronogramaGeneral.setFechaGeneracionTodo(new Date());
+				}
+
+				Cronograma registroCronograma = new Cronograma();
+				registroCronograma.getProyectoCliente().setId(this.proyectoCliente.getId());
+				temps = IConsultasDAO.getCronograma(registroCronograma);
+				if (temps != null && temps.size() > 0) {
+
+					// actualizar
+					this.cronogramaGeneral.getCamposBD();
+					conexion.actualizarBD(this.cronogramaGeneral.getEstructuraTabla().getTabla(), this.cronogramaGeneral.getEstructuraTabla().getPersistencia(), this.cronogramaGeneral.getEstructuraTabla().getLlavePrimaria(), null);
+
+					for (Cronograma p : this.cronogramas) {
+						p.getCamposBD();
+						conexion.actualizarBD(p.getEstructuraTabla().getTabla(), p.getEstructuraTabla().getPersistencia(), p.getEstructuraTabla().getLlavePrimaria(), null);
+
+					}
+
+				} else {
+					// insertar
+
+					this.cronogramaGeneral.getCamposBD();
+					conexion.insertarBD(this.cronogramaGeneral.getEstructuraTabla().getTabla(), this.cronogramaGeneral.getEstructuraTabla().getPersistencia());
+
+					for (Cronograma p : this.cronogramas) {
+
+						p.getCamposBD();
+						conexion.insertarBD(p.getEstructuraTabla().getTabla(), p.getEstructuraTabla().getPersistencia());
+						p.setId(conexion.getUltimoSerialTransaccion(p.getEstructuraTabla().getTabla()));
+
+					}
+
+				}
+
+				conexion.commitBD();
+
+				this.mostrarMensajeGlobalPersonalizado("IMPLEMENTACION GUARDADA CON EXITO", "exito");
+				this.abrirModal("panelCronogramaCompleto");
+
+				// reseteo de variables
+				this.cronogramas = null;
+				armarEstructuraCronograma();
+
+			} else {
+
+				this.mostrarMensajeGlobalPersonalizado("REVISE LA INFORMACION DE LA IMPLEMENTACION. SI DILIGENCIO FECHAS, LAS FINALES DEBEN SER MAYORES O IGUALES A LAS INICIALES Y LAS FECHAS DE SEGUIMIENTO REALIZACION EN EL RANGO", "advertencia");
 
 			}
 
@@ -4188,7 +4331,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					aDiagnostico.setEvidenciaEncontrada("CUMPLE");
 				}
 
-				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue()) {
+				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue() || aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue()) {
 					aDiagnostico.setAnalisisCausa("-");
 					aDiagnostico.setAccionesRealizar("-");
 				} else {
@@ -4210,7 +4353,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		boolean ok = false;
 		if (aDiagnostico.gettEstadosDiagnostico() != null && aDiagnostico.gettEstadosDiagnostico().size() > 0) {
 			for (EstadoDiagnostico e : aDiagnostico.gettEstadosDiagnostico()) {
-				if (e.istSeleccionado() && e.getEstado() != null && e.getEstado().getId() != null && e.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue()) {
+				if (e.istSeleccionado() && e.getEstado() != null && e.getEstado().getId() != null && (e.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue() || e.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue())) {
 					ok = true;
 					break;
 				}
@@ -5172,6 +5315,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			// numero_etapa, producto, etc que no lo tiene
 
 			this.cronogramas = IConsultasDAO.getCronograma(registroCronograma);
+			
+			this.itemsIndicadores = null;
+			this.getItemsIndicadores();
 
 			// si no encuentra una planificacion esta en modo nuevo
 			if (!(this.cronogramas != null && this.cronogramas.size() > 0)) {
@@ -5259,6 +5405,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					p.settDocumentos(new ArrayList<DocumentoCronograma>());
 					DocumentoCronograma doc = new DocumentoCronograma();
 					doc.getCronograma().setId(p.getId());
+					doc.setEtapa(this.etapaCompartida);
 					p.settDocumentos(IConsultasDAO.getDocumentosCronograma(doc));
 
 				}
@@ -6467,6 +6614,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			if (isValidoDocumentoCronograma()) {
 				conexion.setAutoCommitBD(false);
 
+				this.documentoCronograma.setEtapa(this.etapaCompartida);
 				this.documentoCronograma.getCamposBD();
 				conexion.insertarBD(this.documentoCronograma.getEstructuraTabla().getTabla(), this.documentoCronograma.getEstructuraTabla().getPersistencia());
 				conexion.commitBD();
@@ -6953,6 +7101,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			if (this.documentosCronograma == null && this.cronogramaTransaccion != null && this.cronogramaTransaccion.getId() != null) {
 				DocumentoCronograma doc = new DocumentoCronograma();
 				doc.getCronograma().setId(this.cronogramaTransaccion.getId());
+
+				doc.setEtapa(this.etapaCompartida);
+
 				this.documentosCronograma = IConsultasDAO.getDocumentosCronograma(doc);
 
 			}
@@ -7025,8 +7176,52 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		return itemsPlanesDisponiblesCliente;
 	}
 
+	public String asignarEtapaCompartida(String aEtapa) {
+		if (aEtapa == null || aEtapa.equals("CRONOGRAMA") || aEtapa.trim().equals("")) {
+			aEtapa = "CRONOGRAMA";
+		} else {
+			aEtapa = "IMPLEMENTACION";
+		}
+		this.etapaCompartida = aEtapa;
+		return "";
+	}
+
 	public void setItemsPlanesDisponiblesCliente(List<SelectItem> itemsPlanesDisponiblesCliente) {
 		this.itemsPlanesDisponiblesCliente = itemsPlanesDisponiblesCliente;
+	}
+
+	public String getEtapaCompartida() {
+		return etapaCompartida;
+	}
+
+	public void setEtapaCompartida(String etapaCompartida) {
+		this.etapaCompartida = etapaCompartida;
+	}
+
+	public List<SelectItem> getItemsIndicadores() {
+		try {
+
+			this.itemsIndicadores = new ArrayList<SelectItem>();
+			this.itemsIndicadores.add(new SelectItem("", "Seleccione.."));
+			if (proyectoCliente != null && proyectoCliente.getId() != null) {
+				Indicador i = new Indicador();
+				i.getObjetivo().getInformacionEtapaIndicador().setProyectoCliente(this.proyectoCliente);
+				List<Indicador> indicadores = IConsultasDAO.getIndicadoresProyectoCliente(i);
+
+				if (indicadores != null && indicadores.size() > 0) {
+					indicadores.forEach(p -> this.itemsIndicadores.add(new SelectItem(p.getId(), p.getNombreIndicador() + "(Fórmula: " + p.getFormula() + ")")));
+				}
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+		return itemsIndicadores;
+	}
+
+	public void setItemsIndicadores(List<SelectItem> itemsIndicadores) {
+		this.itemsIndicadores = itemsIndicadores;
 	}
 
 }

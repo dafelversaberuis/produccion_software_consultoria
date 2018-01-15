@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+
+		<style type="text/css">
+.ui-datatable-scrollable-theadclone th span.ui-column-title {
+	display: none !important;
+	height: 0px;
+}
+</style>
+
+		<style type="text/css">
+.selectOneMenuGrouped.ui-selectonemenu-list, .ui-selectonemenu-panel {
+	max-height: 50% !important;
+	overflow: scroll;
+}
+
+.selectOneMenuGrouped .ui-selectonemenu-items-wrapper {
+	height: 100% !important;
+	overflow: scroll;
+}
+
+.ROJO {
+	background-color: #FD2702 !important;
+	color: white
+}
+
+.NARANJA {
+	background-color: #FFD257 !important;
+	color: black
+}
+
+.VERDE {
+	background-color: #AEEDB8 !important;
+	color: black
+}
+</style>
+
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('DIAGNOSTICO')}"
+				autoRun="true" />
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloEtapas}:
+						Implementación</h2>
+					<p:outputLabel
+						value="#{administrarEtapa.asignarEtapaCompartida('IMPLEMENTACION')}" />
+
+				</div>
+			</div>
+
+			<div align="center" class="titulo"></div>
+			<p:outputPanel id="pnlCasoUso">
+				<p:spacer height="10" />
+
+				<p:panel>
+					<p:outputPanel id="pnlCriteriosConsulta">
+						<div align="left">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid" cellpadding="0">
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.labelCliente}" filter="true"
+									filterMatchMode="contains" style="width:100%; font-size:14px;"
+									id="lstCliente" value="#{administrarEtapa.cliente.id}">
+
+
+									<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+									<p:ajax event="change" process="@this"
+										listener="#{administrarEtapa.setProyectoCliente(null)}"
+										update=":form:pnlCriteriosConsulta, :form:pnlEstructuraPlanificacion" />
+
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="#{mensaje.proyectoSimple}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+									style="width:100%; font-size:14px;" id="lstProyecto"
+									value="#{administrarEtapa.proyectoCliente.id}">
+
+
+									<f:selectItems
+										value="#{administrarEtapa.itemsProyectosCliente}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraPlanificacion, :form:messages"
+										listener="#{administrarEtapa.consultarDatosParaCronograma()}" />
+
+
+
+								</p:selectOneMenu>
+								<p:outputPanel id="pnlProyectoCliente1">
+									<p:outputLabel value="#{mensaje.consultor}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente2">
+									<p:outputLabel
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+										style="font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente3">
+
+									<p:outputLabel value="Vigencia"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente4">
+
+									<p:panelGrid columns="2" style="width:100%;">
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:outputLabel
+											value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+											style="font-weight:normal; font-size:14px" />
+									</p:panelGrid>
+								</p:outputPanel>
+							</p:panelGrid>
+						</div>
+					</p:outputPanel>
+				</p:panel>
+
+				<p:spacer height="30" />
+				<p:outputPanel id="pnlEstructuraPlanificacion">
+					<p:accordionPanel id="pnlDltRegistros"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.cronogramaGeneral!=null and administrarEtapa.cronogramas!=null and administrarEtapa.cronogramas.size()>0 and  administrarEtapa.cronogramas.get(0)!=null}">
+						<p:tab title="Implementación" titleStyle="font-size:16px"
+							closable="true">
+
+
+
+
+
+							<p:dataTable var="loc" id="dtlRegistros" widgetVar="dtlRegistros"
+								rowKey="#{loc.id}" rowIndexVar="indice"
+								value="#{administrarEtapa.cronogramas}" scrollable="true"
+								paginator="true" paginatorPosition="bottom" rows="5"
+								emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+
+
+								<p:columnGroup type="header">
+
+									<p:row>
+
+										<p:column rowspan="2" headerText="Actividad/Exigencia"
+											style="font-size:14px" width="250" />
+										<p:column rowspan="2" headerText="Producto/Entregables"
+											style="font-size:14px" width="250" />
+
+										<p:column rowspan="2" headerText="Evidencias encontradas"
+											style="font-size:14px" width="250" />
+
+
+										<p:column rowspan="2" style="font-size:14px"
+											headerText="Archivos soporte actividad implementación(foto,audios, documentos, etc)"
+											width="200" />
+										<p:column rowspan="2" headerText="Comentarios consultor"
+											width="250" style="font-size:14px" />
+										<p:column rowspan="2" headerText="Comentarios cliente"
+											width="250" style="font-size:14px" />
+										<p:column width="450" colspan="3" headerText="Fechas"
+											style="font-size:14px" />
+
+										<p:column rowspan="2" headerText="Indicador que aplica"
+											style="font-size:14px" width="250" />
+
+
+									</p:row>
+									<p:row>
+										<p:column width="150" headerText="Fecha desde programada"
+											style="font-size:14px" />
+										<p:column width="150" headerText="Fecha hasta programada"
+											style="font-size:14px" />
+										<p:column width="150"
+											headerText="Fecha Realización / Seguimiento"
+											style="font-size:14px" />
+									</p:row>
+
+								</p:columnGroup>
+
+
+
+								<p:column style="vertical-align:top">
+
+									<p:inputTextarea value="#{loc.tareaProyecto.tarea}" rows="2"
+										readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+								</p:column>
+
+								<p:column style="vertical-align:top">
+
+
+									<p:inputTextarea rows="2" value="#{loc.tareaProyecto.producto}"
+										readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+
+								</p:column>
+
+
+								<p:column style="vertical-align:top">
+									<p:inputTextarea rows="2"
+										value="#{loc.implementacionEvidencias}" autoResize="false"
+										id="txtRecomendaciones"
+										style="font-size:14px; width:100%; min-height:50px">
+
+										<p:ajax event="change" process="@this" />
+									</p:inputTextarea>
+									<p:message for="txtRecomendaciones" />
+								</p:column>
+
+								<p:column style="vertical-align:top">
+									<div align="center">
+										<p:outputPanel>
+											<p:commandButton title="VER/AGREGAR ARCHIVOS SOPORTE"
+												style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:18px; height:18px; vertical-align:bottom; border:0; background-color:transparent"
+												action="#{administrarEtapa.asignarDocumentoCronograma(loc)}"
+												value="" process="@this"
+												update=":formDocumento, :form:messages" />
+										</p:outputPanel>
+
+										<p:outputLabel value="Sin archivos"
+											rendered="#{!(loc.tDocumentos!=null and loc.tDocumentos.size()>0)}"
+											style="font-weight:bold; font-size:14px; color:red" />
+
+										<p:outputLabel
+											value="#{loc.tDocumentos.size()} archivo(s) agregado(s)"
+											rendered="#{loc.tDocumentos!=null and loc.tDocumentos.size()>0}"
+											style="font-weight:bold; font-size:14px; color:green" />
+									</div>
+								</p:column>
+
+								<p:column style="vertical-align:top">
+									<p:inputTextarea rows="2"
+										value="#{loc.implementacionComentariosConsultor}"
+										autoResize="false" id="txtRecomendaciones2"
+										style="font-size:14px; width:100%; min-height:50px">
+
+										<p:ajax event="change" process="@this" />
+									</p:inputTextarea>
+									<p:message for="txtRecomendaciones2" />
+								</p:column>
+								<p:column style="vertical-align:top">
+									<p:inputTextarea rows="2"
+										value="#{loc.implementacionComentariosCliente}"
+										autoResize="false" id="txtRecomendaciones3"
+										style="font-size:14px; width:100%; min-height:50px">
+
+										<p:ajax event="change" process="@this" />
+									</p:inputTextarea>
+									<p:message for="txtRecomendaciones3" />
+								</p:column>
+
+
+
+
+								<p:column style="vertical-align:top; text-align:center">
+									<p:calendar id="calFechaIniciaImplementacion"
+										label="Fecha desde programada"
+										value="#{loc.fechaInicioImplementacion}" pattern="dd/MM/yyyy"
+										mask="true" style="font-size:14px;  height:10px">
+										<p:ajax event="dateSelect" process="@this" />
+
+									</p:calendar>
+									<p:message for="calFechaIniciaImplementacion" />
+								</p:column>
+								<p:column style="vertical-align:top; text-align:center">
+									<p:calendar id="calFechaFinImplementacion"
+										label="Fecha hasta programada"
+										value="#{loc.fechaFinImplementacion}" pattern="dd/MM/yyyy"
+										mask="true" style="font-size:14px;  height:10px">
+										<p:ajax event="dateSelect" process="@this" />
+
+									</p:calendar>
+									<p:message for="calFechaFinImplementacion" />
+								</p:column>
+								<p:column style="vertical-align:top; text-align:center">
+									<p:calendar id="calFechaSeguimientoImplementacion"
+										label="Fecha realización/segumiento"
+										value="#{loc.fechaSeguimientoImplementacion}"
+										pattern="dd/MM/yyyy" mask="true"
+										style="font-size:14px;  height:10px">
+										<p:ajax event="dateSelect" process="@this" />
+
+									</p:calendar>
+									<p:message for="calFechaSeguimientoImplementacion" />
+								</p:column>
+
+								<p:column style="vertical-align:top">
+									<p:selectOneMenu label="Indicador" filter="true"
+										filterMatchMode="contains" style="width:100%; font-size:14px;"
+										id="lstIndicadorGestion" value="#{loc.indicador.id}">
+
+
+										<f:selectItems value="#{administrarEtapa.itemsIndicadores}" />
+
+
+										<p:ajax event="change" process="@this" update="@this"/>
+									</p:selectOneMenu>
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+							<p:outputLabel value="#{mensaje.informacionRequerida}"
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+								style="font-size:10px" />
+
+						</p:tab>
+					</p:accordionPanel>
+
+
+
+
+					<p:spacer height="10" />
+					<div align="center">
+
+						<p:outputPanel
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.cronogramaGeneral!=null and administrarEtapa.cronogramas!=null and administrarEtapa.cronogramas.size()>0 and administrarEtapa.cronogramas.get(0)!=null}">
+							<p:commandButton id="btnGuardar"
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+								style="font-size:14px; font-weight: bold; text-decoration: none !important;"
+								action="#{administrarEtapa.actualizarImplementacion()}"
+								process=":form" value="Guardar"
+								update=":form, :formCronogramaCompleto" />
+
+							<p:spacer width="10" />
+
+							<p:commandButton id="btnBorrar"
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.existenteCronograma}"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
+								process="@this" value="Eliminar implementación"
+								update=":form, :formEliminar" />
+
+
+							<p:blockUI
+								rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+								block=":form" trigger="btnGuardar">
+								<p:graphicImage value="../imagenes/cargando.gif" />
+							</p:blockUI>
+
+						</p:outputPanel>
+
+					</div>
+
+				</p:outputPanel>
+
+			</p:outputPanel>
+		</h:form>
+		<ui:include src="/etapas/guardarImplementacion.xhtml" />
+		<ui:include src="/etapas/eliminarCronograma.xhtml" />
+		<ui:include src="/etapas/mostrarResumenGuardadoImplementacion.xhtml" />
+		<ui:include src="/etapas/crearDocumentoCronograma.xhtml" />
+		<ui:include src="/etapas/eliminarDocumentoCroograma.xhtml" />
+
+
+	</ui:define>
+</ui:composition>

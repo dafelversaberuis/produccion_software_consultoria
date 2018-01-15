@@ -47,13 +47,24 @@ public class Cronograma implements Serializable {
 	private String										responsableImplementacion;
 	private String										responsableAuditoria;
 
+	private String										implementacionEvidencias;
+	private String										implementacionComentariosConsultor;
+	private String										implementacionComentariosCliente;
+
 	private List<DocumentoCronograma>	tDocumentos;
+	
+	private List<IndicadorCronograma> tIndicadoresCronograma;
+	
+	private List<Indicador> tIndicadores;
+	
+	private Indicador indicador;
 
 	private EstructuraTabla						estructuraTabla;
 
 	public Cronograma() {
 		this.proyectoCliente = new ProyectoCliente();
 		this.tareaProyecto = new TareaProyecto();
+		this.indicador = new Indicador();
 		this.estructuraTabla = new EstructuraTabla();
 	}
 
@@ -99,6 +110,16 @@ public class Cronograma implements Serializable {
 		this.estructuraTabla.getPersistencia().put("responsable_auditoria", this.responsableAuditoria);
 
 		this.estructuraTabla.getPersistencia().put("recomendaciones", this.recomendaciones);
+		
+		this.estructuraTabla.getPersistencia().put("implementacion_evidencias", this.implementacionEvidencias);
+		this.estructuraTabla.getPersistencia().put("implementacion_comentarios_consultor", this.implementacionComentariosConsultor);
+		
+		if(this.indicador!=null && this.indicador.getId()!=null){
+				this.estructuraTabla.getPersistencia().put("id_indicador", this.indicador.getId());
+		}else{
+			  this.estructuraTabla.getPersistencia().put("id_indicador", null);
+		}
+		
 
 	}
 
@@ -317,5 +338,56 @@ public class Cronograma implements Serializable {
 	public void settDocumentos(List<DocumentoCronograma> tDocumentos) {
 		this.tDocumentos = tDocumentos;
 	}
+
+	public String getImplementacionEvidencias() {
+		return implementacionEvidencias;
+	}
+
+	public void setImplementacionEvidencias(String implementacionEvidencias) {
+		this.implementacionEvidencias = implementacionEvidencias;
+	}
+
+	public String getImplementacionComentariosConsultor() {
+		return implementacionComentariosConsultor;
+	}
+
+	public void setImplementacionComentariosConsultor(String implementacionComentariosConsultor) {
+		this.implementacionComentariosConsultor = implementacionComentariosConsultor;
+	}
+
+	public String getImplementacionComentariosCliente() {
+		return implementacionComentariosCliente;
+	}
+
+	public void setImplementacionComentariosCliente(String implementacionComentariosCliente) {
+		this.implementacionComentariosCliente = implementacionComentariosCliente;
+	}
+
+	public List<IndicadorCronograma> gettIndicadoresCronograma() {
+		return tIndicadoresCronograma;
+	}
+
+	public void settIndicadoresCronograma(List<IndicadorCronograma> tIndicadoresCronograma) {
+		this.tIndicadoresCronograma = tIndicadoresCronograma;
+	}
+
+	public Indicador getIndicador() {
+		return indicador;
+	}
+
+	public void setIndicador(Indicador indicador) {
+		this.indicador = indicador;
+	}
+
+	public List<Indicador> gettIndicadores() {
+		return tIndicadores;
+	}
+
+	public void settIndicadores(List<Indicador> tIndicadores) {
+		this.tIndicadores = tIndicadores;
+	}
+	
+	
+	
 
 }

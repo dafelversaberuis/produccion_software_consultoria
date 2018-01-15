@@ -21,6 +21,10 @@ public class CronogramaGeneral implements Serializable {
 	private String						observaciones;
 	private String						requiereFirma;
 	private String						firma;
+	
+	private String						implementacionObservaciones;
+	private String						implementacionRequiereFirma;
+	private String						implementacionFirma;
 
 	private BigDecimal				metaSuperiorDocumentacion;
 	private BigDecimal				metaSuperiorSocializacion;
@@ -59,10 +63,19 @@ public class CronogramaGeneral implements Serializable {
 			this.estructuraTabla.getLlavePrimaria().put("id_proyecto_cliente", null);
 			this.estructuraTabla.getPersistencia().put("id_proyecto_cliente", null);
 		}
+		
+		
 
 		this.estructuraTabla.getPersistencia().put("observaciones", this.observaciones);
 		this.estructuraTabla.getPersistencia().put("firma", this.firma);
 		this.estructuraTabla.getPersistencia().put("requiere_firma", this.requiereFirma);
+		
+		this.estructuraTabla.getPersistencia().put("implementacion_observaciones", this.implementacionObservaciones);
+		this.estructuraTabla.getPersistencia().put("implementacion_firma", this.implementacionFirma);
+		this.estructuraTabla.getPersistencia().put("implementacion_requiere_firma", this.implementacionRequiereFirma);
+		
+		
+		
 		this.estructuraTabla.getPersistencia().put("meta_superior_documentacion", this.metaSuperiorDocumentacion);
 		this.estructuraTabla.getPersistencia().put("meta_intermedia_documentacion", this.metaIntermediaDocumentacion);
 		this.estructuraTabla.getPersistencia().put("meta_inferior_documentacion", this.metaInferiorDocumentacion);
@@ -248,5 +261,31 @@ public class CronogramaGeneral implements Serializable {
 	public void setFechaGeneracionTodo(Date fechaGeneracionTodo) {
 		this.fechaGeneracionTodo = fechaGeneracionTodo;
 	}
+
+	public String getImplementacionObservaciones() {
+		return implementacionObservaciones;
+	}
+
+	public void setImplementacionObservaciones(String implementacionObservaciones) {
+		this.implementacionObservaciones = implementacionObservaciones;
+	}
+
+	public String getImplementacionRequiereFirma() {
+		return implementacionRequiereFirma;
+	}
+
+	public void setImplementacionRequiereFirma(String implementacionRequiereFirma) {
+		this.implementacionRequiereFirma = implementacionRequiereFirma;
+	}
+
+	public String getImplementacionFirma() {
+		return implementacionFirma;
+	}
+
+	public void setImplementacionFirma(String implementacionFirma) {
+		this.implementacionFirma = implementacionFirma;
+	}
+	
+	
 
 }

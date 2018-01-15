@@ -71,7 +71,7 @@
 							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
-							<li><p:commandLink value="Auditoría" title="Auditoría"
+							<li><p:commandLink value="Auditoría / Diagnóstico / Evaluación" title="Auditoría/Diagnóstico/Evaluación"
 									action="/etapas/realizarDiagnosticoInicial.xhtml?faces-redirect=true"
 									ajax="false" /></li>
 
@@ -108,6 +108,17 @@
 
 
 								</ul></li>
+
+						</h:panelGroup>
+						
+						
+						<h:panelGroup
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+
+							<li><p:commandLink value="Implementación"
+									title="Implementación"
+									action="/etapas/realizarImplementacion.xhtml?faces-redirect=true"
+									ajax="false" /></li>
 
 						</h:panelGroup>
 

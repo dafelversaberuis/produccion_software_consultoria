@@ -22,6 +22,8 @@ public class DocumentoCronograma implements Serializable {
 	private String						contentType;
 	private String						extensionArchivo;
 
+	private String						etapa;
+
 	private UploadedFile			tFile;
 
 	private EstructuraTabla		estructuraTabla;
@@ -40,6 +42,7 @@ public class DocumentoCronograma implements Serializable {
 		this.estructuraTabla.getPersistencia().put("archivo", this.archivo);
 		this.estructuraTabla.getPersistencia().put("content_type", this.contentType);
 		this.estructuraTabla.getPersistencia().put("extension_archivo", this.extensionArchivo);
+		this.estructuraTabla.getPersistencia().put("etapa", this.etapa);
 
 		if (this.cronograma != null && this.cronograma.getId() != null) {
 			this.estructuraTabla.getPersistencia().put("id_cronograma", this.cronograma.getId());
@@ -114,6 +117,14 @@ public class DocumentoCronograma implements Serializable {
 
 	public void setExtensionArchivo(String extensionArchivo) {
 		this.extensionArchivo = extensionArchivo;
+	}
+
+	public String getEtapa() {
+		return etapa;
+	}
+
+	public void setEtapa(String etapa) {
+		this.etapa = etapa;
 	}
 
 }
