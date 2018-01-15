@@ -2539,7 +2539,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT p.*, c.cliente, c.nit, cr.nombres, cr.apellidos, pr.nombre, c.correo_electronico, cr.correo_electronico correo_consultor, c.representante");
+			sql.append("  SELECT p.*, c.cliente, c.nit, cr.nombres, cr.apellidos, pr.nombre, c.correo_electronico, cr.correo_electronico correo_consultor, c.representante, encode(cr.archivo::bytea, 'base64') foto_decodificada ");
 			sql.append("  FROM proyectos_cliente p");
 			sql.append("  INNER JOIN clientes c ON c.id = p.id_cliente");
 			sql.append("  INNER JOIN proyectos pr ON pr.id = p.id_proyecto");
@@ -2620,6 +2620,8 @@ public interface IConsultasDAO {
 				proyecto.getConsultor().setNombres((String) rs.getObject("nombres"));
 				proyecto.getConsultor().setApellidos((String) rs.getObject("apellidos"));
 				proyecto.getConsultor().setCorreoElectronico((String) rs.getObject("correo_consultor"));
+				
+				proyecto.getConsultor().settFotoDecodificada((String) rs.getObject("foto_decodificada"));
 
 				proyecto.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 				proyecto.getProyecto().setNombre((String) rs.getObject("nombre"));

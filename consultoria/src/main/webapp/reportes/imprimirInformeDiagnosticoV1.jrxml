@@ -478,7 +478,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="6bb61dfa-0df3-4309-94df-b565f4d5cf42" positionType="Float" x="206" y="123" width="172" height="32">
-					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S"))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S") || $P{pPersonaDiagnostico}.requiereFirma.equals("D"))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="9" isBold="true"/>
@@ -491,11 +491,6 @@
 				</reportElement>
 				<imageExpression><![CDATA[$P{rutaFirmas}+"cliente"+$P{pProyectoCliente}.id+".png"]]></imageExpression>
 			</image>
-			<line>
-				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="206" y="119" width="171" height="1">
-					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S"))]]></printWhenExpression>
-				</reportElement>
-			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="83be2bd8-dbca-4884-a0df-a2d5b8f1e8da" positionType="Float" x="4" y="30" width="563" height="17"/>
 				<textElement>
@@ -511,6 +506,17 @@
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$P{pEstadosGrafica})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporteAuditoriaGrafica.jasper"]]></subreportExpression>
 			</subreport>
+			<image scaleImage="RealSize" hAlign="Center" vAlign="Bottom" onErrorType="Blank">
+				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="214" y="64" width="161" height="55">
+					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma.equals("D"))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(javax.xml.bind.DatatypeConverter.parseBase64Binary($P{pProyectoCliente}.consultor.tFotoDecodificada))]]></imageExpression>
+			</image>
+			<line>
+				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="206" y="119" width="171" height="1">
+					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.firma!=null && ($P{pPersonaDiagnostico}.requiereFirma==null || $P{pPersonaDiagnostico}.requiereFirma.equals("S") || $P{pPersonaDiagnostico}.requiereFirma.equals("D"))]]></printWhenExpression>
+				</reportElement>
+			</line>
 		</band>
 	</summary>
 	<noData>
