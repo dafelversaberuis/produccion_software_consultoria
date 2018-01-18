@@ -1681,7 +1681,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT d.*, p.pregunta, p.posible_evidencia, p.posicion");
+			sql.append("  SELECT d.*, p.pregunta, p.posible_evidencia, p.posicion, p.numeral");
 			sql.append("  FROM diagnostico d");
 			sql.append("  INNER JOIN preguntas_proyecto p ON p.id = d.id_pregunta_proyecto");
 			sql.append("  WHERE 1=1 ");
@@ -1693,7 +1693,7 @@ public interface IConsultasDAO {
 
 			sql.append("  ORDER BY posicion");
 
-			rs = conexion.consultarBD(sql.toString(), prametros);
+			rs = conexion.consultarBD(sql.toString(), prametros); 
 
 			while (rs.next()) {
 				registro = new Diagnostico();
@@ -1709,6 +1709,10 @@ public interface IConsultasDAO {
 
 				registro.setAnalisisCausa((String) rs.getObject("analisis_causas"));
 				registro.setAccionesRealizar((String) rs.getObject("accciones_realizar"));
+				
+				
+				registro.getPreguntaProyecto().setNumeral((String) rs.getObject("numeral"));
+				
 
 				listadoDiagnostico.add(registro);
 			}
@@ -2015,9 +2019,14 @@ public interface IConsultasDAO {
 				pregunta.setEstado((String) rs.getObject("estado"));
 				pregunta.setFechaEstado((Date) rs.getObject("fecha_estado"));
 				pregunta.setPosicion((Integer) rs.getObject("posicion"));
+				
+				
 				// proyecto
 				pregunta.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 
+				
+				pregunta.setNumeral((String) rs.getObject("numeral"));
+				
 				preguntas.add(pregunta);
 			}
 
@@ -2160,6 +2169,8 @@ public interface IConsultasDAO {
 
 				// proyecto
 				pregunta.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
+				
+				pregunta.setNumeral((String) rs.getObject("numeral"));
 
 				preguntas.add(pregunta);
 			}
@@ -2269,7 +2280,7 @@ public interface IConsultasDAO {
 				parametroAuditoria.setObjetivos((String) rs.getObject("objetivos"));
 				parametroAuditoria.setAlcance((String) rs.getObject("alcance"));
 				parametroAuditoria.setDocumentosReferencia((String) rs.getObject("documentos_referencia"));
-
+				parametroAuditoria.setObservaciones((String) rs.getObject("observaciones"));
 			}
 
 		} catch (Exception e) {

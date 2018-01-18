@@ -103,6 +103,7 @@
 										value="#{administrarEtapa.itemsProyectosCliente}" />
 
 									<p:ajax event="change" process="@this"
+										
 										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraDiagnostico"
 										listener="#{administrarEtapa.consultarDatosCompletosConsultoria()}" />
 
@@ -153,6 +154,8 @@
 				</p:panel>
 				<p:outputPanel id="pnlEstructuraDiagnostico">
 
+					
+
 
 					<p:dataTable var="loc" id="dtlRegistros" widgetVar="dtlRegistros"
 						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
@@ -165,6 +168,15 @@
 						<p:column headerText="#" style="font-size:14px; width:50px">
 							<p:outputLabel value="#{(indice+1)}"
 								style="font-size:14px; vertical-align:middle" />
+						</p:column>
+
+						<p:column headerText="Numeral" style="vertical-align: top;"
+							>
+
+
+							<p:inputText value="#{loc.preguntaProyecto.numeral}"
+								label="Numeral"
+								style="font-size:14px; width:100%; background-color:#D3D3D3" />
 						</p:column>
 
 						<p:column headerText="Pregunta" style="font-size:14px;">
@@ -197,7 +209,7 @@
 							</ui:repeat>
 						</p:column>
 
-						<p:column headerText="Descripción hallazgo*" 
+						<p:column headerText="Descripción hallazgo*"
 							style="font-size:14px;">
 							<p:inputTextarea value="#{loc.evidenciaEncontrada}" rows="3"
 								disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
@@ -211,9 +223,10 @@
 
 							<p:message for="txtEvidenciaEncontrada" />
 						</p:column>
-						<p:column headerText="Análisis causas y acciones a Realizar(Aplica para No Conformidad y recomendación)**"
+						<p:column
+							headerText="Análisis causas y acciones a Realizar(Aplica para No Conformidad y recomendación)**"
 							style="font-size:14px; vertical-align:top">
-							<p:outputLabel value="Análisis causas:" style="color:#356e9c"/>
+							<p:outputLabel value="Análisis causas:" style="color:#356e9c" />
 							<p:inputTextarea value="#{loc.analisisCausa}" rows="3"
 								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
 								autoResize="false" id="txtAnalisisCausas"
@@ -225,7 +238,7 @@
 
 
 							<p:message for="txtAnalisisCausas" />
-							<p:outputLabel value="Acciones realizar:" style="color:#356e9c"/>
+							<p:outputLabel value="Acciones realizar:" style="color:#356e9c" />
 							<p:inputTextarea value="#{loc.accionesRealizar}" rows="3"
 								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
 								autoResize="false" id="txtAccionesRealizar"
@@ -238,7 +251,7 @@
 
 							<p:message for="txtAccionesRealizar" />
 						</p:column>
-						
+
 						<p:column
 							headerText="Archivos soporte (Fotos, audios, documentos, etc)"
 							style="font-size:13px; vertical-align:middle !important"
@@ -324,6 +337,7 @@
 							process=":form"
 							action="#{administrarEtapa.actualizarValidarDiagnostico()}"
 							value="Guardar e imprimir"
+							oncomplete="PF('dtlRegistros').clearFilters()"
 							update=":form, :formDiagnosticoCompleto, :formDiagnosticoIncompleto" />
 
 						<p:spacer width="10" />
@@ -331,7 +345,7 @@
 							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.diagnosticoExistente}"
 							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
 							action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
-							process="@this"
+							process="@this" 
 							value="Eliminar auditoría proyecto/cliente guardada"
 							update=":form" />
 

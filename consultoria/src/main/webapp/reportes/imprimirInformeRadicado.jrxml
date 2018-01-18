@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirInformeRadicado" language="groovy" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="bcb2e825-cef4-45b6-8931-7c5f78f9611f">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\workspaceJEE\\optimo\\src\\main\\webapp\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="informeMantenimiento" class="java.lang.Object"/>
+	<parameter name="rutaLogoEmpresa" class="java.lang.String"/>
+	<parameter name="rutaFotosEquipos" class="java.lang.String"/>
+	<parameter name="rutaFirmas" class="java.lang.String"/>
+	<parameter name="baterias" class="java.util.List"/>
+	<parameter name="pRutaLogo" class="java.lang.String"/>
+	<parameter name="pPersonaDiagnostico" class="java.lang.Object"/>
+	<parameter name="pParametroAuditoria" class="java.lang.Object"/>
+	<parameter name="pCliente" class="java.lang.Object"/>
+	<parameter name="pNombreCompletoConsultor" class="java.lang.String"/>
+	<parameter name="pProyectoCliente" class="java.lang.Object"/>
+	<parameter name="pEstadosGrafica" class="java.util.List"/>
+	<field name="numeral" class="java.lang.String"/>
+	<field name="fortaleza" class="java.lang.Integer"/>
+	<field name="recomendacion" class="java.lang.Integer"/>
+	<field name="noConformidad" class="java.lang.Integer"/>
+	<field name="valoresGrafico" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="93" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" x="0" y="84" width="572" height="4">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="pCliente">
+					<subreportParameterExpression><![CDATA[$P{pCliente}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pParametroAuditoria">
+					<subreportParameterExpression><![CDATA[$P{pParametroAuditoria}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pPersonaDiagnostico">
+					<subreportParameterExpression><![CDATA[$P{pPersonaDiagnostico}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pProyectoCliente">
+					<subreportParameterExpression><![CDATA[$P{pProyectoCliente}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pFechaElaboracion">
+					<subreportParameterExpression><![CDATA[$P{pPersonaDiagnostico}.fecha]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pNombreCompletoConsultor">
+					<subreportParameterExpression><![CDATA[$P{pNombreCompletoConsultor}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "imprimirIdentificacionRadicado.jasper"]]></subreportExpression>
+			</subreport>
+			<rectangle>
+				<reportElement uuid="384a7038-e912-494c-872d-54c0e4bbdfcc" x="0" y="0" width="572" height="76"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="59df9c64-68bf-4085-b6fb-b31023249677" x="197" y="0" width="261" height="76"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="32" width="261" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORME DE INDICADORES DE AUDITORÍA]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="552b7d2f-e580-4158-bb36-091ac6b01179" x="458" y="0" width="114" height="41"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="6fba74c2-3694-4ee6-960e-99d1547250be" x="514" y="5" width="53" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VERSIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5334f247-1d82-452e-ad09-d0ccd397f86e" x="494" y="14" width="73" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7602f13d-4fec-424a-ba60-2e21fbca2188" x="515" y="51" width="53" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PÁGINA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="848d857e-c10c-4d7a-86a0-0c569cdf7e87" x="470" y="60" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" DE"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="57dbcaa2-c43a-4761-84fa-d66f01be287e" x="550" y="60" width="40" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement uuid="d77b52cd-3c97-41ab-b8eb-8704969e663a" x="6" y="5" width="189" height="69"/>
+				<imageExpression><![CDATA[$P{pRutaLogo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="59" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="6656a79d-2393-4f06-b299-e87168672487" positionType="Float" x="0" y="23" width="572" height="20"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" positionType="Float" x="4" y="26" width="193" height="17"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(F) FORTALEZA = "+$F{fortaleza}+" PST"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="892a9638-3e2f-44da-9de1-75a459fdcd26" positionType="Float" x="188" y="23" width="1" height="20"/>
+			</line>
+			<rectangle>
+				<reportElement uuid="a81392ea-04d7-4f49-88a0-4bfb857778b1" x="0" y="0" width="572" height="24" backcolor="#DED9C3"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="66" y="3" width="501" height="17"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numeral}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1c4ad0fa-6d88-4ae5-b3d5-2611de48924f" x="4" y="3" width="54" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUMERAL:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="892a9638-3e2f-44da-9de1-75a459fdcd26" positionType="Float" x="390" y="23" width="1" height="20"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" positionType="Float" x="193" y="26" width="193" height="17"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(R) RECOMEDACIÓN = "+$F{fortaleza}+" PST"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" positionType="Float" x="396" y="26" width="172" height="17"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(NC) NO CONFORMIDAD = "+$F{noConformidad}+" PST"]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" positionType="Float" x="0" y="46" width="572" height="4"/>
+				<subreportParameter name="pNumeral">
+					<subreportParameterExpression><![CDATA[$F{numeral}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$F{valoresGrafico})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporteRadicadoGrafica.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="17">
+			<staticText>
+				<reportElement uuid="8c58fd06-d2a8-430d-86a8-fde4f438571d" x="0" y="2" width="572" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[**Para el cálculo de PST se cuenta 1 valor para cada norma-cliente-numeral así esta combinación tenga n veces un hallazgo]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

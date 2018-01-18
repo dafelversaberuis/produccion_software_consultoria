@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ReorderEvent;
@@ -34,8 +35,11 @@ import com.csvreader.CsvReader;
 import consultoria.Conexion;
 import consultoria.beans.Cliente;
 import consultoria.beans.Consultor;
+import consultoria.beans.Diagnostico;
 import consultoria.beans.DocumentoActividad;
 import consultoria.beans.Estado;
+import consultoria.beans.EstadoDiagnostico;
+import consultoria.beans.EstadoProyectoCliente;
 import consultoria.beans.Iva;
 import consultoria.beans.ParametroAuditoria;
 import consultoria.beans.Plan;
@@ -44,9 +48,12 @@ import consultoria.beans.Proyecto;
 import consultoria.beans.ProyectoCliente;
 import consultoria.beans.TareaProyecto;
 import consultoria.generales.ConsultarFuncionesAPI;
+import consultoria.generales.Estadistica;
+import consultoria.generales.GraficoEstadistica;
 import consultoria.generales.IConstantes;
 import consultoria.modulos.IConsultasDAO;
 import consultoria.modulos.personal.AdministrarSesionCliente;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @ManagedBean
 @ViewScoped
@@ -103,6 +110,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private List<SelectItem>					itemsConsultores;
 	private List<SelectItem>					itemsProyectosEdicion;
 	private List<SelectItem>					itemsConsultoresEdicion;
+
+	private List<Estadistica>					radicadosAuditoria;
 
 	// privados
 
@@ -924,6 +933,13 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 			this.parametroAuditoria.setDocumentosReferencia(this.parametroAuditoria.getDocumentosReferencia().trim());
 		}
 
+		if (this.isVacio(this.parametroAuditoria.getObservaciones())) {
+			ok = false;
+			this.mostrarMensajeGlobal("campoEstaVacio", "advertencia");
+		} else {
+			this.parametroAuditoria.setObservaciones(this.parametroAuditoria.getObservaciones().trim());
+		}
+
 		if (!ok) {
 			this.mostrarMensajeGlobal("campoEstaVacio", "advertencia");
 
@@ -986,6 +1002,11 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 			} else {
 				this.preguntaProyecto.setPosibleEvidencia(this.preguntaProyecto.getPosibleEvidencia().trim());
+			}
+
+			if (!this.isVacio(this.preguntaProyecto.getNumeral())) {
+				// solo quita espacios
+				this.preguntaProyecto.setNumeral(this.preguntaProyecto.getNumeral().trim());
 			}
 
 			if (!ok) {
@@ -1947,7 +1968,13 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	 */
 	public void consultarProyectosClientes() {
 		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		Estadistica estadistica = null;
+		List<Object> parametros = null;
+		String codigosDiagnostico = null;
 		try {
+
+			this.radicadosAuditoria = null;
 
 			if (!(this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getCliente() != null && this.proyectoClienteConsulta.getCliente().getCliente() != null && !this.proyectoClienteConsulta.getCliente().getCliente().trim().equals(""))) {
 				this.proyectoClienteConsulta.getCliente().setId(null);
@@ -1957,12 +1984,174 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 			this.proyectosCliente = IConsultasDAO.getProyectosCliente(this.proyectoClienteConsulta);
 
+			// ai selecciona una norma que haga los siguientes calculos
+			if (this.proyectosCliente != null && this.proyectosCliente.size() > 0 && this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getProyecto() != null && this.proyectoClienteConsulta.getProyecto().getId() != null) {
+				this.radicadosAuditoria = new ArrayList<Estadistica>();
+
+				try {
+					String proyectosClienteLista = "";
+					int i = 0;
+					for (ProyectoCliente pc : this.proyectosCliente) {
+						i++;
+						if (i == 1) {
+							proyectosClienteLista += "" + pc.getId();
+						} else {
+							proyectosClienteLista += "," + pc.getId();
+						}
+					}
+
+					StringBuilder sql = new StringBuilder();
+					sql.append("  SELECT distinct pp.numeral FROM diagnostico d");
+					sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
+					sql.append("  WHERE d.id_proyecto_cliente IN (" + proyectosClienteLista + ")");
+					sql.append("  AND pp.numeral IS NOT NULL AND TRIM(pp.numeral) <> ''");
+
+					rs = conexion.consultarBD(sql.toString(), null);
+
+					while (rs.next()) {
+						estadistica = new Estadistica();
+						estadistica.setNumeral(rs.getString(1));
+						estadistica.setNoConformidad(0);
+						estadistica.setFortaleza(0);
+						estadistica.setRecomendacion(0);
+
+						radicadosAuditoria.add(estadistica);
+					}
+
+					if (radicadosAuditoria != null && radicadosAuditoria.size() > 0) {
+
+						// para cada numeral
+						for (Estadistica e : radicadosAuditoria) {
+							// para cada cliente
+							for (ProyectoCliente pc : this.proyectosCliente) {
+
+								parametros = new ArrayList<Object>();
+								codigosDiagnostico = "";
+								sql = new StringBuilder();
+								sql.append("  SELECT d.id diagnostico FROM diagnostico d");
+								sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
+								sql.append("  WHERE pp.numeral IS NOT NULL AND TRIM(pp.numeral) <> ''");
+								sql.append("  AND pp.numeral = ?");
+								sql.append("  AND d.id_proyecto_cliente = ?");
+
+								parametros.add(e.getNumeral());
+								parametros.add(pc.getId());
+
+								rs = conexion.consultarBD(sql.toString(), parametros);
+								int j = 0;
+								while (rs.next()) {
+									j++;
+									if (j == 1) {
+										codigosDiagnostico += "" + rs.getInt(1);
+									} else {
+										codigosDiagnostico += "," + rs.getInt(1);
+									}
+
+								}
+
+								if (j > 0) {
+
+									sql = new StringBuilder();
+									// fortaleza
+									sql.append("  SELECT COUNT(*) FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado = 7");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										if (rs.getInt(1) > 0) {
+											e.setFortaleza(e.getFortaleza().intValue() + 1);
+										}
+									}
+
+									// recomendacion
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado = 8");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										if (rs.getInt(1) > 0) {
+											e.setRecomendacion(e.getRecomendacion().intValue() + 1);
+										}
+									}
+
+									// nc conformidad
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado = 9");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										if (rs.getInt(1) > 0) {
+											e.setNoConformidad(e.getNoConformidad().intValue() + 1);
+										}
+									}
+
+								}
+
+							}
+
+						}
+
+						GraficoEstadistica grafico = null;
+						for (Estadistica e : radicadosAuditoria) {
+
+							e.setValoresGrafico(new ArrayList<GraficoEstadistica>());
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("FORTALEZA");
+							grafico.setValor(e.getFortaleza());
+							e.getValoresGrafico().add(grafico);
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("RECOMENDACION");
+							grafico.setValor(e.getRecomendacion());
+							e.getValoresGrafico().add(grafico);
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("NO CONFORMIDAD");
+							grafico.setValor(e.getNoConformidad());
+							e.getValoresGrafico().add(grafico);
+
+						}
+
+					}
+
+				} catch (Exception e) {
+					throw new Exception(e);
+
+				}
+
+			}
+
 		} catch (Exception e) {
 			IConstantes.log.error(e, e);
 		} finally {
 			conexion.cerrarConexion();
 		}
 
+	}
+	
+	
+	
+	/**
+	 * Imprime radicado
+	 */
+	public void imprimirRadicado() {
+		try {
+
+			String reporte = "";
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			
+
+			parametros.put("SUBREPORT_DIR", this.getPath(IConstantes.PAQUETE_MODULO_REPORTES) + "/");
+			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
+			parametros.put("pProyectoCliente", this.proyectosCliente.get(0));
+			parametros.put("pParametroAuditoria", IConsultasDAO.getParametroAuditoria());
+			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
+
+			this.generarListado(new JRBeanCollectionDataSource(this.radicadosAuditoria), "imprimirInformeRadicado.jasper", "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
 	}
 
 	/**
@@ -3596,6 +3785,14 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 	public void setTareasArchivo(List<TareaProyecto> tareasArchivo) {
 		this.tareasArchivo = tareasArchivo;
+	}
+
+	public List<Estadistica> getRadicadosAuditoria() {
+		return radicadosAuditoria;
+	}
+
+	public void setRadicadosAuditoria(List<Estadistica> radicadosAuditoria) {
+		this.radicadosAuditoria = radicadosAuditoria;
 	}
 
 }

@@ -21,31 +21,31 @@
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('G')}"
-						value="IMPRIMIR INFORME AUDITORIA/EVALUACION (HALLAZGOS)" />
+						value="IMPRIMIR INFORME AUDITORIA/EVALUACION (SIN NO APLICA NI CUMPLE)" />
 						
 					<p:commandButton id="btnResumen6" process="@this" ajax="false"
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('P')}"
-						value="IMPRIMIR PLAN DE ACCION" />	
+						value="IMPRIMIR PLAN DE ACCION (APLICA PARA RECOMENDACIONES Y NO CONFORMIDADES)" />	
 
 					<p:commandButton id="btnResumen4" process="@this" ajax="false"
 						update=":form, :formResumen:pnlResumen" immediate="true"
-						style="font-size:16px; font-weight: normal !important; width:100%"
+						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('N')}"
-						value="IMPRIMIR INFORME LISTA CHEQUEO SIN PREGUNTAS NO APLICA" />
+						value="IMPRIMIR LISTA DE CHEQUEO (SIN NO APLICA)" />
 
 					<p:commandButton id="btnResumen5" process="@this" ajax="false"
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: normal !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('S')}"
-						value="IMPRIMIR INFORME LISTA CHEQUEO CON PREGUNTAS NO APLICA" />
+						value="IMPRIMIR LISTA DE CHEQUEO (CON NO APLICA)" />
 
 					<p:commandButton id="btnResumen2" process="@this"
 						update=":form, :formResumen:pnlResumen"
 						style="font-size:16px; font-weight: normal !important; width:100%"
 						action="#{administrarEtapa.elaborarNuevamenteDiagnostico()}"
-						value="Cerrar ventana y eleaborar un nuevo Diagnóstico " />
+						value="Cerrar ventana y eleaborar un nuevo Diagnóstico-Auditoria " />
 
 					<p:commandButton id="btnResumen3" process="@this"  
 						update=":form, :formResumen:pnlResumen"

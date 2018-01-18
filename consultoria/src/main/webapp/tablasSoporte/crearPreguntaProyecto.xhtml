@@ -40,7 +40,8 @@
 					<p:tab title="#{mensaje.crearPregunta}" id="tabPregunta"
 						titleStyle="font-size:16px" closable="true">
 
-						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank" style="width:100%">
+						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank"
+							style="width:100%">
 							<p:outputLabel for="txtNombrePregunta"
 								value="#{mensaje.pregunta}"
 								style="font-weight:bold; font-size:14px;" />
@@ -52,11 +53,22 @@
 							<p:message for="txtNombrePregunta" />
 
 
+							<p:outputLabel for="txtNumeral" value="Numeral:"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputText id="txtNumeral" 
+								value="#{hacerMantenimiento.preguntaProyecto.numeral}"
+								label="Numeral" style="width:100px; font-size:14px" />
+
+						
+							<p:message for="txtNumeral" />
+
+
 							<p:outputLabel for="txtPosibleEvidencia"
 								value="#{mensaje.posibleEvidencia}"
 								style="font-weight:bold; font-size:14px" />
 
-							<p:inputTextarea cols="3" style="font-size:14px; width:100%" id="txtPosibleEvidencia" required="true"
+							<p:inputTextarea cols="3" style="font-size:14px; width:100%"
+								id="txtPosibleEvidencia" required="true"
 								value="#{hacerMantenimiento.preguntaProyecto.posibleEvidencia}" />
 
 
@@ -117,6 +129,16 @@
 								</p:outputPanel>
 							</f:facet>
 
+
+<p:column headerText="Numeral" 
+								sortBy="#{det.numeral}" filterBy="#{det.numeral}"
+								filterMatchMode="contains" 
+								style="font-size:14px; width:10%">
+								<p:outputLabel value="#{det.numeral}"
+									style="font-weight:normal"  />
+								
+							</p:column>
+
 							<p:column headerText="#{mensaje.pregunta}"
 								sortBy="#{det.pregunta}" filterBy="#{det.pregunta}"
 								filterMatchMode="contains" filterStyle="display:none"
@@ -135,6 +157,18 @@
 									<f:convertDateTime pattern=" dd/MM/yyyy" />
 								</p:outputLabel>
 							</p:column>
+							
+							
+							
+							
+							<p:column headerText="Posible evidencia"
+								sortBy="#{det.posibleEvidencia}" filterBy="#{det.posibleEvidencia}"
+								filterMatchMode="contains" filterStyle="display:none"
+								style="font-size:14px">
+								<p:outputLabel value="#{det.posibleEvidencia}"
+									style="font-weight:normal"  />
+								
+							</p:column>
 
 
 							<p:column headerText="#{mensaje.estado}" style="font-size:14px"
@@ -145,13 +179,23 @@
 									style="font-weight:normal" value="#{mensaje.ESTADO_INACTIVO}" />
 							</p:column>
 
-
-							<p:column headerText="#{mensaje.posicion}"
+<!--  
+							<p:column headerText="#{mensaje.posicion} relativa"
 								style="font-size:14px; width:130px; text-align:right"
 								sortBy="#{det.posicion}" filterBy="#{det.posicion}"
 								filterMatchMode="contains" filterStyle="display:none">
 
 								<p:outputLabel style="font-weight:normal" value="#{indice+1}" />
+							</p:column>
+							
+							-->
+							
+							<p:column headerText="#{mensaje.posicion} real"
+								style="font-size:14px; width:130px; text-align:right"
+								sortBy="#{det.posicion}" filterBy="#{det.posicion}"
+								filterMatchMode="contains" filterStyle="display:none">
+
+								<p:outputLabel style="font-weight:normal" value="#{det.posicion}" />
 							</p:column>
 
 

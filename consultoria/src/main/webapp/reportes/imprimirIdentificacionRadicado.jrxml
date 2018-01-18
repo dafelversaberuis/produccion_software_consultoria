@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirIdentificacionRadicado" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="42db267a-539a-4225-906e-a1d6f19077cf">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="informeMantenimiento" class="java.lang.Object"/>
+	<parameter name="pPersonaDiagnostico" class="java.lang.Object"/>
+	<parameter name="pParametroAuditoria" class="java.lang.Object"/>
+	<parameter name="pCliente" class="java.lang.Object"/>
+	<parameter name="pNombreCompletoConsultor" class="java.lang.String"/>
+	<parameter name="pProyectoCliente" class="java.lang.Object"/>
+	<parameter name="pFechaElaboracion" class="java.util.Date"/>
+	<title>
+		<band height="110" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="0211802f-b07d-49f6-8f23-cf393d59d15f" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="571" height="105"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="c6ef5dd0-2060-438a-9eed-4d528323dadb" positionType="Float" stretchType="RelativeToBandHeight" x="146" y="0" width="1" height="105"/>
+			</line>
+			<line>
+				<reportElement uuid="59b0b46e-0341-43a6-8b6c-9ddf67d47e9f" positionType="Float" x="0" y="20" width="571" height="1" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f337d096-f75b-4277-a684-e3b0dd4039ae" positionType="Float" x="3" y="4" width="100" height="15"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NORMA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73a1a81f-635e-4e48-b72e-5e6186ec69c8" positionType="Float" x="3" y="21" width="123" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBJETIVOS DE AUDITORIA:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="dc89ae91-72a0-4236-8f54-b9fbfe8eada0" positionType="Float" x="0" y="44" width="571" height="1" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+			</line>
+			<staticText>
+				<reportElement uuid="6507d0cb-bb63-42c2-918c-20b8c2942856" positionType="Float" x="3" y="48" width="123" height="14"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ALCANCE:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3c55268c-13cc-47a5-a743-bfb583e2f14e" positionType="Float" x="0" y="71" width="571" height="1" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+			</line>
+			<staticText>
+				<reportElement uuid="e26b5901-185a-4f36-a3ee-ff3584fbe353" positionType="Float" x="3" y="77" width="158" height="14"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTOS DE REFERENCIA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4073ee91-07bc-465d-94ad-505774bc25f9" positionType="Float" x="151" y="4" width="414" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pProyectoCliente}.proyecto.nombre]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="26926941-ec8e-4f69-a4ec-dda73544d6f8" positionType="Float" x="151" y="21" width="413" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParametroAuditoria}.objetivos]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a2f3c55b-ce6f-4423-b5b5-6fdbdd64814d" positionType="Float" x="151" y="48" width="412" height="18"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParametroAuditoria}.alcance]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="50a9e198-86d6-44f7-8b64-8419b5e84087" positionType="Float" x="151" y="77" width="412" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParametroAuditoria}.documentosReferencia]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

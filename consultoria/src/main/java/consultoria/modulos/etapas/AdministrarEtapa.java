@@ -72,6 +72,7 @@ import consultoria.beans.ProyectoCliente;
 import consultoria.beans.TareaProyecto;
 import consultoria.beans.TiempoPlanificacion;
 import consultoria.generales.ConsultarFuncionesAPI;
+import consultoria.generales.Estadistica;
 import consultoria.generales.FirmaComoImagen;
 import consultoria.generales.IConstantes;
 import consultoria.generales.IEmail;
@@ -164,6 +165,12 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private String											etapaCompartida;
 
 	private List<SelectItem>						itemsPlanesDisponiblesCliente;
+	
+	private String hacerOnComplete;
+	
+	private String abiertoCerrado;
+	
+
 
 	public void actualizarPlanCliente() {
 
@@ -2867,6 +2874,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 						swnNoConforme = 1; // COMO SE HABILITA PARA PLAN DE ACCION TAMBIEN
 																// RECOMENDACION LO MANEJA ESTA BANDERA
+						
+						d.settTipo("ABIERTA");
 					}
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 9) {
 						// noconformidad
@@ -2874,6 +2883,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 						d.settHallazgoSeleccionado("3");
 						swnNoConforme = 1;
+						d.settTipo("CERRADA");
 
 					}
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 6) {
@@ -2973,6 +2983,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			IConstantes.log.error(e, e);
 		}
 	}
+	
+	
+
+	
 
 	/**
 	 * Imprime el diagnostico
@@ -4145,6 +4159,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 		try {
 			String copiaAparece = this.personaDiagnostico.gettAperece();
+			
+			//Date copiaFecha = this.personaDiagnostico.getFecha();
 			conexion.setAutoCommitBD(false);
 			Diagnostico diagnostico = new Diagnostico();
 			diagnostico.getProyectoCliente().setId(this.proyectoCliente.getId());
@@ -4152,6 +4168,12 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			// valida si existe persona
 			PersonaDiagnostico persona = IConsultasDAO.getPersonaDiagnostico(this.proyectoCliente.getId());
+			
+			
+			
+			
+			
+			/// lo refreente a la estadistica
 
 			if (diagnosticos != null && diagnosticos.size() > 0) {
 				// editar
@@ -4159,7 +4181,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				for (Diagnostico d : this.diagnostico) {
 					if (!(d.getEvidenciaEncontrada() != null && !d.getEvidenciaEncontrada().trim().equals(""))) {
 						d.setEvidenciaEncontrada("");
-					}
+					} 
 
 					d.getCamposBD();
 					conexion.actualizarBD(d.getEstructuraTabla().getTabla(), d.getEstructuraTabla().getPersistencia(), d.getEstructuraTabla().getLlavePrimaria(), null);
@@ -4214,12 +4236,12 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			}
 
 			if (persona != null && persona.getProyectoCliente() != null && persona.getProyectoCliente().getId() != null) {
-
+				//this.personaDiagnostico.setFecha(copiaFecha);
 				this.personaDiagnostico.getCamposBD();
 				conexion.actualizarBD(this.personaDiagnostico.getEstructuraTabla().getTabla(), this.personaDiagnostico.getEstructuraTabla().getPersistencia(), this.personaDiagnostico.getEstructuraTabla().getLlavePrimaria(), null);
 
 			} else {
-
+				//this.personaDiagnostico.setFecha(copiaFecha);
 				this.personaDiagnostico.getProyectoCliente().setId(this.proyectoCliente.getId());
 				this.personaDiagnostico.getCamposBD();
 
@@ -5859,11 +5881,22 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	public void consultarDatosCompletosConsultoria() {
 
 		try {
+			
+			this.hacerOnComplete = "";
+			if(abiertoCerrado!=null && abiertoCerrado.equals("A")){
+				
+				//this.hacerOnComplete = "PF('dtlRegistros').clearFilters()";
+				abiertoCerrado = null;
+			}
+			
+			
 			if (this.proyectoCliente != null && this.proyectoCliente.getId() != null) {
 				ProyectoCliente proyecto = new ProyectoCliente();
 				proyecto.setId(this.proyectoCliente.getId());
 				this.proyectoCliente = IConsultasDAO.getProyectosCliente(proyecto).get(0);
 				this.armarEstructuraDiagnostico();
+				
+				
 			}
 
 		} catch (Exception e) {
@@ -7229,5 +7262,36 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	public void setItemsIndicadores(List<SelectItem> itemsIndicadores) {
 		this.itemsIndicadores = itemsIndicadores;
 	}
+
+	public String getHacerOnComplete() {
+		return hacerOnComplete;
+	}
+
+	public void setHacerOnComplete(String hacerOnComplete) {
+		this.hacerOnComplete = hacerOnComplete;
+	}
+	
+	
+public String getAbrir(){
+	
+	String a = "A";
+	abiertoCerrado = a;
+	return "";
+	
+}
+
+	public String getAbiertoCerrado() {
+		return abiertoCerrado;
+	}
+
+	public void setAbiertoCerrado(String abiertoCerrado) {
+		this.abiertoCerrado = abiertoCerrado;
+	}
+
+
+	
+	
+	
+	
 
 }

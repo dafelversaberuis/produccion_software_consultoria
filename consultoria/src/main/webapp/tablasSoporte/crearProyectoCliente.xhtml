@@ -488,6 +488,22 @@
 
 
 						</p:dataTable>
+						
+						<br/>
+						
+						<p:outputLabel value="**Si desea que aparezca informe estadistico de auditoría debe necesariamente seleccionar el proyecto o norma"
+							style="font-size:10px" />
+							
+							<br/>
+						
+						<center>
+						<p:commandButton id="btnResumen1"  ajax="false" rendered="#{hacerMantenimiento.radicadosAuditoria!=null and hacerMantenimiento.radicadosAuditoria.size()>0}"
+						 immediate="true"
+						style="font-size:16px; font-weight: bold !important;"
+						action="#{hacerMantenimiento.imprimirRadicado()}"
+						value="IMPRIMIR INFORME ESTADISTICO AUDITORIA (NO INCLUYE NO APLICA NI CUMPLE)" />
+						
+						</center>
 
 
 

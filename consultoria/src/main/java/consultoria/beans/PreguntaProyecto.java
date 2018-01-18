@@ -18,6 +18,7 @@ public class PreguntaProyecto implements Serializable {
 	private String						estado;
 	private Date							fechaEstado;
 	private String						posibleEvidencia;
+	private String						numeral;
 	private Proyecto					proyecto;
 	private Integer						posicion;
 
@@ -27,7 +28,7 @@ public class PreguntaProyecto implements Serializable {
 	private String						tNoAplica;
 	private String						tCumple;
 
-	private EstructuraTabla		estructuraTabla;
+	private EstructuraTabla		estructuraTabla; 
 
 	public PreguntaProyecto() {
 		this.estructuraTabla = new EstructuraTabla();
@@ -47,6 +48,8 @@ public class PreguntaProyecto implements Serializable {
 		if (this.proyecto != null && this.proyecto.getId() != null) {
 			this.estructuraTabla.getPersistencia().put("id_proyecto", this.proyecto.getId());
 		}
+		
+		this.estructuraTabla.getPersistencia().put("numeral", this.numeral);
 
 	}
 
@@ -154,6 +157,17 @@ public class PreguntaProyecto implements Serializable {
 	public void settCumple(String tCumple) {
 		this.tCumple = tCumple;
 	}
+
+	public String getNumeral() {
+		return numeral;
+	}
+
+	public void setNumeral(String numeral) {
+		this.numeral = numeral;
+	}
+	
+	
+	
 	
 	
 

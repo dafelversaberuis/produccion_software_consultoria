@@ -20,6 +20,10 @@
 						<p:outputLabel
 							value="INFORMACIÓN COMPLETA..."
 							style="font-size:12px; font-weight:bold" />
+							
+							
+							
+						
 
 
 						<p:outputLabel for="txtConclusiones" value="Conclusiones"
@@ -33,7 +37,18 @@
    
 
 						
+<p:outputLabel for="calFechaFin"
+								value="Fecha elaboración informe:"
+								style="font-weight:bold; font-size:14px" />
 
+							<p:calendar id="calFechaFin" disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+								label="Fecha elaboración informe" required="true"
+								value="#{administrarEtapa.personaDiagnostico.fecha}"
+								pattern="dd/MM/yyyy" mask="true"
+								style="font-size:14px;  height:10px" />
+
+							
+							<p:message for="calFechaFin" />	
 					
 						
 						
@@ -109,7 +124,7 @@
 					<p:commandButton id="btnGuardarCompleto" style="font-size:14px"
 						action="#{administrarEtapa.actualizarDiagnostico('C')}"
 						value="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)?'Aceptar':'Guardar')}"
-						process="@this, sigFirma, txtConclusiones, msgConclusiones, lstRequiereFirma"
+						process="@this, sigFirma, txtConclusiones, msgConclusiones, lstRequiereFirma, calFechaFin"
 						update=":form, :formDiagnosticoCompleto:pnlDiagnosticoCompleto, :formResumen" />
 					<p:spacer width="10" />
 					<p:commandButton id="btnCancelarCompleto"

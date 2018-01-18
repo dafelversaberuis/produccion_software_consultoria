@@ -23,7 +23,7 @@
 
 					<h2 class="project-title">#{mensaje.moduloTablasSoporte}:
 						Parámetros auditoría (Objetivos auditoría, alcance, documentos de
-						referencia)</h2>
+						referencia, observaciones aclaratorias)</h2>
 
 
 
@@ -41,7 +41,7 @@
 					<p:tab title="Datos a actualizar" titleStyle="font-size:16px"
 						closable="true">
 						<div align="left">
-							<p:panelGrid columns="6" cellpadding="0" cellspacing="0"
+							<p:panelGrid columns="4" cellpadding="0" cellspacing="0"
 								style="width:100%" styleClass="ui-panelgrid-blank" layout="grid">
 
 
@@ -64,6 +64,12 @@
 								<p:inputTextarea id="txtAlcance" required="true" label="Alcance"
 									value="#{hacerMantenimiento.parametroAuditoria.alcance}"
 									style="width:100%; font-size:14px; height:10px" cols="3" />
+									
+									
+									<p:spacer width="1" />
+								<p:message for="txtObjetivos" />
+								<p:spacer width="1" />
+								<p:message for="txtAlcance" />
 
 								<p:outputLabel for="txtDocumentosReferencia"
 									value="Documentos de referencia"
@@ -73,14 +79,23 @@
 									label="Documentos de referencia"
 									value="#{hacerMantenimiento.parametroAuditoria.documentosReferencia}"
 									style="width:100%; font-size:14px; height:10px" cols="3" />
+									
+									
+								<p:outputLabel for="txtObservaciones"
+									value="Observaciones"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:inputTextarea id="txtObservaciones" required="true"
+									label="Observaciones"
+									value="#{hacerMantenimiento.parametroAuditoria.observaciones}"
+									style="width:100%; font-size:14px; height:10px" cols="3" />	
 
 
-								<p:spacer width="1" />
-								<p:message for="txtObjetivos" />
-								<p:spacer width="1" />
-								<p:message for="txtAlcance" />
+								
 								<p:spacer width="1" />
 								<p:message for="txtDocumentosReferencia" />
+								<p:spacer width="1" />
+								<p:message for="txtObservaciones" />
 
 
 

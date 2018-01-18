@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirInformeDiagnosticoV1G" language="groovy" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="bcb2e825-cef4-45b6-8931-7c5f78f9611f">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -35,12 +35,22 @@
 					<reportElement uuid="a81392ea-04d7-4f49-88a0-4bfb857778b1" x="0" y="11" width="572" height="24" backcolor="#DED9C3"/>
 				</rectangle>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="5" y="14" width="559" height="17"/>
+					<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="66" y="14" width="501" height="17"/>
 					<textElement>
 						<font size="9" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("1") ? "FORTALEZAS" : ( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("2") ? "RECOMEDACIONES" : "NO CONFORMIDADES" ) )]]></textFieldExpression>
+					<textFieldExpression><![CDATA[( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("1") ? "FORTALEZAS" : ( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("2") ? "RECOMENDACIONES" : "NO CONFORMIDADES" ) )]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement uuid="1c4ad0fa-6d88-4ae5-b3d5-2611de48924f" x="4" y="14" width="54" height="20"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NUMERAL]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="9c017242-ae02-4a16-b848-2569cd703f74" x="62" y="11" width="1" height="24"/>
+				</line>
 			</band>
 		</groupHeader>
 	</group>
@@ -53,17 +63,20 @@
 				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" x="0" y="84" width="572" height="4">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
-				<subreportParameter name="pParametroAuditoria">
-					<subreportParameterExpression><![CDATA[$P{pParametroAuditoria}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="pCliente">
 					<subreportParameterExpression><![CDATA[$P{pCliente}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pParametroAuditoria">
+					<subreportParameterExpression><![CDATA[$P{pParametroAuditoria}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="pPersonaDiagnostico">
 					<subreportParameterExpression><![CDATA[$P{pPersonaDiagnostico}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="pProyectoCliente">
 					<subreportParameterExpression><![CDATA[$P{pProyectoCliente}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pFechaElaboracion">
+					<subreportParameterExpression><![CDATA[$P{pPersonaDiagnostico}.fecha]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="pNombreCompletoConsultor">
 					<subreportParameterExpression><![CDATA[$P{pNombreCompletoConsultor}]]></subreportParameterExpression>
@@ -78,38 +91,24 @@
 				<reportElement uuid="59df9c64-68bf-4085-b6fb-b31023249677" x="197" y="0" width="261" height="76"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="23" width="261" height="20"/>
+				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="32" width="261" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INFORME DE AUDITORIA Y/O EVALUACIÓN]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="552b7d2f-e580-4158-bb36-091ac6b01179" x="458" y="25" width="114" height="25"/>
+				<reportElement uuid="552b7d2f-e580-4158-bb36-091ac6b01179" x="458" y="0" width="114" height="41"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="5d8a10e9-c40f-4684-bed7-dec3141ffadc" x="525" y="0" width="42" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[FECHA:]]></text>
-			</staticText>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="3a491c47-4855-4c48-be66-2ef25381e12e" x="458" y="10" width="109" height="20"/>
-				<textElement textAlignment="Right" markup="none">
-					<font size="9" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{pPersonaDiagnostico}.fecha]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="6fba74c2-3694-4ee6-960e-99d1547250be" x="514" y="28" width="53" height="20"/>
+				<reportElement uuid="6fba74c2-3694-4ee6-960e-99d1547250be" x="514" y="5" width="53" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VERSIÓN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5334f247-1d82-452e-ad09-d0ccd397f86e" x="494" y="37" width="73" height="20"/>
+				<reportElement uuid="5334f247-1d82-452e-ad09-d0ccd397f86e" x="494" y="14" width="73" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="false"/>
 				</textElement>
@@ -140,13 +139,6 @@
 				<reportElement uuid="d77b52cd-3c97-41ab-b8eb-8704969e663a" x="6" y="5" width="189" height="69"/>
 				<imageExpression><![CDATA[$P{pRutaLogo}]]></imageExpression>
 			</image>
-			<staticText>
-				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="41" width="261" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[HALLAZGOS]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<detail>
@@ -155,16 +147,27 @@
 				<reportElement uuid="6656a79d-2393-4f06-b299-e87168672487" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="572" height="24" isPrintWhenDetailOverflows="true"/>
 			</rectangle>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="393b1b3e-dd3f-4cf0-bb21-0a6a75c716d3" x="4" y="3" width="563" height="17"/>
+				<reportElement uuid="393b1b3e-dd3f-4cf0-bb21-0a6a75c716d3" x="66" y="3" width="501" height="17"/>
 				<textElement textAlignment="Justified">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{porHallazgo_COUNT}+" - "+$F{evidenciaEncontrada}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="4" y="3" width="54" height="17"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{preguntaProyecto}.numeral!=null && !$F{preguntaProyecto}.numeral.trim().equals("") ? $F{preguntaProyecto}.numeral : "-" )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="892a9638-3e2f-44da-9de1-75a459fdcd26" positionType="Float" stretchType="RelativeToBandHeight" x="62" y="0" width="1" height="24" isPrintWhenDetailOverflows="true"/>
+			</line>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="57" splitType="Stretch">
+			<printWhenExpression><![CDATA[1==2]]></printWhenExpression>
 			<rectangle>
 				<reportElement uuid="d87cb4ce-f3e8-4665-b526-2fb87be022ba" x="0" y="4" width="187" height="17" forecolor="#999999"/>
 			</rectangle>
@@ -321,7 +324,7 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="152" splitType="Stretch">
+		<band height="202" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="fc675568-1232-4455-b64e-736e48626efc" positionType="Float" x="1" y="10" width="241" height="20"/>
 				<textElement>
@@ -340,18 +343,20 @@
 				<reportElement uuid="0bd2a2b0-d2a2-46c1-9826-473e32c9c6b3" x="0" y="26" width="100" height="1"/>
 			</line>
 			<subreport>
-				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" positionType="Float" x="0" y="51" width="572" height="4"/>
+				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" positionType="Float" x="0" y="99" width="572" height="4">
+					<printWhenExpression><![CDATA[1==2]]></printWhenExpression>
+				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$P{pEstadosGrafica})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporteAuditoriaGrafica.jasper"]]></subreportExpression>
 			</subreport>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Bottom" onErrorType="Blank">
-				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="216" y="59" width="163" height="56">
+				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="216" y="107" width="163" height="56">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S"))]]></printWhenExpression>
 				</reportElement>
 				<imageExpression><![CDATA[$P{rutaFirmas}+"cliente"+$P{pProyectoCliente}.id+".png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement uuid="6bb61dfa-0df3-4309-94df-b565f4d5cf42" positionType="Float" x="210" y="118" width="181" height="32">
+				<reportElement uuid="6bb61dfa-0df3-4309-94df-b565f4d5cf42" positionType="Float" x="210" y="166" width="181" height="32">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("D"))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -360,20 +365,37 @@
 				<text><![CDATA[FIRMA CONSULTOR/REPRESENTANTE ISOLUCIONES.]]></text>
 			</staticText>
 			<image scaleImage="RealSize" hAlign="Center" vAlign="Bottom" onErrorType="Blank">
-				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="218" y="59" width="161" height="55">
+				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="218" y="107" width="161" height="55">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("D"))]]></printWhenExpression>
 				</reportElement>
 				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(javax.xml.bind.DatatypeConverter.parseBase64Binary($P{pProyectoCliente}.consultor.tFotoDecodificada))]]></imageExpression>
 			</image>
 			<line>
-				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="210" y="114" width="171" height="1">
+				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="210" y="162" width="171" height="1">
 					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("D"))]]></printWhenExpression>
 				</reportElement>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="83be2bd8-dbca-4884-a0df-a2d5b8f1e8da" positionType="Float" x="4" y="77" width="563" height="17"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParametroAuditoria}.observaciones]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fc675568-1232-4455-b64e-736e48626efc" positionType="Float" x="1" y="55" width="241" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES DE LA AUDITORÍA:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="0bd2a2b0-d2a2-46c1-9826-473e32c9c6b3" positionType="Float" x="0" y="70" width="190" height="1"/>
 			</line>
 		</band>
 	</summary>
 	<noData>
-		<band height="33">
+		<band height="35">
 			<staticText>
 				<reportElement uuid="4db8a772-38f7-4577-8e29-324feb35b314" x="0" y="7" width="572" height="18"/>
 				<textElement textAlignment="Center">

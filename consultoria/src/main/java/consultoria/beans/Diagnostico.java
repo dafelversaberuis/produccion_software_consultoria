@@ -19,6 +19,9 @@ public class Diagnostico implements Serializable {
 	private List<EstadoDiagnostico>			tEstadosDiagnostico;
 
 	private List<DocumentoDiagnostico>	tDocumentos;
+	
+	
+	private String tTipo;
 
 	private EstructuraTabla							estructuraTabla;
 	
@@ -145,6 +148,16 @@ public class Diagnostico implements Serializable {
 	public void setAccionesRealizar(String accionesRealizar) {
 		this.accionesRealizar = accionesRealizar;
 	}
+
+	public String gettTipo() {
+		return tTipo;
+	}
+
+	public void settTipo(String tTipo) {
+		this.tTipo = tTipo;
+	}
+	
+	
 	
 	
 

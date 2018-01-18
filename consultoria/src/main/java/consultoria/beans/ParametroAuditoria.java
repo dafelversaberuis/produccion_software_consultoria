@@ -12,6 +12,8 @@ public class ParametroAuditoria implements Serializable {
 	private String						objetivos;
 	private String						alcance;
 	private String						documentosReferencia;
+	private String 						observaciones;
+	
 
 	private EstructuraTabla		estructuraTabla;
 
@@ -26,6 +28,7 @@ public class ParametroAuditoria implements Serializable {
 		this.estructuraTabla.getPersistencia().put("objetivos", this.objetivos);
 		this.estructuraTabla.getPersistencia().put("alcance", this.alcance);
 		this.estructuraTabla.getPersistencia().put("documentos_referencia", this.documentosReferencia);
+		this.estructuraTabla.getPersistencia().put("observaciones", this.observaciones);
 
 	}
 
@@ -68,5 +71,16 @@ public class ParametroAuditoria implements Serializable {
 	public void setEstructuraTabla(EstructuraTabla estructuraTabla) {
 		this.estructuraTabla = estructuraTabla;
 	}
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
+	}
+	
+	
+	
 
 }
