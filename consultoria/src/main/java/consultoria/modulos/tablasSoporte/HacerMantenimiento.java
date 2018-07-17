@@ -105,6 +105,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	private List<SelectItem>					itemsIva;
 	private List<Plan>								arbolitos;
 	private List<TareaProyecto>				tareasArchivo;
+	private List<PreguntaProyecto>		preguntasArchivo;
 
 	private List<SelectItem>					itemsProyectos;
 	private List<SelectItem>					itemsConsultores;
@@ -1390,6 +1391,27 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 	}
 
+	public void recibirArchivoCSV2(FileUploadEvent event) {
+
+		try {
+			this.preguntaProyecto.settFile(event.getFile());
+			this.preguntaProyecto.setArchivo(event.getFile().getContents());
+
+			this.mostrarMensajeGlobal("archivoRecibido", "advertencia");
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+
+	/**
+	 * Limpia el archivo cargado para volver a ingresar otro
+	 */
+	public void limpiarArchivoCargadoCSV2() {
+		this.preguntaProyecto.settFile(null);
+		this.preguntaProyecto.setArchivo(null);
+	}
+
 	/**
 	 * Limpia el archivo cargado para volver a ingresar otro
 	 */
@@ -1496,6 +1518,63 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		return IConstantes.HOST;
 	}
 
+	public void crearPreguntaProyecto2() {
+		Conexion conexion = new Conexion();
+
+		try {
+
+			conexion.setAutoCommitBD(false);
+			int pos = this.preguntas.size();
+			int sw = 0;
+			for (PreguntaProyecto t : this.preguntasArchivo) {
+				if (t.istApto()) {
+					sw = 1;
+					break;
+
+				}
+
+			}
+
+			if (sw == 1) {
+				for (PreguntaProyecto t : this.preguntasArchivo) {
+					if (t.istApto()) {
+						pos++;
+						t.setProyecto(this.preguntaProyecto.getProyecto());
+						t.setEstado(IConstantes.ACTIVO);
+						t.setFechaEstado(new Date());
+
+						t.setPosicion(pos);
+						t.getCamposBD();
+						conexion.insertarBD(t.getEstructuraTabla().getTabla(), t.getEstructuraTabla().getPersistencia());
+					}
+
+				}
+				conexion.commitBD();
+				this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+				// reseteo de variables
+				this.preguntasArchivo = null;
+				this.preguntasArchivo = new ArrayList<PreguntaProyecto>();
+				this.preguntaProyecto = null;
+				this.getPreguntaProyecto();
+				this.preguntas = null;
+				this.getPreguntas();
+				this.cerrarModal("panelVerArchivo2");
+
+			} else {
+				this.mostrarMensajeGlobalPersonalizado("NO CHEQUEO NINGUNA PREGUNTA, DEBE SELECCIONAR AL MENOS UNA", "exito");
+			}
+
+		} catch (Exception e) {
+			conexion.rollbackBD();
+
+			this.mostrarMensajeGlobal("transaccionFallida", "error");
+		} finally {
+
+			conexion.cerrarConexion();
+		}
+	}
+
 	/**
 	 * Crea un registro de tarea de un proyecto
 	 */
@@ -1523,7 +1602,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 						t.setProyecto(this.tareaProyecto.getProyecto());
 						t.setEstado(IConstantes.ACTIVO);
 						t.setFechaEstado(new Date());
-						t.setNumeroEtapa(2); // todo el ciclo del proyecto
+						/////// t.setNumeroEtapa(2); // todo el ciclo del proyecto
 						t.setPosicion(pos);
 						t.getCamposBD();
 						conexion.insertarBD(t.getEstructuraTabla().getTabla(), t.getEstructuraTabla().getPersistencia());
@@ -1578,7 +1657,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 					this.tareaProyecto.setEstado(IConstantes.ACTIVO);
 					this.tareaProyecto.setFechaEstado(new Date());
-					this.tareaProyecto.setNumeroEtapa(2); // todo el ciclo del proyecto
+					///////// this.tareaProyecto.setNumeroEtapa(2); // todo el ciclo del
+					///////// proyecto
 
 					if (this.tareas != null && this.tareas.size() > 0) {
 						this.tareaProyecto.setPosicion(this.tareas.size() + 1);
@@ -1643,6 +1723,34 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 								tareaArchivo.setRequisito(valorCelda.trim());
 							}
 
+							valorCelda = archivoLeido.get(4);// etapa
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+
+								if (valorCelda.trim().toUpperCase().equals("P")) {
+									// planificación
+									tareaArchivo.setNumeroEtapa(2);
+
+								} else if (valorCelda.trim().toUpperCase().equals("D")) {
+									// documentción
+									tareaArchivo.setNumeroEtapa(3);
+
+								} else if (valorCelda.trim().toUpperCase().equals("I")) {
+									// implementación
+									tareaArchivo.setNumeroEtapa(4);
+
+								} else if (valorCelda.trim().toUpperCase().equals("S")) {
+									// SEGUIMIENTO Y AUD
+									tareaArchivo.setNumeroEtapa(5);
+
+								} else {
+									tareaArchivo.setNumeroEtapa(0);
+								}
+
+							} else {
+								tareaArchivo.setNumeroEtapa(null);
+
+							}
+
 							tareaArchivo.settConcepto("");
 							tareaArchivo.settApto(true);
 
@@ -1658,7 +1766,7 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 						for (TareaProyecto p : this.tareasArchivo) {
 
 							// analizamos si falta información
-							if (!(p.getTarea() != null && !p.getTarea().trim().equals("")) || !(p.getProducto() != null && !p.getProducto().trim().equals("")) || !(p.getResponsable() != null && !p.getResponsable().trim().equals(""))) {
+							if (!(p.getTarea() != null && !p.getTarea().trim().equals("")) || !(p.getProducto() != null && !p.getProducto().trim().equals("")) || !(p.getResponsable() != null && !p.getResponsable().trim().equals("")) || (p.getNumeroEtapa() == null)) {
 								if (p.gettConcepto() != null && !p.gettConcepto().trim().equals("")) {
 									p.settConcepto(p.gettConcepto() + "; " + "INFORMACION INCOMPLETA REVISE CAMPOS (*) REQUERIDOS");
 								} else {
@@ -1666,6 +1774,16 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 								}
 
 								p.settApto(false);
+
+							}
+
+							if (p.getNumeroEtapa() != null && p.getNumeroEtapa().intValue() == 0) {
+								p.settApto(false);
+								if (p.gettConcepto() != null && !p.gettConcepto().trim().equals("")) {
+									p.settConcepto(p.gettConcepto() + "; " + "LAS UNICAS PALABRAS PERMITIDAS EN ETAPA SON: P,D,I,S");
+								} else {
+									p.settConcepto("" + "LAS UNICAS PALABRAS PERMITIDAS EN ETAPA SON: P,D,I,S");
+								}
 
 							}
 
@@ -1724,35 +1842,187 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 	 */
 	public void crearPreguntaProyecto() {
 		Conexion conexion = new Conexion();
+		InputStream input = null;
+		CsvReader archivoLeido = null;
+
+		Integer cuentaFilas = 0;
+		PreguntaProyecto preguntaArchivo = null;
+		String valorCelda = null;
 
 		try {
+			this.preguntasArchivo = new ArrayList<PreguntaProyecto>();
+			if (this.preguntaProyecto.gettFormaAgregar() == null || this.preguntaProyecto.gettFormaAgregar().trim().equals("I")) {
+				if (isPreguntaOK("C")) {
 
-			if (isPreguntaOK("C")) {
+					conexion.setAutoCommitBD(false);
 
-				conexion.setAutoCommitBD(false);
+					this.preguntaProyecto.setEstado(IConstantes.ACTIVO);
+					this.preguntaProyecto.setFechaEstado(new Date());
 
-				this.preguntaProyecto.setEstado(IConstantes.ACTIVO);
-				this.preguntaProyecto.setFechaEstado(new Date());
+					if (this.preguntas != null && this.preguntas.size() > 0) {
+						this.preguntaProyecto.setPosicion(this.preguntas.size() + 1);
+					} else {
 
-				if (this.preguntas != null && this.preguntas.size() > 0) {
-					this.preguntaProyecto.setPosicion(this.preguntas.size() + 1);
-				} else {
+						this.preguntaProyecto.setPosicion(1);
+					}
 
-					this.preguntaProyecto.setPosicion(1);
+					this.preguntaProyecto.getCamposBD();
+					conexion.insertarBD(this.preguntaProyecto.getEstructuraTabla().getTabla(), this.preguntaProyecto.getEstructuraTabla().getPersistencia());
+
+					conexion.commitBD();
+					this.mostrarMensajeGlobal("creacionExitosa", "exito");
+
+					// reseteo de variables
+					this.preguntaProyecto = null;
+					this.getPreguntaProyecto();
+					this.preguntas = null;
+					this.getPreguntas();
+
 				}
 
-				this.preguntaProyecto.getCamposBD();
-				conexion.insertarBD(this.preguntaProyecto.getEstructuraTabla().getTabla(), this.preguntaProyecto.getEstructuraTabla().getPersistencia());
+			} else {
 
-				conexion.commitBD();
-				this.mostrarMensajeGlobal("creacionExitosa", "exito");
+				if (this.preguntaProyecto.getArchivo() == null) {
+					// ok = false;
+					this.mostrarMensajeGlobalPersonalizado("ARCHIVO PLANO REQUERIDO", "advertencia");
+				} else {
 
-				// reseteo de variables
-				this.preguntaProyecto = null;
-				this.getPreguntaProyecto();
-				this.preguntas = null;
-				this.getPreguntas();
+					// aquí va la revisión y armado de csv
 
+					input = new ByteArrayInputStream(this.preguntaProyecto.getArchivo());
+					Charset inputCharset = Charset.forName("ISO-8859-1");
+					archivoLeido = new CsvReader(new InputStreamReader(input, inputCharset), ';');
+
+					archivoLeido.setDelimiter(';');
+
+					while (archivoLeido.readRecord()) {
+						cuentaFilas++;
+						if (cuentaFilas.intValue() >= IConstantes.FILA_INICIO_PERSONA_CSV.intValue()) {
+							preguntaArchivo = new PreguntaProyecto();
+
+							valorCelda = archivoLeido.get(0);// pregunta
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+
+								preguntaArchivo.setPregunta(valorCelda.trim());
+
+							}
+
+							valorCelda = archivoLeido.get(1);// posible evidencia
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setPosibleEvidencia(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(2);// numeral
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setNumeral(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(3);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setHallazgoPredeterminadoFortaleza(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(4);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setHallazgoPredeterminadoRecomendacion(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(5);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setHallazgoPredeterminadoNoConformidad(valorCelda.trim());
+							}
+							
+							
+							
+							valorCelda = archivoLeido.get(6);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setHallazgoPredeterminadoCumple(valorCelda.trim());
+							}
+							
+							valorCelda = archivoLeido.get(7);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setHallazgoPredeterminadoNoAplica(valorCelda.trim());
+							}
+							
+							
+							
+
+							valorCelda = archivoLeido.get(8);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setAccionRealizarPredeterminadoRecomendacion(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(9);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setAccionRealizarPredeterminadoNoConformidad(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(10);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setResponsablePredeterminadoRecomendacion(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(11);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setResponsablePredeterminadoNoConformidad(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(12);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setAnalisisCausaPredeterminadoNoConformidad(valorCelda.trim());
+							}
+
+							valorCelda = archivoLeido.get(13);
+							if (valorCelda != null && !valorCelda.trim().equals("")) {
+								preguntaArchivo.setEvidenciaNoEncontradaPredeterminadoNoConformidad(valorCelda.trim());
+							}
+
+							preguntaArchivo.settConcepto("");
+							preguntaArchivo.settApto(true);
+
+							this.preguntasArchivo.add(preguntaArchivo);
+
+						}
+
+					}
+
+					if (this.preguntasArchivo != null && this.preguntasArchivo.size() > 0) {
+
+						// analizamos la información
+						for (PreguntaProyecto p : this.preguntasArchivo) {
+
+							// analizamos si falta información
+							if (!(p.getPregunta() != null && !p.getPregunta().trim().equals("")) || !(p.getPosibleEvidencia() != null && !p.getPosibleEvidencia().trim().equals(""))) {
+								if (p.gettConcepto() != null && !p.gettConcepto().trim().equals("")) {
+									p.settConcepto(p.gettConcepto() + "; " + "INFORMACION INCOMPLETA REVISE CAMPOS (*) REQUERIDOS");
+								} else {
+									p.settConcepto("" + "INFORMACION INCOMPLETA REVISE CAMPOS (*) REQUERIDOS");
+								}
+
+								p.settApto(false);
+
+							}
+
+						}
+
+						for (PreguntaProyecto p : this.preguntasArchivo) {
+							if (p.istApto()) {
+
+								p.settConcepto("OK");
+
+							}
+
+						}
+
+						this.abrirModal("panelVerArchivo2");
+						this.mostrarMensajeGlobalPersonalizado("RESUMEN DE PREGUNTAS DEL ARCHIVO. REVISE LAS QUE DESEE Y TENGASLAS CHEQUEADAS", "advertencia");
+
+					} else {
+
+						this.mostrarMensajeGlobalPersonalizado("EL ARCHIVO NO POSEE PREGUNTAS O TAREAS", "advertencia");
+					}
+
+				}
 			}
 
 		} catch (Exception e) {
@@ -1985,8 +2255,10 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 			this.proyectosCliente = IConsultasDAO.getProyectosCliente(this.proyectoClienteConsulta);
 
 			// ai selecciona una norma que haga los siguientes calculos
-			if (this.proyectosCliente != null && this.proyectosCliente.size() > 0 && this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getProyecto() != null && this.proyectoClienteConsulta.getProyecto().getId() != null) {
+			if (this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.gettListarRadicado() != null && (this.proyectoClienteConsulta.gettListarRadicado().equals("S")) && this.proyectosCliente != null && this.proyectosCliente.size() > 0 && this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getProyecto() != null && this.proyectoClienteConsulta.getProyecto().getId() != null) {
 				this.radicadosAuditoria = new ArrayList<Estadistica>();
+
+				/////////////////////////////////////// auditoria
 
 				try {
 					String proyectosClienteLista = "";
@@ -2004,7 +2276,10 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 					sql.append("  SELECT distinct pp.numeral FROM diagnostico d");
 					sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
 					sql.append("  WHERE d.id_proyecto_cliente IN (" + proyectosClienteLista + ")");
-					sql.append("  AND pp.numeral IS NOT NULL AND TRIM(pp.numeral) <> ''");
+
+					sql.append("  AND (d.diagnostico IS NULL OR d.diagnostico = 'N' OR d.diagnostico = '')");
+
+					sql.append("  AND pp.numeral IS NOT NULL AND pp.numeral <> '' order by pp.numeral");
 
 					rs = conexion.consultarBD(sql.toString(), null);
 
@@ -2014,6 +2289,8 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 						estadistica.setNoConformidad(0);
 						estadistica.setFortaleza(0);
 						estadistica.setRecomendacion(0);
+						estadistica.setCumple(0);
+						estadistica.setNoAplica(0);
 
 						radicadosAuditoria.add(estadistica);
 					}
@@ -2030,7 +2307,10 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 								sql = new StringBuilder();
 								sql.append("  SELECT d.id diagnostico FROM diagnostico d");
 								sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
-								sql.append("  WHERE pp.numeral IS NOT NULL AND TRIM(pp.numeral) <> ''");
+								sql.append("  WHERE pp.numeral IS NOT NULL AND pp.numeral <> ''");
+
+								sql.append("  AND (d.diagnostico IS NULL OR d.diagnostico = 'N' OR d.diagnostico = '')");
+
 								sql.append("  AND pp.numeral = ?");
 								sql.append("  AND d.id_proyecto_cliente = ?");
 
@@ -2052,33 +2332,285 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 								if (j > 0) {
 
 									sql = new StringBuilder();
-									// fortaleza
-									sql.append("  SELECT COUNT(*) FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado = 7");
+
+									sql.append("  SELECT COUNT(*), id_estado FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado IN (7,8,9,6,10) GROUP BY id_estado");
 									rs = conexion.consultarBD(sql.toString(), null);
-									if (rs.next()) {
-										if (rs.getInt(1) > 0) {
+									while (rs.next()) {
+										if (rs.getInt(1) > 0 && rs.getInt(2) == 7) {
 											e.setFortaleza(e.getFortaleza().intValue() + 1);
 										}
-									}
-
-									// recomendacion
-									sql = new StringBuilder();
-									sql.append("  SELECT COUNT(*) FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado = 8");
-									rs = conexion.consultarBD(sql.toString(), null);
-									if (rs.next()) {
-										if (rs.getInt(1) > 0) {
+										if (rs.getInt(1) > 0 && rs.getInt(2) == 8) {
 											e.setRecomendacion(e.getRecomendacion().intValue() + 1);
 										}
-									}
-
-									// nc conformidad
-									sql = new StringBuilder();
-									sql.append("  SELECT COUNT(*) FROM estados_diagnostico WHERE id_diagnostico IN (" + codigosDiagnostico + ") AND id_estado = 9");
-									rs = conexion.consultarBD(sql.toString(), null);
-									if (rs.next()) {
-										if (rs.getInt(1) > 0) {
+										if (rs.getInt(1) > 0 && rs.getInt(2) == 9) {
 											e.setNoConformidad(e.getNoConformidad().intValue() + 1);
 										}
+
+										// nuevos
+										if (rs.getInt(1) > 0 && rs.getInt(2) == 6) {
+											e.setNoAplica(e.getNoAplica().intValue() + 1);
+										}
+
+										if (rs.getInt(1) > 0 && rs.getInt(2) == 10) {
+											e.setCumple(e.getCumple().intValue() + 1);
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+						GraficoEstadistica grafico = null;
+						for (Estadistica e : radicadosAuditoria) {
+
+							e.setValoresGrafico(new ArrayList<GraficoEstadistica>());
+
+							// nuevo
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("CUMPLE");
+							grafico.setValor(e.getCumple());
+							e.getValoresGrafico().add(grafico);
+
+							//
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("FORTALEZA");
+							grafico.setValor(e.getFortaleza());
+							e.getValoresGrafico().add(grafico);
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("RECOMENDACION");
+							grafico.setValor(e.getRecomendacion());
+							e.getValoresGrafico().add(grafico);
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("NO CONFORM.");
+							grafico.setValor(e.getNoConformidad());
+							e.getValoresGrafico().add(grafico);
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("NO APLICA");
+							grafico.setValor(e.getNoAplica());
+							e.getValoresGrafico().add(grafico);
+
+						}
+
+					}
+
+				} catch (Exception e) {
+					throw new Exception(e);
+
+				}
+
+			} else if (this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.gettListarRadicado() != null && (this.proyectoClienteConsulta.gettListarRadicado().equals("D")) && this.proyectosCliente != null && this.proyectosCliente.size() > 0 && this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getProyecto() != null && this.proyectoClienteConsulta.getProyecto().getId() != null) {
+				this.radicadosAuditoria = new ArrayList<Estadistica>();
+
+				/////////////////////////////////////// diagnóstico
+
+				try {
+					String proyectosClienteLista = "";
+					int i = 0;
+					for (ProyectoCliente pc : this.proyectosCliente) {
+						i++;
+						if (i == 1) {
+							proyectosClienteLista += "" + pc.getId();
+						} else {
+							proyectosClienteLista += "," + pc.getId();
+						}
+					}
+
+					StringBuilder sql = new StringBuilder();
+					sql.append("  SELECT distinct pp.numeral FROM diagnostico d");
+					sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
+					sql.append("  WHERE d.id_proyecto_cliente IN (" + proyectosClienteLista + ")");
+
+					sql.append("  AND (d.diagnostico IS NOT NULL OR d.diagnostico = 'S')");
+
+					sql.append("  AND pp.numeral IS NOT NULL AND pp.numeral <> '' order by pp.numeral");
+
+					rs = conexion.consultarBD(sql.toString(), null);
+
+					while (rs.next()) {
+						estadistica = new Estadistica();
+						estadistica.setNumeral(rs.getString(1));
+						estadistica.setD1(0);
+						estadistica.setD2(0);
+						estadistica.setD3(0);
+						estadistica.setD4(0);
+
+						estadistica.setS1(0);
+						estadistica.setS2(0);
+						estadistica.setS3(0);
+						estadistica.setS4(0);
+
+						estadistica.setI1(0);
+						estadistica.setI2(0);
+						estadistica.setI3(0);
+						estadistica.setI4(0);
+
+						estadistica.setA1(0);
+						estadistica.setA2(0);
+						estadistica.setA3(0);
+						estadistica.setA4(0);
+
+						radicadosAuditoria.add(estadistica);
+					}
+
+					if (radicadosAuditoria != null && radicadosAuditoria.size() > 0) {
+
+						// para cada numeral
+						for (Estadistica e : radicadosAuditoria) {
+							// para cada cliente
+							for (ProyectoCliente pc : this.proyectosCliente) {
+
+								parametros = new ArrayList<Object>();
+								codigosDiagnostico = "";
+								sql = new StringBuilder();
+								sql.append("  SELECT d.id diagnostico FROM diagnostico d");
+								sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
+								sql.append("  WHERE pp.numeral IS NOT NULL AND pp.numeral <> ''");
+
+								sql.append("  AND (d.diagnostico IS NOT NULL OR d.diagnostico = 'S')");
+
+								sql.append("  AND pp.numeral = ?");
+								sql.append("  AND d.id_proyecto_cliente = ?");
+
+								parametros.add(e.getNumeral());
+								parametros.add(pc.getId());
+
+								rs = conexion.consultarBD(sql.toString(), parametros);
+								int j = 0;
+								while (rs.next()) {
+									j++;
+									if (j == 1) {
+										codigosDiagnostico += "" + rs.getInt(1);
+									} else {
+										codigosDiagnostico += "," + rs.getInt(1);
+									}
+
+								}
+
+								if (j > 0) {
+
+									sql = new StringBuilder();
+
+									// DOCU
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_documentacion1 IS NOT NULL AND meta_documentacion1 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setD1(e.getD1().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_documentacion2 IS NOT NULL AND meta_documentacion2 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setD2(e.getD2().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_documentacion3 IS NOT NULL AND meta_documentacion3 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setD3(e.getD3().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_documentacion4 IS NOT NULL AND meta_documentacion4 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setD4(e.getD4().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									// SOCIA
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_socializacion1 IS NOT NULL AND meta_socializacion1 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setS1(e.getS1().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_socializacion2 IS NOT NULL AND meta_socializacion2 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setS2(e.getS2().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_socializacion3 IS NOT NULL AND meta_socializacion3 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setS3(e.getS3().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_socializacion4 IS NOT NULL AND meta_socializacion4 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setS4(e.getS4().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									// IMP
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_implementacion1 IS NOT NULL AND meta_implementacion1 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setI1(e.getI1().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_implementacion2 IS NOT NULL AND meta_implementacion2 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setI2(e.getI2().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_implementacion3 IS NOT NULL AND meta_implementacion3 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setI3(e.getI3().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_implementacion4 IS NOT NULL AND meta_implementacion4 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setI4(e.getI4().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									// aud
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_auditoria1 IS NOT NULL AND meta_auditoria1 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setA1(e.getA1().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_auditoria2 IS NOT NULL AND meta_auditoria2 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setA2(e.getA2().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_auditoria3 IS NOT NULL AND meta_auditoria3 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setA3(e.getA3().intValue() + ((Long) rs.getLong(1)).intValue());
+									}
+
+									sql = new StringBuilder();
+									sql.append("  SELECT COUNT(*) FROM diagnostico WHERE id IN (" + codigosDiagnostico + ") AND meta_auditoria4 IS NOT NULL AND meta_auditoria4 > 0");
+									rs = conexion.consultarBD(sql.toString(), null);
+									if (rs.next()) {
+										e.setA4(e.getA4().intValue() + ((Long) rs.getLong(1)).intValue());
 									}
 
 								}
@@ -2093,18 +2625,35 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 							e.setValoresGrafico(new ArrayList<GraficoEstadistica>());
 
 							grafico = new GraficoEstadistica();
-							grafico.setHallazgo("FORTALEZA");
-							grafico.setValor(e.getFortaleza());
+							grafico.setHallazgo("DOCUMENTACION");
+							grafico.setValorNA(e.getD1());
+							grafico.setValorNC(e.getD2());
+							grafico.setValorCP(e.getD3());
+							grafico.setValorCS(e.getD4());
 							e.getValoresGrafico().add(grafico);
 
 							grafico = new GraficoEstadistica();
-							grafico.setHallazgo("RECOMENDACION");
-							grafico.setValor(e.getRecomendacion());
+							grafico.setHallazgo("SOCIALIZACION");
+							grafico.setValorNA(e.getS1());
+							grafico.setValorNC(e.getS2());
+							grafico.setValorCP(e.getS3());
+							grafico.setValorCS(e.getS4());
 							e.getValoresGrafico().add(grafico);
 
 							grafico = new GraficoEstadistica();
-							grafico.setHallazgo("NO CONFORMIDAD");
-							grafico.setValor(e.getNoConformidad());
+							grafico.setHallazgo("IMPLEMENTACION");
+							grafico.setValorNA(e.getI1());
+							grafico.setValorNC(e.getI2());
+							grafico.setValorCP(e.getI3());
+							grafico.setValorCS(e.getI4());
+							e.getValoresGrafico().add(grafico);
+
+							grafico = new GraficoEstadistica();
+							grafico.setHallazgo("AUDITORIA");
+							grafico.setValorNA(e.getA1());
+							grafico.setValorNC(e.getA2());
+							grafico.setValorCP(e.getA3());
+							grafico.setValorCS(e.getA4());
 							e.getValoresGrafico().add(grafico);
 
 						}
@@ -2125,29 +2674,273 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		}
 
 	}
-	
-	
-	
+
+	/**
+	 * Consulta los proyectos de los clientes
+	 */
+	public void consultarProyectosClientes2() {
+		Conexion conexion = new Conexion();
+		ResultSet rs = null;
+		Estadistica estadistica = null;
+		List<Object> parametros = null;
+		String codigosDiagnostico = null;
+		Map<String, Object> solos = new HashMap<String, Object>();
+		try {
+
+			this.radicadosAuditoria = null;
+
+			if (!(this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getCliente() != null && this.proyectoClienteConsulta.getCliente().getCliente() != null && !this.proyectoClienteConsulta.getCliente().getCliente().trim().equals(""))) {
+				this.proyectoClienteConsulta.getCliente().setId(null);
+				this.proyectoClienteConsulta.getCliente().setCliente(null);
+				this.proyectoClienteConsulta.getCliente().setNit(null);
+			}
+
+			this.proyectosCliente = IConsultasDAO.getProyectosCliente(this.proyectoClienteConsulta);
+
+			// ai selecciona una norma que haga los siguientes calculos
+			if (this.proyectosCliente != null && this.proyectosCliente.size() > 0 && this.proyectoClienteConsulta != null && this.proyectoClienteConsulta.getProyecto() != null && this.proyectoClienteConsulta.getProyecto().getId() != null) {
+				this.radicadosAuditoria = new ArrayList<Estadistica>();
+
+				try {
+					String proyectosClienteLista = "";
+					int i = 0;
+					for (ProyectoCliente pc : this.proyectosCliente) {
+						i++;
+						if (i == 1) {
+							proyectosClienteLista += "" + pc.getId();
+						} else {
+							proyectosClienteLista += "," + pc.getId();
+						}
+					}
+
+					StringBuilder sql = new StringBuilder();
+					sql.append("  SELECT distinct pp.numeral, d.id_proyecto_cliente, d.id diagnostico  FROM diagnostico d");
+					sql.append("  INNER JOIN preguntas_proyecto pp ON d.id_pregunta_proyecto = pp.id");
+					sql.append("  WHERE d.id_proyecto_cliente IN (" + proyectosClienteLista + ")");
+					sql.append("  AND pp.numeral IS NOT NULL AND pp.numeral <> '' order by pp.numeral, d.id_proyecto_cliente, d.id");
+
+					rs = conexion.consultarBD(sql.toString(), null);
+
+					Map<Integer, Object> valores = new HashMap<Integer, Object>();
+
+					while (rs.next()) {
+
+						estadistica = new Estadistica();
+						estadistica.setNumeral(rs.getString(1));
+						estadistica.setNoConformidad(0);
+						estadistica.setFortaleza(0);
+						estadistica.setRecomendacion(0);
+						estadistica.setCumple(0);
+						estadistica.setNoAplica(0);
+
+						estadistica.settDiagnostico(rs.getInt(3));
+
+						valores.put(estadistica.gettDiagnostico(), estadistica);
+
+						solos.put(estadistica.getNumeral(), estadistica);
+
+						// radicadosAuditoria.add(estadistica);
+					}
+
+					if (valores.keySet().size() > 0) {
+
+						int j = 0;
+						codigosDiagnostico = "";
+						for (Integer l : valores.keySet()) {
+
+							j++;
+							if (j == 1) {
+								codigosDiagnostico += "" + l;
+							} else {
+								codigosDiagnostico += "," + l;
+							}
+
+						}
+
+						sql = new StringBuilder();
+						sql.append("  SELECT DISTINCT id_estado, id_diagnostico FROM ");
+						sql.append("  estados_diagnostico WHERE id_estado IN (7,8,9) AND id IN(" + codigosDiagnostico + ") ");
+						sql.append("  GROUP BY id_estado, id_diagnostico ORDER BY id_estado ");
+
+						rs = conexion.consultarBD(sql.toString(), null);
+
+						while (rs.next()) {
+							Estadistica e = ((Estadistica) valores.get(rs.getInt(2)));
+							if (e != null) {
+								if (rs.getInt(1) == 7) {
+
+									e.setFortaleza(1);
+									valores.put(rs.getInt(2), e);
+								}
+								if (rs.getInt(1) == 8) {
+									// Estadistica e = ((Estadistica) valores.get(rs.getInt(2)));
+									e.setRecomendacion(1);
+									valores.put(rs.getInt(2), e);
+								}
+								if (rs.getInt(1) == 9) {
+									// Estadistica e = ((Estadistica) valores.get(rs.getInt(2)));
+									e.setNoConformidad(1);
+									valores.put(rs.getInt(2), e);
+								}
+							}
+
+						}
+
+						Map<String, Object> reales = new HashMap<String, Object>();
+						for (Integer l : valores.keySet()) {
+
+							Estadistica e = new Estadistica();
+							e.setFortaleza(0);
+							e.setRecomendacion(0);
+							e.setNoConformidad(0);
+
+							reales.put(l + "-" + ((Estadistica) valores.get(l)).getNumeral(), e);
+
+						}
+
+						for (Integer l : valores.keySet()) {
+
+							Estadistica e = (Estadistica) reales.get(l + "-" + ((Estadistica) valores.get(l)).getNumeral());
+							Estadistica v = (Estadistica) valores.get(l);
+							if (e.getFortaleza().intValue() == 0 && v.getNumeral().equals(e.getNumeral()) && e.gettDiagnostico().intValue() == v.gettDiagnostico().intValue() && v.getFortaleza().intValue() > 0) {
+								e.setFortaleza(1);
+							}
+
+							if (e.getFortaleza().intValue() == 0 && v.getNumeral().equals(e.getNumeral()) && e.gettDiagnostico().intValue() == v.gettDiagnostico().intValue() && v.getRecomendacion().intValue() > 0) {
+								e.setRecomendacion(1);
+							}
+
+							if (e.getFortaleza().intValue() == 0 && v.getNumeral().equals(e.getNumeral()) && e.gettDiagnostico().intValue() == v.gettDiagnostico().intValue() && v.getNoConformidad().intValue() > 0) {
+								e.setNoConformidad(1);
+							}
+
+							// if(l+"-"+((Estadistica)valores.get(l)).getNumeral()).equals(anObject)
+						}
+
+						for (String l : solos.keySet()) {
+							for (String r : reales.keySet()) {
+								Estadistica re = (Estadistica) reales.get(r);
+								if (l.equals(re.getNumeral())) {
+									Estadistica ok = ((Estadistica) solos.get(l));
+
+									int f = re.getFortaleza();
+									int rec = re.getRecomendacion();
+									int nc = re.getNoConformidad();
+
+									ok.setFortaleza(ok.getFortaleza() + f);
+									ok.setRecomendacion(ok.getRecomendacion() + rec);
+									ok.setNoConformidad(ok.getNoConformidad() + nc);
+
+									solos.put(l, ok);
+
+								}
+							}
+
+						}
+
+						this.radicadosAuditoria = new ArrayList<Estadistica>();
+
+						for (String l : solos.keySet()) {
+							Estadistica re = (Estadistica) reales.get(l);
+							this.radicadosAuditoria.add(re);
+
+						}
+
+						GraficoEstadistica grafico = null;
+						for (Estadistica e : radicadosAuditoria) {
+
+							if (e != null) {
+
+								e.setValoresGrafico(new ArrayList<GraficoEstadistica>());
+								grafico = new GraficoEstadistica();
+								grafico.setHallazgo("FORTALEZA");
+								grafico.setValor(e.getFortaleza());
+								e.getValoresGrafico().add(grafico);
+
+								grafico = new GraficoEstadistica();
+								grafico.setHallazgo("RECOMENDACION");
+								grafico.setValor(e.getRecomendacion());
+								e.getValoresGrafico().add(grafico);
+
+								grafico = new GraficoEstadistica();
+								grafico.setHallazgo("NO CONFORMIDAD");
+								grafico.setValor(e.getNoConformidad());
+								e.getValoresGrafico().add(grafico);
+
+							}
+
+						}
+
+					}
+
+				} catch (Exception e) {
+					throw new Exception(e);
+
+				}
+
+			}
+
+		} catch (
+
+		Exception e) {
+			IConstantes.log.error(e, e);
+		} finally {
+			conexion.cerrarConexion();
+		}
+
+	}
+
 	/**
 	 * Imprime radicado
 	 */
-	public void imprimirRadicado() {
+	public void imprimirRadicado(String tipo) {
 		try {
 
 			String reporte = "";
 			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			
 
 			parametros.put("SUBREPORT_DIR", this.getPath(IConstantes.PAQUETE_MODULO_REPORTES) + "/");
 			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
 			parametros.put("pProyectoCliente", this.proyectosCliente.get(0));
-			parametros.put("pParametroAuditoria", IConsultasDAO.getParametroAuditoria());
+
+			// antes
+			ParametroAuditoria pa = IConsultasDAO.getParametroAuditoria();
+
+			// ahora
+			if (this.proyectosCliente.get(0).getProyecto() != null && this.proyectosCliente.get(0).getProyecto().getId() != null) {
+				pa.setObjetivos(this.proyectosCliente.get(0).getProyecto().getObjetivos());
+				pa.setAlcance(this.proyectosCliente.get(0).getProyecto().getAlcance());
+				pa.setDocumentosReferencia(this.proyectosCliente.get(0).getProyecto().getDocumentosReferencia());
+				pa.setObservaciones(this.proyectosCliente.get(0).getProyecto().getObservaciones());
+			}
+
+			parametros.put("pParametroAuditoria", pa);
 			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
 
-			this.generarListado(new JRBeanCollectionDataSource(this.radicadosAuditoria), "imprimirInformeRadicado.jasper", "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+			if (tipo.equals("DIAGNOSTICO")) {
+				this.generarListado(new JRBeanCollectionDataSource(this.radicadosAuditoria), "imprimirInformeRadicadoDiagnostico.jasper", "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+			} else if (tipo.equals("AUDITORIA_VIEJO")) {
+
+				parametros.put("pAuditoriaViejo", "S");
+
+				for (Estadistica e : radicadosAuditoria) {
+					List<GraficoEstadistica> g2 = new ArrayList<GraficoEstadistica>();
+					for (GraficoEstadistica g : e.getValoresGrafico()) {
+						if (!g.getHallazgo().equals("CUMPLE") && !g.getHallazgo().equals("NO APLICA")) {
+							g2.add(g);
+						}
+					}
+					e.setValoresGrafico2(new ArrayList<GraficoEstadistica>());
+					e.getValoresGrafico2().addAll(g2);
+
+				}
+
+				this.generarListado(new JRBeanCollectionDataSource(this.radicadosAuditoria), "imprimirInformeRadicado.jasper", "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+			} else {
+				this.generarListado(new JRBeanCollectionDataSource(this.radicadosAuditoria), "imprimirInformeRadicadoNuevo.jasper", "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+			}
 
 		} catch (Exception e) {
 			IConstantes.log.error(e, e);
@@ -2487,6 +3280,10 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 		try {
 
 			this.tareaProyectoTransaccion = aTareaProyecto;
+
+			if (this.tareaProyectoTransaccion.getNumeroEtapa() == null || this.tareaProyectoTransaccion.getNumeroEtapa().intValue() == 1) {
+				this.tareaProyectoTransaccion.setNumeroEtapa(2);
+			}
 
 			if (aVista != null && aVista.equals("MODAL_EDICION_TAREA")) {
 				this.abrirModal("panelEdicionHijoTarea");
@@ -3793,6 +4590,14 @@ public class HacerMantenimiento extends ConsultarFuncionesAPI implements Seriali
 
 	public void setRadicadosAuditoria(List<Estadistica> radicadosAuditoria) {
 		this.radicadosAuditoria = radicadosAuditoria;
+	}
+
+	public List<PreguntaProyecto> getPreguntasArchivo() {
+		return preguntasArchivo;
+	}
+
+	public void setPreguntasArchivo(List<PreguntaProyecto> preguntasArchivo) {
+		this.preguntasArchivo = preguntasArchivo;
 	}
 
 }

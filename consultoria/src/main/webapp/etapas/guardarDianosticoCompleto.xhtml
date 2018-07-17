@@ -52,9 +52,16 @@
 					
 						
 						
-						<p:outputLabel for="lstRequiereFirma"
-							value="¿Desea que se genere en el informe un espacio para la firma?"
+						<p:outputLabel for="lstRequiereFirma" rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+							value="¿Desea que se genere en el informe de AUDITORÍA/EVALAUCIÓN un espacio para la firma?"
 							style="font-weight:bold; font-size:14px" />
+							
+							
+						<p:outputLabel for="lstRequiereFirma" rendered="#{administrarEtapa.esDiagnostico=='S'}"
+							value="¿Desea que se genere en el informe un espacio para la firma?"
+							style="font-weight:bold; font-size:14px" />	
+							
+							
 
 
 						<p:selectOneMenu label="¿Desea que se genere en el informe un espacio para la firma?" disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
@@ -67,6 +74,7 @@
 							<f:selectItem itemValue="N" itemLabel="NO" />
 							<f:selectItem itemValue="S" itemLabel="SI, FIRMAR EN ESPACIO" />
 							<f:selectItem itemValue="D" itemLabel="SI, TRAER LA DIGITAL DEL CONSULTOR" />
+							<f:selectItem itemValue="Z" itemLabel="SI, TRAER LA DIGITAL DEL CLIENTE" />
 							<p:ajax process="@this" update="@this, pnlFirma1, pnlFirma2" />
 
 
@@ -76,7 +84,7 @@
 
 						<p:outputPanel id="pnlFirma1">
 							<p:outputLabel rendered="#{administrarEtapa.personaDiagnostico.requiereFirma!=null and administrarEtapa.personaDiagnostico.requiereFirma == 'S'}"
-								value="Puede agregar en el espacio de abajo la firma del consultor, se guardará en base de datos y saldrá en el reporte pdf(Para ello mantenga el clic izquierdo presionado sobre el cuadro y haga la firma respectiva)"
+								value="Puede agregar en el espacio de abajo la firma, se guardará en base de datos y saldrá en el reporte pdf(Para ello mantenga el clic izquierdo presionado sobre el cuadro y haga la firma respectiva)"
 								style="font-size:12px" />
 						</p:outputPanel>
 
@@ -114,6 +122,180 @@
 
 						</p:outputPanel>
 						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						<p:outputLabel for="lstRequiereFirma2" rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+							value="¿Desea que se genere en el informe PLAN DE ACCIÓN un espacio para la firma?"
+							style="font-weight:bold; font-size:14px" />
+							
+							
+					
+							
+							
+
+
+						<p:selectOneMenu label="¿Desea que se genere en el informe un espacio para la firma?" disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+							style="width:100%; font-size:14px; height:20px" id="lstRequiereFirma2"
+							required="true"  rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+							value="#{administrarEtapa.personaDiagnostico.requiereFirma2}">
+
+
+							
+							<f:selectItem itemValue="N" itemLabel="NO" />
+							<f:selectItem itemValue="S" itemLabel="SI, FIRMAR EN ESPACIO" />
+							<f:selectItem itemValue="D" itemLabel="SI, TRAER LA DIGITAL DEL CONSULTOR" />
+							<f:selectItem itemValue="Z" itemLabel="SI, TRAER LA DIGITAL DEL CLIENTE" />
+							<p:ajax process="@this" update="@this, pnlFirma3, pnlFirma4" />
+
+
+
+						</p:selectOneMenu>
+
+
+						<p:outputPanel id="pnlFirma3">
+							<p:outputLabel rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N' and administrarEtapa.personaDiagnostico.requiereFirma2!=null and administrarEtapa.personaDiagnostico.requiereFirma2 == 'S'}"
+								value="Puede agregar en el espacio de abajo la firma, se guardará en base de datos y saldrá en el reporte pdf(Para ello mantenga el clic izquierdo presionado sobre el cuadro y haga la firma respectiva)"
+								style="font-size:12px" />
+						</p:outputPanel>
+
+
+
+
+						<p:outputPanel id="pnlFirma4">
+
+							<p:panelGrid columns="2" style="width:100%" rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N' and administrarEtapa.personaDiagnostico.requiereFirma2!=null and administrarEtapa.personaDiagnostico.requiereFirma2 == 'S'}"
+								styleClass="ui-panelgrid-blank">
+
+								<p:signature id="sigFirma2" style="width:450px; height:200px" 
+									readonly="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+									widgetVar="firma2" 
+									value="#{administrarEtapa.personaDiagnostico.firma2}"
+									label="#{mensaje.firma}" guideline="true">
+
+
+
+								</p:signature>
+
+
+
+								<p:commandButton
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value="" onclick="PF('firma2').clear()" process="@this"
+									id="btnFirma2" update="sigFirma2" title="Limpiar Firma"
+									action="#{administrarEtapa.limpiarFirmaEntrevistado2()}" />  
+
+
+
+
+							</p:panelGrid>
+
+
+						</p:outputPanel>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						<p:outputLabel for="lstRequiereFirma3" rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+							value="¿Desea que se genere en el informe LISTA DE CHEQUEO un espacio para la firma?"
+							style="font-weight:bold; font-size:14px" />
+							
+							
+					
+							
+							
+
+
+						<p:selectOneMenu label="¿Desea que se genere en el informe un espacio para la firma?" disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+							style="width:100%; font-size:14px; height:20px" id="lstRequiereFirma3"
+							required="true"  rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+							value="#{administrarEtapa.personaDiagnostico.requiereFirma3}">
+
+
+							
+							<f:selectItem itemValue="N" itemLabel="NO" />
+							<f:selectItem itemValue="S" itemLabel="SI, FIRMAR EN ESPACIO" />
+							<f:selectItem itemValue="D" itemLabel="SI, TRAER LA DIGITAL DEL CONSULTOR" />
+							<f:selectItem itemValue="Z" itemLabel="SI, TRAER LA DIGITAL DEL CLIENTE" />
+							<p:ajax process="@this" update="@this, pnlFirma5, pnlFirma6" />
+
+
+
+						</p:selectOneMenu>
+
+
+						<p:outputPanel id="pnlFirma5">
+							<p:outputLabel rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N' and administrarEtapa.personaDiagnostico.requiereFirma3!=null and administrarEtapa.personaDiagnostico.requiereFirma3 == 'S'}"
+								value="Puede agregar en el espacio de abajo la firma, se guardará en base de datos y saldrá en el reporte pdf(Para ello mantenga el clic izquierdo presionado sobre el cuadro y haga la firma respectiva)"
+								style="font-size:12px" />
+						</p:outputPanel>
+
+
+
+
+						<p:outputPanel id="pnlFirma6">
+
+							<p:panelGrid columns="2" style="width:100%" rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N' and administrarEtapa.personaDiagnostico.requiereFirma3!=null and administrarEtapa.personaDiagnostico.requiereFirma3 == 'S'}"
+								styleClass="ui-panelgrid-blank">
+
+								<p:signature id="sigFirma3" style="width:450px; height:200px" 
+									readonly="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+									widgetVar="firma3" 
+									value="#{administrarEtapa.personaDiagnostico.firma3}"
+									label="#{mensaje.firma}" guideline="true">
+
+
+
+								</p:signature>
+
+
+
+								<p:commandButton
+									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value="" onclick="PF('firma3').clear()" process="@this"
+									id="btnFirma3" update="sigFirma3" title="Limpiar Firma"
+									action="#{administrarEtapa.limpiarFirmaEntrevistado3()}" />  
+
+
+
+
+							</p:panelGrid>
+
+
+						</p:outputPanel>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 
 
 					</p:panelGrid>
@@ -124,8 +306,8 @@
 					<p:commandButton id="btnGuardarCompleto" style="font-size:14px"
 						action="#{administrarEtapa.actualizarDiagnostico('C')}"
 						value="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)?'Aceptar':'Guardar')}"
-						process="@this, sigFirma, txtConclusiones, msgConclusiones, lstRequiereFirma, calFechaFin"
-						update=":form, :formDiagnosticoCompleto:pnlDiagnosticoCompleto, :formResumen" />
+						process="@this, sigFirma, sigFirma2, sigFirma3, txtConclusiones, msgConclusiones, lstRequiereFirma, lstRequiereFirma2, lstRequiereFirma3, calFechaFin"
+						update=":form, :formDiagnosticoCompleto:pnlDiagnosticoCompleto, :formResumen, lstRequiereFirma, lstRequiereFirma2, lstRequiereFirma3, calFechaFin" />
 					<p:spacer width="10" />
 					<p:commandButton id="btnCancelarCompleto"
 						style="font-size:14px; font-weight: normal !important;"

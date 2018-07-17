@@ -51,15 +51,18 @@ public class Cronograma implements Serializable {
 	private String										implementacionComentariosConsultor;
 	private String										implementacionComentariosCliente;
 
+	private String										imprimir;
+
 	private List<DocumentoCronograma>	tDocumentos;
-	
-	private List<IndicadorCronograma> tIndicadoresCronograma;
-	
-	private List<Indicador> tIndicadores;
-	
-	private Indicador indicador;
+
+	private List<IndicadorCronograma>	tIndicadoresCronograma;
+
+	private List<Indicador>						tIndicadores;
+
+	private Indicador									indicador;
 
 	private EstructuraTabla						estructuraTabla;
+
 
 	public Cronograma() {
 		this.proyectoCliente = new ProyectoCliente();
@@ -110,16 +113,18 @@ public class Cronograma implements Serializable {
 		this.estructuraTabla.getPersistencia().put("responsable_auditoria", this.responsableAuditoria);
 
 		this.estructuraTabla.getPersistencia().put("recomendaciones", this.recomendaciones);
-		
+
+		this.estructuraTabla.getPersistencia().put("imprimir", this.imprimir);
+
 		this.estructuraTabla.getPersistencia().put("implementacion_evidencias", this.implementacionEvidencias);
 		this.estructuraTabla.getPersistencia().put("implementacion_comentarios_consultor", this.implementacionComentariosConsultor);
-		
-		if(this.indicador!=null && this.indicador.getId()!=null){
-				this.estructuraTabla.getPersistencia().put("id_indicador", this.indicador.getId());
-		}else{
-			  this.estructuraTabla.getPersistencia().put("id_indicador", null);
+		this.estructuraTabla.getPersistencia().put("implementacion_comentarios_cliente", this.implementacionComentariosCliente);
+
+		if (this.indicador != null && this.indicador.getId() != null) {
+			this.estructuraTabla.getPersistencia().put("id_indicador", this.indicador.getId());
+		} else {
+			this.estructuraTabla.getPersistencia().put("id_indicador", null);
 		}
-		
 
 	}
 
@@ -386,8 +391,15 @@ public class Cronograma implements Serializable {
 	public void settIndicadores(List<Indicador> tIndicadores) {
 		this.tIndicadores = tIndicadores;
 	}
-	
-	
-	
+
+	public String getImprimir() {
+		return imprimir;
+	}
+
+	public void setImprimir(String imprimir) {
+		this.imprimir = imprimir;
+	}
+
+
 
 }

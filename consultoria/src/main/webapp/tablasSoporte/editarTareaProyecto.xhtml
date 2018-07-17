@@ -36,7 +36,7 @@
 
 
 
-						
+
 
 
 						<p:outputLabel for="txtProductoGeneral" value="Entregables"
@@ -94,6 +94,29 @@
 						<p:spacer width="1" />
 						<p:message for="txtRequisitos" />
 
+
+						<p:outputLabel value="Etapa  *"
+							style="font-weight:bold; font-size:14px" />
+
+
+
+						<p:selectOneMenu label="Etapa" title="Etapa"
+							style="width:94%; font-size:14px;" id="lstEtapa" required="true"
+							value="#{hacerMantenimiento.tareaProyectoTransaccion.numeroEtapa}">
+							<f:selectItem itemValue="" itemLabel="Seleccione.." />
+							<f:selectItem itemValue="2" itemLabel="Planificación" />
+							<f:selectItem itemValue="3" itemLabel="Documentación" />
+							<f:selectItem itemValue="4" itemLabel="Implementación" />
+							<f:selectItem itemValue="5"
+								itemLabel="Seguimiento y auditoría(Indicadores)" />
+
+
+							
+
+						</p:selectOneMenu>
+
+						<p:spacer width="1" />
+						<p:message for="lstEtapa" />
 
 
 					</p:panelGrid>

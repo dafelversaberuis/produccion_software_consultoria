@@ -36,5 +36,8 @@ public class DSISeguridad extends HttpServlet {
 		res.sendRedirect("home.jsf");
 		
 	}
+	
+	
+
 
 }

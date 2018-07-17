@@ -39,6 +39,8 @@ public class TareaProyecto implements Serializable {
 	private String						tConcepto;
 	private boolean						tApto;
 
+	private String						tDescripcionNumeroEtapa;
+
 	public TareaProyecto() {
 		this.estructuraTabla = new EstructuraTabla();
 		this.proyecto = new Proyecto();
@@ -200,6 +202,14 @@ public class TareaProyecto implements Serializable {
 
 	public void settApto(boolean tApto) {
 		this.tApto = tApto;
+	}
+
+	public String gettDescripcionNumeroEtapa() {
+		return tDescripcionNumeroEtapa;
+	}
+
+	public void settDescripcionNumeroEtapa(String tDescripcionNumeroEtapa) {
+		this.tDescripcionNumeroEtapa = tDescripcionNumeroEtapa;
 	}
 
 }

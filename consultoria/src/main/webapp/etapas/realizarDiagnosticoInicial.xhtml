@@ -26,6 +26,7 @@
 		<style type="text/css">
 .selectOneMenuGrouped.ui-selectonemenu-list, .ui-selectonemenu-panel {
 	max-height: 50% !important;
+	
 	overflow: scroll;
 }
 
@@ -58,6 +59,8 @@
 
 				</div>
 			</div>
+			
+				<p:outputLabel value="#{administrarEtapa.asignarDiagnosticoAud('N')}"/>
 
 			<div align="center" class="titulo"></div>
 			<p:outputPanel id="pnlCasoUso">
@@ -104,7 +107,7 @@
 
 									<p:ajax event="change" process="@this"
 										
-										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraDiagnostico"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraDiagnostico, :form:messages"
 										listener="#{administrarEtapa.consultarDatosCompletosConsultoria()}" />
 
 
@@ -170,7 +173,7 @@
 								style="font-size:14px; vertical-align:middle" />
 						</p:column>
 
-						<p:column headerText="Numeral" style="vertical-align: top;"
+						<p:column headerText="Numeral" style="vertical-align: top;" width="100px"
 							>
 
 
@@ -192,7 +195,7 @@
 								style="font-size:14px; width:100%; background-color:#D3D3D3" />
 						</p:column>
 
-						<p:column headerText="Hallazgo*" width="18%"
+						<p:column headerText="Hallazgo*" width="100px"
 							style="font-size:14px; vertical-align: top;">
 							<ui:repeat var="e" value="#{loc.tEstadosDiagnostico}">
 								<p:selectBooleanButton id="booleanBtn"
@@ -211,7 +214,7 @@
 
 						<p:column headerText="Descripción hallazgo*"
 							style="font-size:14px;">
-							<p:inputTextarea value="#{loc.evidenciaEncontrada}" rows="3"
+							<p:inputTextarea value="#{loc.evidenciaEncontrada}" rows="2"
 								disabled="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
 								autoResize="false" id="txtEvidenciaEncontrada"
 								style="font-size:14px; width:100%">
@@ -224,10 +227,10 @@
 							<p:message for="txtEvidenciaEncontrada" />
 						</p:column>
 						<p:column
-							headerText="Análisis causas y acciones a Realizar(Aplica para No Conformidad y recomendación)**"
+							headerText="Análisis causas,acciones realizar,e.no encontrada, responsable(Aplica para NC y R)**"
 							style="font-size:14px; vertical-align:top">
 							<p:outputLabel value="Análisis causas:" style="color:#356e9c" />
-							<p:inputTextarea value="#{loc.analisisCausa}" rows="3"
+							<p:inputTextarea value="#{loc.analisisCausa}" rows="2"
 								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
 								autoResize="false" id="txtAnalisisCausas"
 								style="font-size:14px; width:100%; min-height:50px">
@@ -237,9 +240,11 @@
 
 
 
-							<p:message for="txtAnalisisCausas" />
+							
+							
+							
 							<p:outputLabel value="Acciones realizar:" style="color:#356e9c" />
-							<p:inputTextarea value="#{loc.accionesRealizar}" rows="3"
+							<p:inputTextarea value="#{loc.accionesRealizar}" rows="2"
 								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
 								autoResize="false" id="txtAccionesRealizar"
 								style="font-size:14px; width:100%; min-height:50px">
@@ -250,12 +255,37 @@
 
 
 							<p:message for="txtAccionesRealizar" />
+							
+							
+							<p:outputLabel value="Evidencia no encontrada:" style="color:#356e9c" />
+							<p:inputTextarea value="#{loc.evidenciaNoEncontrada}" rows="3"
+								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
+								autoResize="false" id="txtEvidenciaNoEncontrada"
+								style="font-size:14px; width:100%; min-height:50px">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputTextarea>
+							<p:message for="txtEvidenciaNoEncontrada" />
+							
+							
+							<p:outputLabel value="Responsable:" style="color:#356e9c" />
+							<p:inputTextarea value="#{loc.responsable}" rows="2"
+								disabled="#{(administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)) or (administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente) and !administrarEtapa.isActivoCausasRealizar(loc))}"
+								autoResize="false" id="txtResponsable"
+								style="font-size:14px; width:100%; min-height:50px">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputTextarea>
+							<p:message for="txtResponsable" />
+							
+							
+							
 						</p:column>
 
 						<p:column
-							headerText="Archivos soporte (Fotos, audios, documentos, etc)"
+							headerText="Soportes (Fotos, docs, etc)"
 							style="font-size:13px; vertical-align:middle !important"
-							width="15%;">
+							width="100px;">
 
 							<div align="center">
 								<p:outputPanel>
@@ -337,7 +367,6 @@
 							process=":form"
 							action="#{administrarEtapa.actualizarValidarDiagnostico()}"
 							value="Guardar e imprimir"
-							oncomplete="PF('dtlRegistros').clearFilters()"
 							update=":form, :formDiagnosticoCompleto, :formDiagnosticoIncompleto" />
 
 						<p:spacer width="10" />
@@ -377,7 +406,7 @@
 
 						<p:blockUI
 							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
-							block=":form" trigger="btnCrear, btnBorrar, btnCorreo">
+							block=":form" trigger="btnCrear, btnBorrar, btnCorreo, lstProyecto">
 							<p:graphicImage value="../imagenes/cargando.gif" />
 						</p:blockUI>
 					</div>

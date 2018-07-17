@@ -7,6 +7,17 @@
 	template="/plantillas/principal.xhtml">
 
 	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 20%;
+	vertical-align: top;
+}
+
+.columna2 {
+	width: 30%;
+	vertical-align: top;
+}
+</style>
 		<h:form id="form">
 
 			<p:growl id="messages" showDetail="true" globalOnly="true" />
@@ -31,14 +42,76 @@
 				<p:accordionPanel id="pnlCrearCasoUso" activeIndex="1">
 					<p:tab title="Crear proyecto/Norma" titleStyle="font-size:16px"
 						closable="true">
-						<p:panelGrid columns="3" cellpadding="0" cellspacing="0"
-							styleClass="ui-panelgrid-blank">
+						<p:panelGrid columns="4" cellpadding="0" cellspacing="0"
+							columnClasses="columna1,columna2,columna1,columna2"
+							styleClass="ui-panelgrid-blank" style="width:100%">
 							<p:outputLabel for="txtNombre" value="#{mensaje.nombre}"
 								style="font-weight:bold; font-size:14px" />
 							<p:inputText id="txtNombre"
 								value="#{hacerMantenimiento.proyecto.nombre}" required="true"
 								label="#{mensaje.nombre}" style="width:100%; font-size:14px" />
+
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+
+							<p:spacer width="1" />
 							<p:message for="txtNombre" />
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+
+
+							<p:outputLabel for="txtObjetivos" value="Objetivos"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:inputTextarea id="txtObjetivos" required="true"
+								label="Objetivos"
+								value="#{hacerMantenimiento.proyecto.objetivos}"
+								style="width:100%; font-size:14px; height:10px" cols="3" />
+
+
+
+
+
+							<p:outputLabel for="txtAlcance" value="Alcance"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:inputTextarea id="txtAlcance" required="true" label="Alcance"
+								value="#{hacerMantenimiento.proyecto.alcance}"
+								style="width:100%; font-size:14px; height:10px" cols="3" />
+
+
+							<p:spacer width="1" />
+							<p:message for="txtObjetivos" />
+							<p:spacer width="1" />
+							<p:message for="txtAlcance" />
+
+							<p:outputLabel for="txtDocumentosReferencia"
+								value="Documentos de referencia"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:inputTextarea id="txtDocumentosReferencia" required="true"
+								label="Documentos de referencia"
+								value="#{hacerMantenimiento.proyecto.documentosReferencia}"
+								style="width:100%; font-size:14px; height:10px" cols="3" />
+
+
+							<p:outputLabel for="txtObservaciones" value="Observaciones"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:inputTextarea id="txtObservaciones" required="true"
+								label="Observaciones"
+								value="#{hacerMantenimiento.proyecto.observaciones}"
+								style="width:100%; font-size:14px; height:10px" cols="3" />
+
+
+
+							<p:spacer width="1" />
+							<p:message for="txtDocumentosReferencia" />
+							<p:spacer width="1" />
+							<p:message for="txtObservaciones" />
+
+
+
 						</p:panelGrid>
 						<p:spacer height="10" />
 						<div align="center">
@@ -96,6 +169,33 @@
 
 							</p:column>
 
+							<p:column headerText="Objetivos" style="font-size:14px">
+								
+									<p:inputTextarea value="#{loc.objetivos}"
+										rows="2" readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+
+							<p:column headerText="Alcance" style="font-size:14px">
+							
+								<p:inputTextarea value="#{loc.alcance}"
+										rows="2" readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+
+							<p:column headerText="Docs referencia" style="font-size:14px">
+								
+									<p:inputTextarea value="#{loc.documentosReferencia}"
+										rows="2" readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							<p:column headerText="Observaciones" style="font-size:14px">
+								
+									<p:inputTextarea value="#{loc.observaciones}"
+										rows="2" readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+
 							<p:column headerText="#{mensaje.acciones}"
 								style="font-size:14px; text-align:center;">
 
@@ -135,7 +235,7 @@
 									update=":formAsignarPregunta, :form" />
 
 
-								<p:commandButton id="btnIrTareas"   
+								<p:commandButton id="btnIrTareas"
 									title="Actividades para las etapas de planificación y documentación"
 									style="background-origin: content-box; background-image: url('../imagenes/a_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 									action="#{hacerMantenimiento.asignarProyecto(loc,'VISTA_TAREAS')}"
@@ -176,8 +276,9 @@
 		<ui:include src="/tablasSoporte/eliminarDocumento.xhtml" />
 		<ui:include src="/tablasSoporte/editarDocumento.xhtml" />
 		<ui:include src="/tablasSoporte/verDocumento.xhtml" />
-		
+
 		<ui:include src="/tablasSoporte/verTareasArchivo.xhtml" />
+		<ui:include src="/tablasSoporte/verPreguntasArchivo.xhtml" />
 
 		<p:spacer height="500" />
 

@@ -218,7 +218,7 @@
 
 
 
-								<p:selectOneMenu label="#{mensaje.consultor}" 
+								<p:selectOneMenu label="#{mensaje.consultor}"
 									style="width:100%; font-size:14px; height:20px"
 									id="lstConsultor2"
 									value="#{hacerMantenimiento.proyectoClienteConsulta.consultor.id}">
@@ -313,6 +313,29 @@
 
 								<p:spacer width="1" rendered="1==2" />
 								<p:message for="lstEstadoConsultoria" rendered="1==2" />
+
+
+
+								<p:outputLabel for="lstListarAuditoria"
+									value="Generar radicado auditoria/diagnostico (toma tiempo)"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:selectOneMenu label="Generar radicado auditoria"
+									style="width:100%; font-size:14px; height:20px"
+									id="lstListarAuditoria"
+									value="#{hacerMantenimiento.proyectoClienteConsulta.tListarRadicado}">
+
+
+									<f:selectItem itemLabel="#{mensaje.NO}" itemValue="N" />
+									<f:selectItem itemLabel="#{mensaje.SI} (AUDITORIA)"
+										itemValue="S" />
+									<f:selectItem itemLabel="#{mensaje.SI} (DIAGNOSTICO)"
+										itemValue="D" />
+
+
+
+
+								</p:selectOneMenu>
 
 
 
@@ -488,21 +511,40 @@
 
 
 						</p:dataTable>
-						
-						<br/>
-						
-						<p:outputLabel value="**Si desea que aparezca informe estadistico de auditoría debe necesariamente seleccionar el proyecto o norma"
+
+						<br />
+
+						<p:outputLabel
+							value="**Si desea que aparezca informe estadistico de auditoría debe necesariamente seleccionar el proyecto o norma"
 							style="font-size:10px" />
-							
-							<br/>
-						
+
+						<br />
+
 						<center>
-						<p:commandButton id="btnResumen1"  ajax="false" rendered="#{hacerMantenimiento.radicadosAuditoria!=null and hacerMantenimiento.radicadosAuditoria.size()>0}"
-						 immediate="true"
-						style="font-size:16px; font-weight: bold !important;"
-						action="#{hacerMantenimiento.imprimirRadicado()}"
-						value="IMPRIMIR INFORME ESTADISTICO AUDITORIA (NO INCLUYE NO APLICA NI CUMPLE)" />
+							<p:commandButton id="btnResumen1" ajax="false"
+								rendered="#{hacerMantenimiento.radicadosAuditoria!=null and hacerMantenimiento.radicadosAuditoria.size()>0 and hacerMantenimiento.proyectoClienteConsulta!=null and hacerMantenimiento.proyectoClienteConsulta.tListarRadicado=='S'}"
+								immediate="true"
+								style="font-size:16px; font-weight: bold !important;"
+								action="#{hacerMantenimiento.imprimirRadicado('AUDITORIA_VIEJO')}"
+								value="IMPRIMIR INFORME ESTADISTICO AUDITORÍA(NO INCLUYE NO APLICA NI CUMPLE)" />
+
 						
+							<p:spacer width="10" />
+							<p:commandButton id="btnResumen2" ajax="false"
+								rendered="#{hacerMantenimiento.radicadosAuditoria!=null and hacerMantenimiento.radicadosAuditoria.size()>0 and hacerMantenimiento.proyectoClienteConsulta!=null and hacerMantenimiento.proyectoClienteConsulta.tListarRadicado=='S'}"
+								immediate="true"
+								style="font-size:16px; font-weight: bold !important;"
+								action="#{hacerMantenimiento.imprimirRadicado('AUDITORIA_NUEVO')}"
+								value="IMPRIMIR INFORME ESTADISTICO AUDITORIA" />
+
+
+							<p:commandButton id="btnResumen3" ajax="false"
+								rendered="#{hacerMantenimiento.radicadosAuditoria!=null and hacerMantenimiento.radicadosAuditoria.size()>0 and hacerMantenimiento.proyectoClienteConsulta!=null and hacerMantenimiento.proyectoClienteConsulta.tListarRadicado=='D'}"
+								immediate="true"
+								style="font-size:16px; font-weight: bold !important;"
+								action="#{hacerMantenimiento.imprimirRadicado('DIAGNOSTICO')}"
+								value="IMPRIMIR INFORME ESTADISTICO DIAGNOSTICO" />
+
 						</center>
 
 

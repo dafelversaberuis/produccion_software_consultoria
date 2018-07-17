@@ -18,9 +18,14 @@
 
 
 					<p:commandButton id="btnResumen1" ajax="false" immediate="true"
-						style="font-size:16px; font-weight: normal !important; width:100%"
+						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.imprimirCronograma()}"
-						value="IMPRIMIR INFORME DE PLANIFICACIÓN/CRONOGRAMA DETALLADO" />
+						value="IMPRIMIR TODO EL INFORME DE PLANIFICACIÓN/CRONOGRAMA DETALLADO (IMPRIME LOS SI)" />
+						
+					<p:commandButton id="btnResumen4" 
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						action="#{administrarEtapa.abrirFiltros()}" update=":formResumenFiltros" process="@this"
+						value="IMPRIMIR CON FILTROS (IMPRIME LOS SI)" />	
 
 
 
@@ -40,7 +45,7 @@
 				</p:panelGrid>
 
 				<p:blockUI block=":formResumen:pnlResumen"
-					trigger="btnResumen1, btnResumen2, btnResumen3">
+					trigger="btnResumen1, btnResumen2, btnResumen3, btnResumen4">
 					<p:graphicImage value="../imagenes/cargando.gif" />
 				</p:blockUI>
 

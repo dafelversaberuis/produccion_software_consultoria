@@ -69,6 +69,41 @@
 
 					<p:spacer width="1" />
 					<p:message for="txtTelefono" />
+					
+							<p:outputLabel for="fileCrear" value="Foto firma**"
+						style="font-weight:bold; font-size:14px" />
+					
+					
+					<p:outputPanel id="pnlCargado">
+					<p:panelGrid columns="3" style="width:100%;"
+						styleClass="ui-panelgrid-blank">
+						<p:fileUpload id="fileCrear" cancelLabel="true"
+							dragDropSupport="true" style="width:100%;"
+							rendered="#{administrarPersonal.clienteTransaccion.archivo==null}"  
+							fileUploadListener="#{administrarPersonal.recibirFoto2}"
+							multiple="false" fileLimit="1" fileLimitMessage="Sólo 1 archivo"
+							label="Busque o arrastre foto"  mode="advanced"
+							update=":form:messages, pnlCargado" auto="true"
+							sizeLimit="1000000" requiredMessage="Información requerida"
+							invalidSizeMessage="Excede el tamaño  permitido de 1024KB!"
+							invalidFileMessage="Extensión de archivo incorrecta, solo fotos"
+							allowTypes="/(\.|\/)(jpg|jp?g|gif|png|jpeg|tif|tiff|raw|psd|eps|svg|ai|JPG|JP?G|GIF|PNG|JPEG|TIF|TIFF|RAW|PSD|EPS|SVG|AI)$/" />
+
+
+						<p:outputLabel value="(IMAGEN_EN_MEMORIA)"
+							rendered="#{administrarPersonal.clienteTransaccion.archivo != null}" />
+
+						<p:commandLink value="Limpiar foto"
+							style="font-weight:bold; font-size:14px"
+							action="#{administrarPersonal.limpiarFotoCargada2()}"
+							process="@this" update="pnlCargado"
+							rendered="#{administrarPersonal.clienteTransaccion.archivo != null}" />
+
+
+					</p:panelGrid>
+
+
+				</p:outputPanel>
 
 
 

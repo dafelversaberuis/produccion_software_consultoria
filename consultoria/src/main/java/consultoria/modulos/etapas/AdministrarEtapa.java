@@ -62,6 +62,7 @@ import consultoria.beans.EstadoProyectoCliente;
 import consultoria.beans.Indicador;
 import consultoria.beans.InformacionEtapaIndicador;
 import consultoria.beans.ObjetivoEtapaIndicador;
+import consultoria.beans.ParametroAuditoria;
 import consultoria.beans.PersonaDiagnostico;
 import consultoria.beans.PlanAccionIndicador;
 import consultoria.beans.PlanCliente;
@@ -72,7 +73,6 @@ import consultoria.beans.ProyectoCliente;
 import consultoria.beans.TareaProyecto;
 import consultoria.beans.TiempoPlanificacion;
 import consultoria.generales.ConsultarFuncionesAPI;
-import consultoria.generales.Estadistica;
 import consultoria.generales.FirmaComoImagen;
 import consultoria.generales.IConstantes;
 import consultoria.generales.IEmail;
@@ -165,16 +165,51 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private String											etapaCompartida;
 
 	private List<SelectItem>						itemsPlanesDisponiblesCliente;
-	
-	private String hacerOnComplete;
-	
-	private String abiertoCerrado;
-	
 
+	private String											hacerOnComplete;
+
+	private String											abiertoCerrado;
+
+	private List<SelectItem>						filtrosEtapas;
+	private String											atapaEscojida;
+
+	private List<SelectItem>						filtrosResponsableDocumentacion;
+	private String											responsableDocu;
+
+	private List<SelectItem>						filtrosResponsableSocializacion;
+	private String											responsableSocia;
+
+	private List<SelectItem>						filtrosResponsableImplementacion;
+	private String											responsableImp;
+
+	private List<SelectItem>						filtrosResponsableAuditoria;
+	private String											responsableAud;
+
+	private String											esDiagnostico;
+
+	private Date												fechaDesdeFiltro;
+	private Date												fechaHastaFiltro;
+
+	public String asignarDiagnosticoAud(String aEsDiagnostico) {
+		this.esDiagnostico = aEsDiagnostico;
+		return "";
+	}
+
+	public Integer getMetaInferior() {
+		return IConstantes.META_INFERIOR_DIAGNOSTICO;
+	}
+
+	public Integer getMetaIntermedia() {
+		return IConstantes.META_INTERMEDIA_DIAGNOSTICO;
+	}
+
+	public Integer getMetaSuperior() {
+		return IConstantes.META_SUPERIOR_DIAGNOSTICO;
+	}
 
 	public void actualizarPlanCliente() {
 
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		Map<String, Object> condiciones = new HashMap<String, Object>();
 		condiciones.put("id", this.citaSeleccionada.getTPlanSeleccionado().getId());
 		PlanCliente pc = new PlanCliente();
@@ -184,6 +219,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		actualizables.put("minutos_gastados", this.citaSeleccionada.getTPlanSeleccionado().getMinutosConCosto().intValue() + 1);
 
 		try {
+
+			conexion = new Conexion();
 			conexion.setAutoCommitBD(false);
 
 			pc.getCamposBD();
@@ -471,12 +508,13 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		getCitas();
 		// Actualizo el evento con el nombre del paciente
 		// this.mostrarMensajeGlobal("Entrï¿½ a guardar cita", "exito");
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		if (this.citaSeleccionada.getProyectoCliente() != null && this.citaSeleccionada.getProyectoCliente().getId() != null) {
 			((DefaultScheduleEvent) this.citaSeleccionada.getEvent()).setTitle(this.citaSeleccionada.getProyectoCliente().getCliente().getCliente() + "-" + this.citaSeleccionada.getProyectoCliente().getProyecto().getNombre());
 			this.citaSeleccionada.setFechaInicio(this.citaSeleccionada.getEvent().getStartDate());
 			this.citaSeleccionada.setFechaFin(this.citaSeleccionada.getEvent().getEndDate());
 			try {
+				conexion = new Conexion();
 				conexion.setAutoCommitBD(false);
 				// Si no existe la creo y la asigno al listado
 				if (!this.citaSeleccionada.getModoEdicion()) {
@@ -656,10 +694,11 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	private void guardarTemporalCronograma() {
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		List<Cronograma> temps = null;
 
 		try {
+			conexion = new Conexion();
 			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 			// validaciones
 			boolean ok = true;
@@ -976,8 +1015,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	public void eliminarDocumentoCronograma() {
 
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		try {
+			conexion = new Conexion();
 
 			conexion.setAutoCommitBD(false);
 			this.documentoCronogramaTransaccion.getCamposBD();
@@ -1011,9 +1051,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	 */
 	public void eliminarDocumentoDiagnostico() {
 
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		try {
-
+			conexion = new Conexion();
 			conexion.setAutoCommitBD(false);
 			this.documentoDiagnosticoTransaccion.getCamposBD();
 			conexion.eliminarBD(this.documentoDiagnosticoTransaccion.getEstructuraTabla().getTabla(), this.documentoDiagnosticoTransaccion.getEstructuraTabla().getLlavePrimaria());
@@ -1043,9 +1083,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	public void editarDocumento() {
 
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		try {
-
+			conexion = new Conexion();
 			Map<String, Object> act = new HashMap<String, Object>();
 			act.put("estado", this.documentoActividadTransaccion.getEstado());
 			act.put("fecha", new Date());
@@ -1079,8 +1119,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	 */
 	public void eliminarDocumento() {
 
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		try {
+
+			conexion = new Conexion();
 
 			conexion.setAutoCommitBD(false);
 			this.documentoActividadTransaccion.getCamposBD();
@@ -1227,14 +1269,24 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					// sw = 1;
 				}
 
+				if (!(d.getResponsable() != null && !d.getResponsable().trim().equals(""))) {
+					analisisCausas = false;
+					// sw = 1;
+				}
+
+				if (!(d.getEvidenciaNoEncontrada() != null && !d.getEvidenciaNoEncontrada().trim().equals(""))) {
+					analisisCausas = false;
+					// sw = 1;
+				}
+
 				if (sw == 1) {
 					indicesIncompletos.add(indice);
 				}
 
 			}
 
-			if (!analisisCausas) {
-				this.mostrarMensajeGlobalPersonalizado("EXISTEN ANALISIS CAUSAS O ACCIONES REALIZAR SIN DILIGENCIAR. RECUERDE QUE SI HAY NO CONFORMIDAD O RECOMENDACION DEBE DILIGENCIARLOS. IGUALMENTE SE DEJA SEGUIR", "advertencia");
+			if (this.esDiagnostico != null && this.esDiagnostico.equals("N") && !analisisCausas) {
+				this.mostrarMensajeGlobalPersonalizado("EXISTEN ANALISIS CAUSAS, ACCIONES REALIZAR, EVIDENCIA NO ENCONTRADA Y/O RESPONSABLE SIN DILIGENCIAR. RECUERDE QUE SI HAY NO CONFORMIDAD O RECOMENDACION DEBE DILIGENCIARLOS. IGUALMENTE SE DEJA SEGUIR", "advertencia");
 			}
 
 			if (!evidenciaCompleta || !alMenosUnEstado) {
@@ -1282,8 +1334,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	 * Elimina un indicador
 	 */
 	public void eliminarIndicador() {
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		try {
+
+			conexion = new Conexion();
 			conexion.setAutoCommitBD(false);
 
 			// Guardamos todos los datos en memoria para evitar pï¿½dida de
@@ -1425,12 +1479,13 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	 */
 	public void eliminarObjetivo() {
 
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 		Map<String, Object> condiciones = null;
 
 		Indicador indicadorTemp = null;
 
 		try {
+			conexion = new Conexion();
 			conexion.setAutoCommitBD(false);
 
 			condiciones = new HashMap<String, Object>();
@@ -1569,10 +1624,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	}
 
 	public void guardarFormaCompletaCompromiso() {
-		Conexion conexion = new Conexion();
+		Conexion conexion = null;
 
 		try {
-
+			conexion = new Conexion();
 			conexion.setAutoCommitBD(false);
 
 			// Gurdamos todos los datos en memoria para evitar pï¿½dida de
@@ -1634,6 +1689,109 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	}
 
+	public void abrirFiltros() {
+
+		try {
+			atapaEscojida = null;
+			responsableDocu = null;
+			responsableSocia = null;
+			responsableImp = null;
+			responsableAud = null;
+
+			this.filtrosEtapas = new ArrayList<SelectItem>();
+			this.filtrosResponsableDocumentacion = new ArrayList<SelectItem>();
+			this.filtrosResponsableSocializacion = new ArrayList<SelectItem>();
+			this.filtrosResponsableImplementacion = new ArrayList<SelectItem>();
+			this.filtrosResponsableAuditoria = new ArrayList<SelectItem>();
+
+			for (Cronograma c : this.cronogramas) {
+
+				// filtr docu
+				if (this.filtrosResponsableDocumentacion.size() > 0) {
+					if (c.getResponsableDocumentacion() != null && !c.getResponsableDocumentacion().trim().equals("")) {
+						if (!this.filtrosResponsableDocumentacion.stream().anyMatch(p -> p.getValue().equals(c.getResponsableDocumentacion().trim()))) {
+							this.filtrosResponsableDocumentacion.add(new SelectItem(c.getResponsableDocumentacion().trim()));
+						}
+					}
+
+				} else {
+					if (c.getResponsableDocumentacion() != null && !c.getResponsableDocumentacion().trim().equals("")) {
+						this.filtrosResponsableDocumentacion.add(new SelectItem(c.getResponsableDocumentacion().trim()));
+					}
+				}
+
+				// filtr socializa
+				if (this.filtrosResponsableSocializacion.size() > 0) {
+					if (c.getResponsableSocializacion() != null && !c.getResponsableSocializacion().trim().equals("")) {
+						if (!this.filtrosResponsableSocializacion.stream().anyMatch(p -> p.getValue().equals(c.getResponsableSocializacion().trim()))) {
+							this.filtrosResponsableSocializacion.add(new SelectItem(c.getResponsableSocializacion().trim()));
+						}
+					}
+
+				} else {
+					if (c.getResponsableSocializacion() != null && !c.getResponsableSocializacion().trim().equals("")) {
+						this.filtrosResponsableSocializacion.add(new SelectItem(c.getResponsableSocializacion().trim()));
+					}
+				}
+
+				// responsable implementacion
+				if (this.filtrosResponsableImplementacion.size() > 0) {
+					if (c.getResponsableImplementacion() != null && !c.getResponsableImplementacion().trim().equals("")) {
+						if (!this.filtrosResponsableImplementacion.stream().anyMatch(p -> p.getValue().equals(c.getResponsableImplementacion().trim()))) {
+							this.filtrosResponsableImplementacion.add(new SelectItem(c.getResponsableImplementacion().trim()));
+						}
+					}
+
+				} else {
+					if (c.getResponsableImplementacion() != null && !c.getResponsableImplementacion().trim().equals("")) {
+						this.filtrosResponsableImplementacion.add(new SelectItem(c.getResponsableImplementacion().trim()));
+					}
+				}
+
+				// responsable auditoria
+				if (this.filtrosResponsableAuditoria.size() > 0) {
+					if (c.getResponsableAuditoria() != null && !c.getResponsableAuditoria().trim().equals("")) {
+						if (!this.filtrosResponsableAuditoria.stream().anyMatch(p -> p.getValue().equals(c.getResponsableAuditoria().trim()))) {
+							this.filtrosResponsableAuditoria.add(new SelectItem(c.getResponsableAuditoria().trim()));
+						}
+					}
+
+				} else {
+					if (c.getResponsableAuditoria() != null && !c.getResponsableAuditoria().trim().equals("")) {
+						this.filtrosResponsableAuditoria.add(new SelectItem(c.getResponsableAuditoria().trim()));
+					}
+				}
+
+				// etapas
+				if (this.filtrosEtapas.size() > 0) {
+					if (c.getTareaProyecto().gettDescripcionNumeroEtapa() != null && !c.getTareaProyecto().gettDescripcionNumeroEtapa().trim().equals("")) {
+
+						if (!this.filtrosEtapas.stream().anyMatch(p -> p.getValue().equals(c.getTareaProyecto().gettDescripcionNumeroEtapa().trim()))) {
+							this.filtrosEtapas.add(new SelectItem(c.getTareaProyecto().gettDescripcionNumeroEtapa().trim()));
+						}
+					}
+
+				} else {
+					if (c.getTareaProyecto().gettDescripcionNumeroEtapa() != null && !c.getTareaProyecto().gettDescripcionNumeroEtapa().trim().equals("")) {
+						this.filtrosEtapas.add(new SelectItem(c.getTareaProyecto().gettDescripcionNumeroEtapa().trim()));
+					}
+				}
+
+			}
+
+			this.abrirModal("panelResumenFiltros");
+			this.cerrarModal("panelResumen");
+
+		} catch (
+
+		Exception e) {
+
+		} finally {
+
+		}
+
+	}
+
 	public void guardarFormaCompletaCronograma() {
 		Conexion conexion = new Conexion();
 
@@ -1656,6 +1814,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			this.abrirModal("panelResumen");
 			this.cerrarModal("panelCronogramaCompleto");
+
+			this.fechaDesdeFiltro = null;
+			this.fechaHastaFiltro = null;
 
 		} catch (
 
@@ -2459,6 +2620,40 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		}
 	}
 
+	public void guardarFirmaComoImagen2(String aSignature, String aNombreFirma) {
+		try {
+			FirmaComoImagen firma = new FirmaComoImagen();
+			byte[] archivo = firma.getImagenComoByte(aSignature);
+			File outputfile = new File(this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas2/" + aNombreFirma + ".png");
+
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(archivo));
+			if (img != null) {
+				ImageIO.write(img, "png", outputfile);
+			}
+
+		} catch (Exception e) {
+			// IConstantes.log.error(e, e);
+
+		}
+	}
+
+	public void guardarFirmaComoImagen3(String aSignature, String aNombreFirma) {
+		try {
+			FirmaComoImagen firma = new FirmaComoImagen();
+			byte[] archivo = firma.getImagenComoByte(aSignature);
+			File outputfile = new File(this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas3/" + aNombreFirma + ".png");
+
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(archivo));
+			if (img != null) {
+				ImageIO.write(img, "png", outputfile);
+			}
+
+		} catch (Exception e) {
+			// IConstantes.log.error(e, e);
+
+		}
+	}
+
 	/**
 	 * Obtiene la decisiï¿½n a tomar de imprimir
 	 * 
@@ -2470,7 +2665,13 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			// NUEVO
 			this.personaDiagnostico.settTipoReporte("G");
 
-		} else if (aDecision != null && aDecision.equals("P")) {
+		} else if (aDecision != null && aDecision.equals("J")) {
+			// NUEVO
+			this.personaDiagnostico.settTipoReporte("J");
+
+		}
+
+		else if (aDecision != null && aDecision.equals("P")) {
 			// NUEVO PLAN DE ACCION
 			this.personaDiagnostico.settTipoReporte("P");
 
@@ -2569,6 +2770,290 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		}
 	}
 
+	public void imprimirCronogramaFiltrosImplementacion() {
+		try {
+
+			SimpleDateFormat formato = new SimpleDateFormat("yyy-MM-dd");
+
+			if (this.fechaDesdeFiltro != null && this.fechaHastaFiltro != null) {
+				if (formato.format(fechaDesdeFiltro).compareTo(formato.format(fechaHastaFiltro)) > 0) {
+					this.mostrarMensajeGlobalPersonalizado("FECHA DESDE DEBE SER MENOR O IGUAL A FECHA HASTA", "advertencia");
+					return;
+				}
+			}
+
+			String reporte = "imprimirInformImplementacion.jasper";
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			// firma del representante del cliente
+			if (this.cronogramaGeneral.getImplementacionFirma() != null) {
+				this.guardarFirmaComoImagen(this.cronogramaGeneral.getImplementacionFirma(), "cliente_implementacion" + this.proyectoCliente.getId());
+			}
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			parametros.put("SUBREPORT_DIR", this.getPath(IConstantes.PAQUETE_MODULO_REPORTES) + "/");
+			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
+			parametros.put("pProyectoCliente", this.proyectoCliente);
+			parametros.put("pCliente", this.proyectoCliente.getCliente());
+			parametros.put("pCronogramaGeneral", this.cronogramaGeneral);
+			parametros.put("pNombreCompletoConsultor", this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos());
+			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
+
+			// limpia los si
+			List<Cronograma> cronosSI = new ArrayList<Cronograma>();
+			for (Cronograma c : cronogramas) {
+				if (c.getImprimir() == null || c.getImprimir().equals("SI")) {
+					cronosSI.add(c);
+				}
+			}
+
+			if (cronosSI.size() > 0) {
+
+				// filtra docu
+				List<Cronograma> crono2 = new ArrayList<Cronograma>();
+
+				crono2.addAll(cronosSI);
+
+				// socializa
+				List<Cronograma> crono3 = new ArrayList<Cronograma>();
+
+				crono3.addAll(crono2);
+
+				// implementa
+				List<Cronograma> crono4 = new ArrayList<Cronograma>();
+				if (responsableImp != null && !responsableImp.equals("")) {
+					for (Cronograma c : crono3) {
+						if (c.getResponsableImplementacion() != null && c.getResponsableImplementacion().trim().equals(responsableImp.trim())) {
+							crono4.add(c);
+						}
+					}
+				} else {
+					crono4.addAll(crono3);
+				}
+
+				// auditada
+				List<Cronograma> crono5 = new ArrayList<Cronograma>();
+
+				crono5.addAll(crono4);
+
+				// fecha desde implementación
+				List<Cronograma> crono6 = new ArrayList<Cronograma>();
+				if (fechaDesdeFiltro != null && fechaHastaFiltro != null) {
+					for (Cronograma c : crono5) {
+						if (c.getFechaSeguimientoImplementacion() != null && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0 && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						}
+					}
+				} else if (fechaDesdeFiltro != null) {
+					for (Cronograma c : crono5) {
+						if (c.getFechaSeguimientoImplementacion() != null && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0) {
+							crono6.add(c);
+						}
+					}
+				} else if (fechaHastaFiltro != null) {
+					for (Cronograma c : crono5) {
+						if (c.getFechaSeguimientoImplementacion() != null && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						}
+					}
+				} else {
+					crono6.addAll(crono5);
+				}
+
+				this.generarListado(new JRBeanCollectionDataSource(crono6), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+
+			} else {
+
+				this.generarListado(new JRBeanCollectionDataSource(cronosSI), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+	}
+
+	public void imprimirCronogramaFiltros() {
+		try {
+
+			SimpleDateFormat formato = new SimpleDateFormat("yyy-MM-dd");
+
+			if (this.fechaDesdeFiltro != null && this.fechaHastaFiltro != null) {
+				if (formato.format(fechaDesdeFiltro).compareTo(formato.format(fechaHastaFiltro)) > 0) {
+					this.mostrarMensajeGlobalPersonalizado("FECHA DESDE DEBE SER MENOR O IGUAL A FECHA HASTA", "advertencia");
+					return;
+				}
+			}
+
+			String reporte = "imprimirInformCronograma.jasper";
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			// firma del representante del cliente
+			if (this.cronogramaGeneral.getFirma() != null) {
+				this.guardarFirmaComoImagen(this.cronogramaGeneral.getFirma(), "cliente_cronograma" + this.proyectoCliente.getId());
+			}
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			parametros.put("SUBREPORT_DIR", this.getPath(IConstantes.PAQUETE_MODULO_REPORTES) + "/");
+			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
+			parametros.put("pProyectoCliente", this.proyectoCliente);
+			parametros.put("pCliente", this.proyectoCliente.getCliente());
+			parametros.put("pCronogramaGeneral", this.cronogramaGeneral);
+			parametros.put("pNombreCompletoConsultor", this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos());
+			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
+
+			// limpia los si
+			List<Cronograma> cronosSI = new ArrayList<Cronograma>();
+			for (Cronograma c : cronogramas) {
+				if (c.getImprimir() == null || c.getImprimir().equals("SI")) {
+					cronosSI.add(c);
+				}
+			}
+
+			if (cronosSI.size() > 0) {
+
+				// filtra docu
+				List<Cronograma> crono2 = new ArrayList<Cronograma>();
+				if (responsableDocu != null && !responsableDocu.equals("")) {
+					for (Cronograma c : cronosSI) {
+						if (c.getResponsableDocumentacion() != null && c.getResponsableDocumentacion().trim().equals(responsableDocu.trim())) {
+							crono2.add(c);
+						}
+					}
+				} else {
+					crono2.addAll(cronosSI);
+				}
+
+				// socializa
+				List<Cronograma> crono3 = new ArrayList<Cronograma>();
+				if (responsableSocia != null && !responsableSocia.equals("")) {
+					for (Cronograma c : crono2) {
+						if (c.getResponsableSocializacion() != null && c.getResponsableSocializacion().trim().equals(responsableSocia.trim())) {
+							crono3.add(c);
+						}
+					}
+				} else {
+					crono3.addAll(crono2);
+				}
+
+				// implementa
+				List<Cronograma> crono4 = new ArrayList<Cronograma>();
+				if (responsableImp != null && !responsableImp.equals("")) {
+					for (Cronograma c : crono3) {
+						if (c.getResponsableImplementacion() != null && c.getResponsableImplementacion().trim().equals(responsableImp.trim())) {
+							crono4.add(c);
+						}
+					}
+				} else {
+					crono4.addAll(crono3);
+				}
+
+				// auditada
+				List<Cronograma> crono5 = new ArrayList<Cronograma>();
+				if (responsableAud != null && !responsableAud.equals("")) {
+					for (Cronograma c : crono4) {
+						if (c.getResponsableAuditoria() != null && c.getResponsableAuditoria().trim().equals(responsableAud.trim())) {
+							crono5.add(c);
+						}
+					}
+				} else {
+					crono5.addAll(crono4);
+				}
+
+				// fechas
+
+				List<Cronograma> crono6 = new ArrayList<Cronograma>();
+				if (fechaDesdeFiltro != null && fechaHastaFiltro != null) {
+					for (Cronograma c : crono5) {
+
+						if (c.getFechaSeguimientoDocumentacion() != null && formato.format(c.getFechaSeguimientoDocumentacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0 && formato.format(c.getFechaSeguimientoDocumentacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoSocializacion() != null && formato.format(c.getFechaSeguimientoSocializacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0 && formato.format(c.getFechaSeguimientoSocializacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoImplementacion() != null && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0 && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoAuditoria() != null && formato.format(c.getFechaSeguimientoAuditoria()).compareTo(formato.format(fechaDesdeFiltro)) >= 0 && formato.format(c.getFechaSeguimientoAuditoria()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						}
+
+					}
+				} else if (fechaDesdeFiltro != null) {
+					for (Cronograma c : crono5) {
+						if (c.getFechaSeguimientoDocumentacion() != null && formato.format(c.getFechaSeguimientoDocumentacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoSocializacion() != null && formato.format(c.getFechaSeguimientoSocializacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoImplementacion() != null && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaDesdeFiltro)) >= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoAuditoria() != null && formato.format(c.getFechaSeguimientoAuditoria()).compareTo(formato.format(fechaDesdeFiltro)) >= 0) {
+							crono6.add(c);
+						}
+					}
+				} else if (fechaHastaFiltro != null) {
+					for (Cronograma c : crono5) {
+						if (c.getFechaSeguimientoDocumentacion() != null && formato.format(c.getFechaSeguimientoDocumentacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoSocializacion() != null && formato.format(c.getFechaSeguimientoSocializacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoImplementacion() != null && formato.format(c.getFechaSeguimientoImplementacion()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						} else if (c.getFechaSeguimientoAuditoria() != null && formato.format(c.getFechaSeguimientoAuditoria()).compareTo(formato.format(fechaHastaFiltro)) <= 0) {
+							crono6.add(c);
+						}
+					}
+				} else {
+					crono6.addAll(crono5);
+				}
+
+				this.generarListado(new JRBeanCollectionDataSource(crono6), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+
+			} else {
+
+				this.generarListado(new JRBeanCollectionDataSource(cronosSI), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+
+			}
+
+		} catch (
+
+		Exception e) {
+			IConstantes.log.error(e, e);
+		}
+	}
+
+	public void imprimirImplementacion() {
+		try {
+
+			String reporte = "imprimirInformImplementacion.jasper";
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			// firma del representante del cliente
+			if (this.cronogramaGeneral.getImplementacionFirma() != null) {
+				this.guardarFirmaComoImagen(this.cronogramaGeneral.getImplementacionFirma(), "cliente_implementacion" + this.proyectoCliente.getId());
+			}
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			parametros.put("SUBREPORT_DIR", this.getPath(IConstantes.PAQUETE_MODULO_REPORTES) + "/");
+			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
+			parametros.put("pProyectoCliente", this.proyectoCliente);
+			parametros.put("pCliente", this.proyectoCliente.getCliente());
+			parametros.put("pCronogramaGeneral", this.cronogramaGeneral);
+			parametros.put("pNombreCompletoConsultor", this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos());
+			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
+
+			List<Cronograma> cronosSI = new ArrayList<Cronograma>();
+			for (Cronograma c : cronogramas) {
+				if (c.getImprimir() == null || c.getImprimir().equals("SI")) {
+					cronosSI.add(c);
+				}
+			}
+
+			this.generarListado(new JRBeanCollectionDataSource(cronosSI), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+	}
+
 	public void imprimirCronograma() {
 		try {
 
@@ -2589,7 +3074,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			parametros.put("pNombreCompletoConsultor", this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos());
 			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
 
-			this.generarListado(new JRBeanCollectionDataSource(this.cronogramas), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
+			List<Cronograma> cronosSI = new ArrayList<Cronograma>();
+			for (Cronograma c : cronogramas) {
+				if (c.getImprimir() == null || c.getImprimir().equals("SI")) {
+					cronosSI.add(c);
+				}
+			}
+
+			this.generarListado(new JRBeanCollectionDataSource(cronosSI), reporte, "INFORME-" + formatoFecha.format(new Date()), null, parametros);
 
 		} catch (Exception e) {
 			IConstantes.log.error(e, e);
@@ -2844,6 +3336,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				this.guardarFirmaComoImagen(this.personaDiagnostico.getFirma(), "cliente" + this.proyectoCliente.getId());
 			}
 
+			if (this.personaDiagnostico.getFirma2() != null) {
+				this.guardarFirmaComoImagen2(this.personaDiagnostico.getFirma2(), "cliente" + this.proyectoCliente.getId());
+			}
+
+			if (this.personaDiagnostico.getFirma3() != null) {
+				this.guardarFirmaComoImagen3(this.personaDiagnostico.getFirma3(), "cliente" + this.proyectoCliente.getId());
+			}
+
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			int sw = 0;
 			int swNuevo = 0;
@@ -2874,7 +3374,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 						swnNoConforme = 1; // COMO SE HABILITA PARA PLAN DE ACCION TAMBIEN
 																// RECOMENDACION LO MANEJA ESTA BANDERA
-						
+
 						d.settTipo("ABIERTA");
 					}
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 9) {
@@ -2901,8 +3401,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 					}
 				}
-				if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("G")) {
-					if (sw == 0 && swNuevo == 0) {
+				if (this.personaDiagnostico.gettTipoReporte() != null && (this.personaDiagnostico.gettTipoReporte().equals("G") || this.personaDiagnostico.gettTipoReporte().equals("J"))) {
+					if (this.personaDiagnostico.gettTipoReporte().equals("G") && sw == 0 && swNuevo == 0) {
+						diagnosticoImpresion.add(d);
+					} else if (this.personaDiagnostico.gettTipoReporte().equals("J")) {
 						diagnosticoImpresion.add(d);
 					}
 				} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("P")) {
@@ -2946,14 +3448,17 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			}
 
-			if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("G")) {
+			if (this.personaDiagnostico.gettTipoReporte() != null && (this.personaDiagnostico.gettTipoReporte().equals("G") || this.personaDiagnostico.gettTipoReporte().equals("J"))) {
 				reporte = "imprimirInformeDiagnosticoV1G.jasper";
 				// el nuevo reporte
 				// ORDENA
 
 				Collections.sort(diagnosticoImpresion, (o1, o2) -> o1.gettHallazgoSeleccionado().compareTo(o2.gettHallazgoSeleccionado()));
-
-				parametros.put("pEstadosGrafica", estadosGraficaSinNoAplica);
+				if (this.personaDiagnostico.gettTipoReporte().equals("G")) {
+					parametros.put("pEstadosGrafica", estadosGraficaSinNoAplica);
+				} else {
+					parametros.put("pEstadosGrafica", estadosGrafica);
+				}
 
 			} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("P")) {
 				reporte = "imprimirInformePlanAccionDiagnostico.jasper";
@@ -2963,16 +3468,34 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				reporte = "imprimirInformeDiagnosticoV1.jasper";
 				// el anterior
 
+				if (esDiagnostico != null && esDiagnostico.equals("S")) {
+
+					reporte = "imprimirInformeDiagnosticoReal.jasper";
+				}
+
 				parametros.put("pEstadosGrafica", estadosGrafica);
 
 			}
 
 			parametros.put("SUBREPORT_DIR", this.getPath(IConstantes.PAQUETE_MODULO_REPORTES) + "/");
 			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
+			parametros.put("rutaFirmas2", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas2/");
+			parametros.put("rutaFirmas3", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas3/");
 			parametros.put("pProyectoCliente", this.proyectoCliente);
 			parametros.put("pCliente", this.proyectoCliente.getCliente());
 
-			parametros.put("pParametroAuditoria", IConsultasDAO.getParametroAuditoria());
+			// antes
+			ParametroAuditoria pa = IConsultasDAO.getParametroAuditoria();
+
+			// ahora
+			if (this.proyectoCliente.getProyecto() != null && this.proyectoCliente.getProyecto().getId() != null) {
+				pa.setObjetivos(this.proyectoCliente.getProyecto().getObjetivos());
+				pa.setAlcance(this.proyectoCliente.getProyecto().getAlcance());
+				pa.setDocumentosReferencia(this.proyectoCliente.getProyecto().getDocumentosReferencia());
+				pa.setObservaciones(this.proyectoCliente.getProyecto().getObservaciones());
+			}
+
+			parametros.put("pParametroAuditoria", pa);
 			parametros.put("pPersonaDiagnostico", this.personaDiagnostico);
 			parametros.put("pNombreCompletoConsultor", this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos());
 			parametros.put("pRutaLogo", this.getPath(IConstantes.PAQUETE_IMAGENES + IConstantes.LOGO1));
@@ -2983,10 +3506,6 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			IConstantes.log.error(e, e);
 		}
 	}
-	
-	
-
-	
 
 	/**
 	 * Imprime el diagnostico
@@ -3442,6 +3961,20 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	 */
 	public void limpiarFirmaEntrevistado() {
 		this.personaDiagnostico.setFirma(null);
+	}
+
+	/**
+	 * Limpia la firma del sujeto entervistado
+	 */
+	public void limpiarFirmaEntrevistado2() {
+		this.personaDiagnostico.setFirma2(null);
+	}
+
+	/**
+	 * Limpia la firma del sujeto entervistado
+	 */
+	public void limpiarFirmaEntrevistado3() {
+		this.personaDiagnostico.setFirma3(null);
 	}
 
 	/**
@@ -4032,7 +4565,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 				conexion.commitBD();
 
-				this.mostrarMensajeGlobalPersonalizado("Planificaciï¿½n/Cronograma de forma detallada guardado exitosamente", "exito");
+				this.mostrarMensajeGlobalPersonalizado("Planificación/Cronograma de forma detallada guardado exitosamente", "exito");
 				this.abrirModal("panelCronogramaCompleto");
 
 				// reseteo de variables
@@ -4159,8 +4692,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 		try {
 			String copiaAparece = this.personaDiagnostico.gettAperece();
-			
-			//Date copiaFecha = this.personaDiagnostico.getFecha();
+
+			// Date copiaFecha = this.personaDiagnostico.getFecha();
 			conexion.setAutoCommitBD(false);
 			Diagnostico diagnostico = new Diagnostico();
 			diagnostico.getProyectoCliente().setId(this.proyectoCliente.getId());
@@ -4168,11 +4701,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			// valida si existe persona
 			PersonaDiagnostico persona = IConsultasDAO.getPersonaDiagnostico(this.proyectoCliente.getId());
-			
-			
-			
-			
-			
+
 			/// lo refreente a la estadistica
 
 			if (diagnosticos != null && diagnosticos.size() > 0) {
@@ -4181,7 +4710,12 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				for (Diagnostico d : this.diagnostico) {
 					if (!(d.getEvidenciaEncontrada() != null && !d.getEvidenciaEncontrada().trim().equals(""))) {
 						d.setEvidenciaEncontrada("");
-					} 
+					}
+
+					if (this.esDiagnostico == null || this.esDiagnostico.trim().equals("")) {
+						esDiagnostico = "N";
+					}
+					d.setDiagnostico(this.esDiagnostico);
 
 					d.getCamposBD();
 					conexion.actualizarBD(d.getEstructuraTabla().getTabla(), d.getEstructuraTabla().getPersistencia(), d.getEstructuraTabla().getLlavePrimaria(), null);
@@ -4205,6 +4739,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				}
 
 			} else {
+
 				// insertar
 				for (EstadoProyectoCliente e : this.proyectoCliente.gettEstadosProyecto()) {
 					e.getCamposBD();
@@ -4215,6 +4750,11 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					if (!(d.getEvidenciaEncontrada() != null && !d.getEvidenciaEncontrada().trim().equals(""))) {
 						d.setEvidenciaEncontrada("");
 					}
+
+					if (this.esDiagnostico == null || this.esDiagnostico.trim().equals("")) {
+						esDiagnostico = "N";
+					}
+					d.setDiagnostico(this.esDiagnostico);
 
 					d.getCamposBD();
 					conexion.insertarBD(d.getEstructuraTabla().getTabla(), d.getEstructuraTabla().getPersistencia());
@@ -4236,12 +4776,12 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			}
 
 			if (persona != null && persona.getProyectoCliente() != null && persona.getProyectoCliente().getId() != null) {
-				//this.personaDiagnostico.setFecha(copiaFecha);
+				// this.personaDiagnostico.setFecha(copiaFecha);
 				this.personaDiagnostico.getCamposBD();
 				conexion.actualizarBD(this.personaDiagnostico.getEstructuraTabla().getTabla(), this.personaDiagnostico.getEstructuraTabla().getPersistencia(), this.personaDiagnostico.getEstructuraTabla().getLlavePrimaria(), null);
 
 			} else {
-				//this.personaDiagnostico.setFecha(copiaFecha);
+				// this.personaDiagnostico.setFecha(copiaFecha);
 				this.personaDiagnostico.getProyectoCliente().setId(this.proyectoCliente.getId());
 				this.personaDiagnostico.getCamposBD();
 
@@ -4349,22 +4889,83 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_APLICA.intValue()) {
 					aDiagnostico.setEvidenciaEncontrada("NO APLICA");
+
+					if (aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoNoAplica() != null && !aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoNoAplica().trim().equals("")) {
+						aDiagnostico.setEvidenciaEncontrada(aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoNoAplica());
+					}
+
 				}
 				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_CUMPLE.intValue()) {
 					aDiagnostico.setEvidenciaEncontrada("CUMPLE");
+
+					if (aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoCumple() != null && !aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoCumple().trim().equals("")) {
+						aDiagnostico.setEvidenciaEncontrada(aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoCumple());
+					}
 				}
 
 				if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_NO_CONFORMIDAD.intValue() || aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue()) {
+
 					aDiagnostico.setAnalisisCausa("-");
 					aDiagnostico.setAccionesRealizar("-");
+					aDiagnostico.setEvidenciaNoEncontrada("-");
+					aDiagnostico.setResponsable("LIDER SOSTENIBILIDAD");
 
 					if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue()) {
+
+						if (aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoRecomendacion() != null && !aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoRecomendacion().trim().equals("")) {
+							aDiagnostico.setEvidenciaEncontrada(aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoRecomendacion());
+						}
+
 						aDiagnostico.setAnalisisCausa("NO APLICA");
+						aDiagnostico.setEvidenciaNoEncontrada("NO APLICA");
+
+						if (aDiagnostico.getPreguntaProyecto().getAccionRealizarPredeterminadoRecomendacion() != null && !aDiagnostico.getPreguntaProyecto().getAccionRealizarPredeterminadoRecomendacion().trim().equals("")) {
+							aDiagnostico.setAccionesRealizar(aDiagnostico.getPreguntaProyecto().getAccionRealizarPredeterminadoRecomendacion());
+						}
+
+						if (aDiagnostico.getPreguntaProyecto().getResponsablePredeterminadoRecomendacion() != null && !aDiagnostico.getPreguntaProyecto().getResponsablePredeterminadoRecomendacion().trim().equals("")) {
+							aDiagnostico.setResponsable(aDiagnostico.getPreguntaProyecto().getResponsablePredeterminadoRecomendacion());
+						}
+
+					} else {
+
+						if (aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoNoConformidad() != null && !aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoNoConformidad().trim().equals("")) {
+							aDiagnostico.setEvidenciaEncontrada(aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoNoConformidad());
+						}
+
+						if (aDiagnostico.getPreguntaProyecto().getAnalisisCausaPredeterminadoNoConformidad() != null && !aDiagnostico.getPreguntaProyecto().getAnalisisCausaPredeterminadoNoConformidad().trim().equals("")) {
+							aDiagnostico.setAnalisisCausa(aDiagnostico.getPreguntaProyecto().getAnalisisCausaPredeterminadoNoConformidad());
+						}
+
+						if (aDiagnostico.getPreguntaProyecto().getEvidenciaNoEncontradaPredeterminadoNoConformidad() != null && !aDiagnostico.getPreguntaProyecto().getEvidenciaNoEncontradaPredeterminadoNoConformidad().trim().equals("")) {
+							aDiagnostico.setEvidenciaNoEncontrada(aDiagnostico.getPreguntaProyecto().getEvidenciaNoEncontradaPredeterminadoNoConformidad());
+						}
+
+						if (aDiagnostico.getPreguntaProyecto().getAccionRealizarPredeterminadoNoConformidad() != null && !aDiagnostico.getPreguntaProyecto().getAccionRealizarPredeterminadoNoConformidad().trim().equals("")) {
+							aDiagnostico.setAccionesRealizar(aDiagnostico.getPreguntaProyecto().getAccionRealizarPredeterminadoNoConformidad());
+						}
+
+						if (aDiagnostico.getPreguntaProyecto().getResponsablePredeterminadoNoConformidad() != null && !aDiagnostico.getPreguntaProyecto().getResponsablePredeterminadoNoConformidad().trim().equals("")) {
+							aDiagnostico.setResponsable(aDiagnostico.getPreguntaProyecto().getResponsablePredeterminadoNoConformidad());
+						}
+
 					}
 
 				} else {
+
+					if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_FORTALEZA.intValue()) {
+						if (aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoFortaleza() != null && !aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoFortaleza().trim().equals("")) {
+							aDiagnostico.setEvidenciaEncontrada(aDiagnostico.getPreguntaProyecto().getHallazgoPredeterminadoFortaleza());
+						}
+
+					}
+
 					aDiagnostico.setAnalisisCausa("NO APLICA");
 					aDiagnostico.setAccionesRealizar("NO APLICA");
+
+					aDiagnostico.setEvidenciaNoEncontrada("NO APLICA");
+					aDiagnostico.setResponsable("NO APLICA");
+
 				}
 
 				aEstados.stream().filter(p -> p.getEstado().getId().intValue() != aEstado.getEstado().getId().intValue()).forEach(p -> {
@@ -4815,6 +5416,162 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					color = "NARANJA";
 				} else {
 					color = "VERDE";
+
+				}
+
+			}
+
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return color;
+	}
+
+	public String getColorCeldaDiagnostico(Diagnostico aDiagnostico, String aEtapa, Integer aNumero) {
+		String color = "ROJO";
+		try {
+
+			if (aNumero != null && aNumero.intValue() == 1) {
+				if (aEtapa != null && aEtapa.toUpperCase().equals("DOCUMENTACION")) {
+					if (aDiagnostico.getMetaDocumentacion1().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaDocumentacion1().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaDocumentacion1().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("SOCIALIZACION")) {
+					if (aDiagnostico.getMetaSocializacion1().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaSocializacion1().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaSocializacion1().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("IMPLEMENTACION")) {
+					if (aDiagnostico.getMetaImplementacion1().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaImplementacion1().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaImplementacion1().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else {
+					if (aDiagnostico.getMetaAuditoria1().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaAuditoria1().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaAuditoria1().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+
+				}
+
+			} else if (aNumero != null && aNumero.intValue() == 2) {
+				if (aEtapa != null && aEtapa.toUpperCase().equals("DOCUMENTACION")) {
+					if (aDiagnostico.getMetaDocumentacion2().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaDocumentacion2().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaDocumentacion2().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("SOCIALIZACION")) {
+					if (aDiagnostico.getMetaSocializacion2().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaSocializacion2().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaSocializacion2().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("IMPLEMENTACION")) {
+					if (aDiagnostico.getMetaImplementacion2().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaImplementacion2().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaImplementacion2().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else {
+					if (aDiagnostico.getMetaAuditoria2().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaAuditoria2().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaAuditoria2().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+
+				}
+
+			} else if (aNumero != null && aNumero.intValue() == 3) {
+				if (aEtapa != null && aEtapa.toUpperCase().equals("DOCUMENTACION")) {
+					if (aDiagnostico.getMetaDocumentacion3().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaDocumentacion3().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaDocumentacion3().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("SOCIALIZACION")) {
+					if (aDiagnostico.getMetaSocializacion3().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaSocializacion3().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaSocializacion3().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("IMPLEMENTACION")) {
+					if (aDiagnostico.getMetaImplementacion3().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaImplementacion3().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaImplementacion3().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else {
+					if (aDiagnostico.getMetaAuditoria3().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaAuditoria3().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaAuditoria3().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+
+				}
+
+			} else if (aNumero != null && aNumero.intValue() == 4) {
+				if (aEtapa != null && aEtapa.toUpperCase().equals("DOCUMENTACION")) {
+					if (aDiagnostico.getMetaDocumentacion4().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaDocumentacion4().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaDocumentacion4().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("SOCIALIZACION")) {
+					if (aDiagnostico.getMetaSocializacion4().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaSocializacion4().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaSocializacion4().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else if (aEtapa != null && aEtapa.toUpperCase().equals("IMPLEMENTACION")) {
+					if (aDiagnostico.getMetaImplementacion4().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaImplementacion4().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaImplementacion4().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
+				} else {
+					if (aDiagnostico.getMetaAuditoria4().compareTo(new BigDecimal(getMetaInferior())) <= 0) {
+						color = "ROJO";
+					} else if (aDiagnostico.getMetaAuditoria4().compareTo(new BigDecimal(getMetaInferior())) > 0 && aDiagnostico.getMetaAuditoria4().compareTo(new BigDecimal(getMetaIntermedia())) <= 0) {
+						color = "NARANJA";
+					} else {
+						color = "VERDE";
+					}
 
 				}
 
@@ -5329,6 +6086,27 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 	}
 
+	public void validar(Cronograma aCrono) {
+		if (aCrono != null && aCrono.getImprimir() != null) {
+			aCrono.setImprimir(aCrono.getImprimir().trim().toUpperCase());
+			if (!aCrono.getImprimir().equals("SI") && !aCrono.getImprimir().equals("NO")) {
+				aCrono.setImprimir("SI");
+			}
+
+		} else {
+			aCrono.setImprimir("SI");
+		}
+	}
+
+	public boolean isMultiplo5(Integer indice) {
+
+		boolean ok = false;
+		if (indice.intValue() == 0 || indice % 5 == 0) {
+			ok = true;
+		}
+		return ok;
+	}
+
 	public void armarEstructuraCronograma() {
 		try {
 			List<TareaProyecto> tareas = null;
@@ -5366,6 +6144,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 						registroCronograma.getTareaProyecto().setTarea(p.getTarea());
 						registroCronograma.getTareaProyecto().setExplicacionDocumentacion(p.getExplicacionDocumentacion());
 						registroCronograma.getTareaProyecto().setProducto(p.getProducto());
+						registroCronograma.getTareaProyecto().setRequisito(p.getRequisito());
 						registroCronograma.getTareaProyecto().setResponsable(p.getResponsable());
 						registroCronograma.getTareaProyecto().setNumeroEtapa(p.getNumeroEtapa());
 						registroCronograma.getProyectoCliente().setId(this.proyectoCliente.getId());
@@ -5390,6 +6169,18 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 						registroCronograma.setResponsableSocializacion(this.getLabel(p.getResponsable()));
 						registroCronograma.setResponsableImplementacion(this.getLabel(p.getResponsable()));
 						registroCronograma.setResponsableAuditoria(this.getLabel(p.getResponsable()));
+
+						registroCronograma.setImprimir("SI");
+
+						if (registroCronograma.getTareaProyecto().getNumeroEtapa() == null || registroCronograma.getTareaProyecto().getNumeroEtapa().intValue() == 2 || registroCronograma.getTareaProyecto().getNumeroEtapa().intValue() == 1) {
+							registroCronograma.getTareaProyecto().settDescripcionNumeroEtapa("Planificación");
+						} else if (registroCronograma.getTareaProyecto().getNumeroEtapa().intValue() == 3) {
+							registroCronograma.getTareaProyecto().settDescripcionNumeroEtapa("Documentación");
+						} else if (registroCronograma.getTareaProyecto().getNumeroEtapa().intValue() == 4) {
+							registroCronograma.getTareaProyecto().settDescripcionNumeroEtapa("Implementación");
+						} else if (registroCronograma.getTareaProyecto().getNumeroEtapa().intValue() == 5) {
+							registroCronograma.getTareaProyecto().settDescripcionNumeroEtapa("Seguimiento y auditoría(Indicadores)");
+						}
 
 						this.cronogramas.add(registroCronograma);
 						i++;
@@ -5435,6 +6226,9 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					doc.getCronograma().setId(p.getId());
 					doc.setEtapa(this.etapaCompartida);
 					p.settDocumentos(IConsultasDAO.getDocumentosCronograma(doc));
+					if (p.getImprimir() == null) {
+						p.setImprimir("SI");
+					}
 
 				}
 
@@ -5653,6 +6447,24 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 			// si encuentra un diagnostico esta en modo ediciï¿½n
 			if (this.diagnostico != null && this.diagnostico.size() > 0) {
+
+				if (this.diagnostico.get(0).getDiagnostico() == null) {
+					this.diagnostico.get(0).setDiagnostico("N");
+				}
+
+				if (this.esDiagnostico.equals("N") && !this.esDiagnostico.equals(this.diagnostico.get(0).getDiagnostico())) {
+					this.proyectoCliente = new ProyectoCliente();
+					this.mostrarMensajeGlobalPersonalizado("YA REALIZO UN DIAGNOSTICO PARA ESTE PROYECTO-TIEMPO REVISE, NO PUEDE HABER SIMULTANEAMENTE AUDITORIA Y DIAGNISTICO", "advertencia");
+					return;
+				} else if (this.esDiagnostico.equals("S") && !this.esDiagnostico.equals(this.diagnostico.get(0).getDiagnostico())) {
+					this.proyectoCliente = new ProyectoCliente();
+					this.mostrarMensajeGlobalPersonalizado("YA REALIZO UNA AUDITORIA PARA ESTE PROYECTO-TIEMPO REVISE, NO PUEDE HABER SIMULTANEAMENTE AUDITORIA Y DIAGNISTICO", "advertencia");
+
+					return;
+				} else {
+					// esta donde es
+
+				}
 
 				// cada registro de diagnistico lo arma con sus estados
 				// seleccionados o
@@ -5881,22 +6693,20 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	public void consultarDatosCompletosConsultoria() {
 
 		try {
-			
+
 			this.hacerOnComplete = "";
-			if(abiertoCerrado!=null && abiertoCerrado.equals("A")){
-				
-				//this.hacerOnComplete = "PF('dtlRegistros').clearFilters()";
+			if (abiertoCerrado != null && abiertoCerrado.equals("A")) {
+
+				// this.hacerOnComplete = "PF('dtlRegistros').clearFilters()";
 				abiertoCerrado = null;
 			}
-			
-			
+
 			if (this.proyectoCliente != null && this.proyectoCliente.getId() != null) {
 				ProyectoCliente proyecto = new ProyectoCliente();
 				proyecto.setId(this.proyectoCliente.getId());
 				this.proyectoCliente = IConsultasDAO.getProyectosCliente(proyecto).get(0);
 				this.armarEstructuraDiagnostico();
-				
-				
+
 			}
 
 		} catch (Exception e) {
@@ -7270,15 +8080,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	public void setHacerOnComplete(String hacerOnComplete) {
 		this.hacerOnComplete = hacerOnComplete;
 	}
-	
-	
-public String getAbrir(){
-	
-	String a = "A";
-	abiertoCerrado = a;
-	return "";
-	
-}
+
+	public String getAbrir() {
+
+		String a = "A";
+		abiertoCerrado = a;
+		return "";
+
+	}
 
 	public String getAbiertoCerrado() {
 		return abiertoCerrado;
@@ -7288,10 +8097,127 @@ public String getAbrir(){
 		this.abiertoCerrado = abiertoCerrado;
 	}
 
+	public List<SelectItem> getFiltrosEtapas() {
+		if (filtrosEtapas == null) {
+			this.filtrosEtapas = new ArrayList<SelectItem>();
+		}
 
-	
-	
-	
-	
+		return filtrosEtapas;
+	}
+
+	public void setFiltrosEtapas(List<SelectItem> filtrosEtapas) {
+		this.filtrosEtapas = filtrosEtapas;
+	}
+
+	public List<SelectItem> getFiltrosResponsableDocumentacion() {
+		if (filtrosResponsableDocumentacion == null) {
+			this.filtrosResponsableDocumentacion = new ArrayList<SelectItem>();
+		}
+
+		return filtrosResponsableDocumentacion;
+	}
+
+	public void setFiltrosResponsableDocumentacion(List<SelectItem> filtrosResponsableDocumentacion) {
+		this.filtrosResponsableDocumentacion = filtrosResponsableDocumentacion;
+	}
+
+	public List<SelectItem> getFiltrosResponsableSocializacion() {
+		if (filtrosResponsableSocializacion == null) {
+			this.filtrosResponsableSocializacion = new ArrayList<SelectItem>();
+		}
+
+		return filtrosResponsableSocializacion;
+	}
+
+	public void setFiltrosResponsableSocializacion(List<SelectItem> filtrosResponsableSocializacion) {
+		this.filtrosResponsableSocializacion = filtrosResponsableSocializacion;
+	}
+
+	public List<SelectItem> getFiltrosResponsableImplementacion() {
+		if (filtrosResponsableImplementacion == null) {
+			this.filtrosResponsableImplementacion = new ArrayList<SelectItem>();
+
+		}
+		return filtrosResponsableImplementacion;
+	}
+
+	public void setFiltrosResponsableImplementacion(List<SelectItem> filtrosResponsableImplementacion) {
+		this.filtrosResponsableImplementacion = filtrosResponsableImplementacion;
+	}
+
+	public List<SelectItem> getFiltrosResponsableAuditoria() {
+		if (this.filtrosResponsableAuditoria == null) {
+			this.filtrosResponsableAuditoria = new ArrayList<SelectItem>();
+		}
+		return filtrosResponsableAuditoria;
+	}
+
+	public void setFiltrosResponsableAuditoria(List<SelectItem> filtrosResponsableAuditoria) {
+		this.filtrosResponsableAuditoria = filtrosResponsableAuditoria;
+	}
+
+	public String getAtapaEscojida() {
+		return atapaEscojida;
+	}
+
+	public void setAtapaEscojida(String atapaEscojida) {
+		this.atapaEscojida = atapaEscojida;
+	}
+
+	public String getResponsableDocu() {
+		return responsableDocu;
+	}
+
+	public void setResponsableDocu(String responsableDocu) {
+		this.responsableDocu = responsableDocu;
+	}
+
+	public String getResponsableSocia() {
+		return responsableSocia;
+	}
+
+	public void setResponsableSocia(String responsableSocia) {
+		this.responsableSocia = responsableSocia;
+	}
+
+	public String getResponsableImp() {
+		return responsableImp;
+	}
+
+	public void setResponsableImp(String responsableImp) {
+		this.responsableImp = responsableImp;
+	}
+
+	public String getResponsableAud() {
+		return responsableAud;
+	}
+
+	public void setResponsableAud(String responsableAud) {
+		this.responsableAud = responsableAud;
+	}
+
+	public String getEsDiagnostico() {
+		return esDiagnostico;
+	}
+
+	public void setEsDiagnostico(String esDiagnostico) {
+		this.esDiagnostico = esDiagnostico;
+	}
+
+	public Date getFechaDesdeFiltro() {
+		return fechaDesdeFiltro;
+	}
+
+	public void setFechaDesdeFiltro(Date fechaDesdeFiltro) {
+		this.fechaDesdeFiltro = fechaDesdeFiltro;
+	}
+
+	public Date getFechaHastaFiltro() {
+		return fechaHastaFiltro;
+	}
+
+	public void setFechaHastaFiltro(Date fechaHastaFiltro) {
+		this.fechaHastaFiltro = fechaHastaFiltro;
+	}
 
 }

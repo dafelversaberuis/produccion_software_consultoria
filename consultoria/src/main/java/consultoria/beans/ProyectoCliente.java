@@ -22,6 +22,7 @@ public class ProyectoCliente implements Serializable {
 	private String											tEstadoCosnultoria;
 	private String											tEstadoCertificacion;
 	private String											tEstado;
+	private String tListarRadicado;
 	private List<EstadoProyectoCliente>	tEstadosProyecto;
 
 	private EstructuraTabla							estructuraTabla;
@@ -166,5 +167,15 @@ public class ProyectoCliente implements Serializable {
 	public void settEstadosProyecto(List<EstadoProyectoCliente> tEstadosProyecto) {
 		this.tEstadosProyecto = tEstadosProyecto;
 	}
+
+	public String gettListarRadicado() {
+		return tListarRadicado;
+	}
+
+	public void settListarRadicado(String tListarRadicado) {
+		this.tListarRadicado = tListarRadicado;
+	}
+	
+	
 
 }

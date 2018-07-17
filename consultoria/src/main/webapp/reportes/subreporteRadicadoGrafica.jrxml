@@ -33,7 +33,7 @@
 						<seriesExpression><![CDATA["HALLAZGO"]]></seriesExpression>
 						<categoryExpression><![CDATA[$F{hallazgo}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{valor}]]></valueExpression>
-						<labelExpression><![CDATA["NUMERO DE PST PARA "+$F{hallazgo}]]></labelExpression>
+						<labelExpression><![CDATA["NUMERO PARA "+$F{hallazgo}]]></labelExpression>
 					</categorySeries>
 				</categoryDataset>
 				<bar3DPlot>
@@ -41,7 +41,7 @@
 						<seriesColor seriesOrder="0" color="#3366FF"/>
 					</plot>
 					<itemLabel/>
-					<categoryAxisLabelExpression><![CDATA["HALLAZGO"]]></categoryAxisLabelExpression>
+					<categoryAxisLabelExpression><![CDATA["FASES"]]></categoryAxisLabelExpression>
 					<categoryAxisFormat labelRotation="0.0">
 						<axisFormat>
 							<labelFont>
@@ -52,7 +52,7 @@
 							</tickLabelFont>
 						</axisFormat>
 					</categoryAxisFormat>
-					<valueAxisLabelExpression><![CDATA["NUMERO PST"]]></valueAxisLabelExpression>
+					<valueAxisLabelExpression><![CDATA["NUMERO"]]></valueAxisLabelExpression>
 					<valueAxisFormat>
 						<axisFormat>
 							<labelFont>

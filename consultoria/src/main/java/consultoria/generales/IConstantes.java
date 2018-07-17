@@ -54,6 +54,7 @@ public interface IConstantes {
 	public static String				ROL_ADMINISTRADOR								= "A";
 
 	public static Integer				MAXIMOS_REMITENTES_CORREO				= 100;
+	public static Integer				ID_ESTADO_FORTALEZA							= 7;
 	public static Integer				ID_ESTADO_RECOMENDACION					= 8;
 	public static Integer				ID_ESTADO_NO_CONFORMIDAD				= 9;
 	public static Integer				ID_ESTADO_NO_APLICA							= 6;
@@ -76,7 +77,8 @@ public interface IConstantes {
 
 	public static final String	PAQUETE_MODULO_REPORTES					= "/reportes/";
 
-	public static final String	HOST														= "http://www.consultoriaisoluciones.com";
+	public static final String	HOST														= "http://nuevaversion-produccionconsultoria.193b.starter-ca-central-1.openshiftapps.com/consultoria";
+	// public static final String HOST = "http://localhost:8080/consultoria";
 	public static final String	PAQUETE_IMAGENES								= "/imagenes/";
 	public static final String	LOGO1														= "iconsulting_software.png";
 	public static final String	LOGO2														= "calidad.png";
@@ -86,5 +88,9 @@ public interface IConstantes {
 
 	public static final String	NOMBRE_REPORTE_DIAGNOSTICO			= "INFORME_DIAGNOSTICO";
 	public static final String	REPORTE_DIAGNOSTICO							= "imprimirDiagnostico.jasper";
+
+	public static Integer				META_INFERIOR_DIAGNOSTICO				= 0;
+	public static Integer				META_INTERMEDIA_DIAGNOSTICO			= 50;
+	public static Integer				META_SUPERIOR_DIAGNOSTICO				= 100;
 
 }

@@ -1,0 +1,997 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/plantillas/principal.xhtml">
+
+	<ui:define name="body">
+		<style type="text/css">
+.columna1 {
+	width: 60%;
+	vertical-align: top;
+}
+
+.columna2 {
+	width: 40%;
+	vertical-align: top;
+}
+
+.columnaI {
+	width: 50%;
+	vertical-align: top;
+}
+</style>
+		<style type="text/css">
+.selectOneMenuGrouped.ui-selectonemenu-list, .ui-selectonemenu-panel {
+	max-height: 50% !important;
+	overflow: scroll;
+}
+
+.selectOneMenuGrouped .ui-selectonemenu-items-wrapper {
+	height: 100% !important;
+	overflow: scroll;
+}
+</style>
+
+
+		<style type="text/css">
+.ROJO {
+	background-color: #FD9A95 !important;
+	color: white
+}
+
+.NARANJA {
+	background-color: #FFD257 !important;
+	color: black
+}
+
+.VERDE {
+	background-color: #AEEDB8 !important;
+	color: black
+}
+</style>
+
+		<h:form id="form">
+
+			<p:growl id="messages" showDetail="true" globalOnly="true" />
+			<p:remoteCommand name="onload" process="@this"
+				action="#{administrarSesionCliente.getNoRolAdmitido('DIAGNOSTICO')}"
+				autoRun="true" />
+			<f:metadata>
+				<f:viewParam id="c" name="c"
+					value="#{administrarEtapa.parametroCliente}" />
+
+				<f:viewParam id="p" name="p"
+					value="#{administrarEtapa.parametroProyecto}" />
+
+			</f:metadata>
+
+			<div class="row x_title">
+				<div class="col-md-6">
+
+					<h2 class="project-title">#{mensaje.moduloEtapas}: Diagnóstico</h2>
+
+
+				</div>
+			</div>
+			
+			<p:outputLabel value="#{administrarEtapa.asignarDiagnosticoAud('S')}"/>
+
+			<div align="center" class="titulo"></div>
+			<p:outputPanel id="pnlCasoUso">
+				<p:spacer height="10" />
+
+				<p:panel>
+					<p:outputPanel id="pnlCriteriosConsulta">
+						<div align="left">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid" cellpadding="0">
+								<p:outputLabel value="#{mensaje.labelCliente}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.labelCliente}" filter="true"
+									filterMatchMode="contains" style="width:100%; font-size:14px;"
+									id="lstCliente" value="#{administrarEtapa.cliente.id}">
+
+
+									<f:selectItems value="#{administrarEtapa.itemsClientes}" />
+
+									<p:ajax event="change" process="@this"
+										listener="#{administrarEtapa.setProyectoCliente(null)}"
+										update=":form:pnlCriteriosConsulta, :form:pnlEstructuraDiagnostico" />
+
+
+
+
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="#{mensaje.proyectoSimple}"
+									style="font-weight:bold; font-size:14px" />
+
+
+								<p:selectOneMenu label="#{mensaje.proyectoSimple}"
+									style="width:100%; font-size:14px;" id="lstProyecto"
+									value="#{administrarEtapa.proyectoCliente.id}">
+
+
+									<f:selectItems
+										value="#{administrarEtapa.itemsProyectosCliente}" />
+
+									<p:ajax event="change" process="@this"
+										update="pnlProyectoCliente1, pnlProyectoCliente2, pnlProyectoCliente3, pnlProyectoCliente4, :form:pnlEstructuraDiagnostico, :form:messages"
+										listener="#{administrarEtapa.consultarDatosCompletosConsultoria()}" />
+
+
+
+								</p:selectOneMenu>
+								<p:outputPanel id="pnlProyectoCliente1">
+									<p:outputLabel value="#{mensaje.consultor}"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente2">
+									<p:outputLabel
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										value="#{administrarEtapa.proyectoCliente.consultor.nombres} #{administrarEtapa.proyectoCliente.consultor.apellidos}"
+										style="font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente3">
+
+									<p:outputLabel value="Vigencia proyecto"
+										rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+										style="font-weight:bold; font-size:14px" />
+								</p:outputPanel>
+								<p:outputPanel id="pnlProyectoCliente4">
+
+									<p:panelGrid columns="2" style="width:100%;">
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_verde.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:commandButton
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and !hacerMantenimiento.isProyectoClienteVigente(administrarEtapa.proyectoCliente)}"
+											style="background-origin: content-box; background-image: url('../imagenes/pepa_roja.png'); background-size: cover; background-repeat:no-repeat; width:20px; height:20px; vertical-align:top; border:0; background-color:transparent"
+											value="" />
+										<p:outputLabel
+											value="#{hacerMantenimiento.getTextoVigenciaProyecto(administrarEtapa.proyectoCliente)}"
+											rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+											style="font-weight:normal; font-size:14px" />
+									</p:panelGrid>
+								</p:outputPanel>
+							</p:panelGrid>
+						</div>
+
+
+
+
+					</p:outputPanel>
+				</p:panel>
+				<p:outputPanel id="pnlEstructuraDiagnostico">
+
+					<p:outputLabel value="Convenciones:"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+						style="font-weight:bold; font-size:14px" />
+					<br />
+					<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+						style="width:100%" cellpadding="0">
+
+						<p:outputPanel id="pnlMetaConvencionDocumentacion">
+							<p:panel>
+
+								<f:facet name="header">
+									<p:outputLabel value="Documentación"
+										style="font-weight:normal; font-size:14px" />
+								</f:facet>
+
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="width:100%; text-align:center" cellpadding="0">
+
+
+									<p:outputLabel value="Elaborando"
+										style="font-weight:normal; font-size:14px; color:red" />
+
+
+									<p:outputPanel>
+										<p:outputLabel value="#{administrarEtapa.getMetaInferior()}%"
+											style="font-weight:bold; font-size:14px;color:red" />
+
+									</p:outputPanel>
+
+
+									<p:outputLabel value="En revisión"
+										style="font-weight:normal; font-size:14px; color:orange" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaInferior()+1}% a #{administrarEtapa.getMetaIntermedia()}%"
+											style="font-weight:bold; font-size:14px;color:orange" />
+
+									</p:outputPanel>
+
+									<p:outputLabel value="Aprobado"
+										style="font-weight:normal; font-size:14px; color:green" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaIntermedia()+1}% a #{administrarEtapa.getMetaSuperior()}% "
+											style="font-weight:bold; font-size:14px;color:green" />
+
+									</p:outputPanel>
+
+
+								</p:panelGrid>
+
+
+							</p:panel>
+
+						</p:outputPanel>
+
+
+
+						<p:outputPanel id="pnlMetaConvencionSocializacion">
+							<p:panel>
+
+								<f:facet name="header">
+									<p:outputLabel value="Socialización"
+										style="font-weight:normal; font-size:14px" />
+								</f:facet>
+
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="width:100%; text-align:center" cellpadding="0">
+
+
+									<p:outputLabel value="Sin programar"
+										style="font-weight:normal; font-size:14px; color:red" />
+
+
+									<p:outputPanel>
+										<p:outputLabel value="#{administrarEtapa.getMetaInferior()}%"
+											style="font-weight:bold; font-size:14px;color:red" />
+
+									</p:outputPanel>
+
+
+									<p:outputLabel value="Programado"
+										style="font-weight:normal; font-size:14px; color:orange" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaInferior()+1}% a #{administrarEtapa.getMetaIntermedia()}%"
+											style="font-weight:bold; font-size:14px;color:orange" />
+
+									</p:outputPanel>
+
+									<p:outputLabel value="Socializado"
+										style="font-weight:normal; font-size:14px; color:green" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaIntermedia()+1}% a #{administrarEtapa.getMetaSuperior()}% "
+											style="font-weight:bold; font-size:14px;color:green" />
+
+									</p:outputPanel>
+
+								</p:panelGrid>
+
+
+							</p:panel>
+
+						</p:outputPanel>
+
+
+
+
+						<p:outputPanel id="pnlMetaConvencionImplementacion">
+							<p:panel>
+
+								<f:facet name="header">
+									<p:outputLabel value="Implementación"
+										style="font-weight:normal; font-size:14px" />
+								</f:facet>
+
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="width:100%; text-align:center" cellpadding="0">
+
+
+									<p:outputLabel value="Sin implementar"
+										style="font-weight:normal; font-size:14px; color:red" />
+
+
+									<p:outputPanel>
+										<p:outputLabel value="#{administrarEtapa.getMetaInferior()}%"
+											style="font-weight:bold; font-size:14px;color:red" />
+
+									</p:outputPanel>
+
+
+									<p:outputLabel value="En implementación"
+										style="font-weight:normal; font-size:14px; color:orange" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaInferior()+1}% a #{administrarEtapa.getMetaIntermedia()}%"
+											style="font-weight:bold; font-size:14px;color:orange" />
+
+									</p:outputPanel>
+
+									<p:outputLabel value="Implementado"
+										style="font-weight:normal; font-size:14px; color:green" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaIntermedia()+1}% a #{administrarEtapa.getMetaSuperior()}% "
+											style="font-weight:bold; font-size:14px;color:green" />
+
+									</p:outputPanel>
+
+
+								</p:panelGrid>
+
+
+							</p:panel>
+
+						</p:outputPanel>
+
+
+
+						<p:outputPanel id="pnlMetaConvencionAuditoria">
+							<p:panel>
+
+								<f:facet name="header">
+									<p:outputLabel value="Auditoría"
+										style="font-weight:normal; font-size:14px" />
+								</f:facet>
+
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="width:100%; text-align:center" cellpadding="0">
+
+
+									<p:outputLabel value="Sin auditar"
+										style="font-weight:normal; font-size:14px; color:red" />
+
+
+									<p:outputPanel>
+										<p:outputLabel value="#{administrarEtapa.getMetaInferior()}%"
+											style="font-weight:bold; font-size:14px;color:red" />
+
+									</p:outputPanel>
+
+
+									<p:outputLabel value="Auditado"
+										style="font-weight:normal; font-size:14px; color:orange" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaInferior()+1}% a #{administrarEtapa.getMetaIntermedia()}%"
+											style="font-weight:bold; font-size:14px;color:orange" />
+
+									</p:outputPanel>
+
+									<p:outputLabel value="Validado con informe"
+										style="font-weight:normal; font-size:14px; color:green" />
+
+
+									<p:outputPanel>
+										<p:outputLabel
+											value="#{administrarEtapa.getMetaIntermedia()+1}% a #{administrarEtapa.getMetaSuperior()}% "
+											style="font-weight:bold; font-size:14px;color:green" />
+
+									</p:outputPanel>
+
+
+								</p:panelGrid>
+
+
+							</p:panel>
+
+						</p:outputPanel>
+
+
+
+					</p:panelGrid>
+
+					<br />
+					<p:outputLabel style="font-size:10px"
+						value="NA = NO APLICA; NC = NO CUMPLE; CP = CUMPLE PARCIALMENTE; CS = CUMPLE SATISFACTORIAMENTE"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}" />
+
+
+
+					<p:dataTable var="loc" id="dtlRegistros" widgetVar="dtlRegistros"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+						value="#{administrarEtapa.diagnostico}" reflow="true" rows="5"
+						paginator="true" paginatorPosition="bottom"
+						draggableColumns="true" rowIndexVar="indice"
+						emptyMessage="#{mensaje.noExistenciaRegistros}">
+
+
+						<p:column headerText="#" style="font-size:14px; width:50px">
+							<p:outputLabel value="#{(indice+1)}"
+								style="font-size:14px; vertical-align:middle" />
+						</p:column>
+
+						<p:column headerText="Numeral"
+							style="vertical-align: top; width:100px">
+
+
+							<p:inputText value="#{loc.preguntaProyecto.numeral}"
+								label="Numeral"
+								style="font-size:14px; width:100%; background-color:#D3D3D3" />
+						</p:column>
+
+						<p:column headerText="Pregunta"
+							style="font-size:14px; width:200px">
+							<p:inputTextarea value="#{loc.preguntaProyecto.pregunta}"
+								rows="3" readonly="true" autoResize="false"
+								style="font-size:14px; width:100%; background-color:#D3D3D3" />
+						</p:column>
+
+
+						<p:column headerText="Posible evidencia"
+							style="font-size:14px; width:200px">
+							<p:inputTextarea value="#{loc.preguntaProyecto.posibleEvidencia}"
+								rows="3" readonly="true" autoResize="false"
+								style="font-size:14px; width:100%; background-color:#D3D3D3" />
+						</p:column>
+
+
+
+
+						<p:column headerText="Estados"
+							style="font-size:14px; vertical-align:top !important">
+							<p:panelGrid
+								style="vertical-align: top !important; padding-top:0 !important">
+								<f:facet name="header">
+
+									<p:row rendered="#{administrarEtapa.isMultiplo5(indice)}">
+										<p:column>Hallazgo</p:column>
+										<p:column>Documentación</p:column>
+										<p:column>Socialización</p:column>
+										<p:column>Implementación</p:column>
+										<p:column>Auditoría</p:column>
+										<p:column>Observación</p:column>
+									</p:row>
+
+								</f:facet>
+
+								<p:row>
+									<p:column style="font-weight: bold;">NA</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaDocumentacion1"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'DOCUMENTACION',1)}">
+											<p:outputLabel id="outputDocumentacion1"
+												value="#{loc.metaDocumentacion1} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaDocumentacion1"
+												display="outputDocumentacion1" id="txtMetaDocumentacion1S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaDocumentacion1"
+													update="pnlMetaDocumentacion1" />
+											</p:slider>
+											<h:inputHidden id="txtMetaDocumentacion1"
+												value="#{loc.metaDocumentacion1}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaSocializacion1"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Socializacion',1)}">
+											<p:outputLabel id="outputSocializacion1"
+												value="#{loc.metaSocializacion1} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaSocializacion1"
+												display="outputSocializacion1" id="txtMetaSocializacion1S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaSocializacion1"
+													update="pnlMetaSocializacion1" />
+											</p:slider>
+											<h:inputHidden id="txtMetaSocializacion1"
+												value="#{loc.metaSocializacion1}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaImplementacion1"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Implementacion',1)}">
+											<p:outputLabel id="outputImplementacion1"
+												value="#{loc.metaImplementacion1} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaImplementacion1"
+												display="outputImplementacion1" id="txtMetaImplementacion1S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaImplementacion1"
+													update="pnlMetaImplementacion1" />
+											</p:slider>
+											<h:inputHidden id="txtMetaImplementacion1"
+												value="#{loc.metaImplementacion1}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaAuditoria1"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Auditoria',1)}">
+											<p:outputLabel id="outputAuditoria1"
+												value="#{loc.metaAuditoria1} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaAuditoria1" display="outputAuditoria1"
+												id="txtMetaAuditoria1S" minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd" process="@this, pnlMetaAuditoria1"
+													update="pnlMetaAuditoria1" />
+											</p:slider>
+											<h:inputHidden id="txtMetaAuditoria1"
+												value="#{loc.metaAuditoria1}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="vertical-align:top;">
+										<p:inputTextarea rows="2" id="txtObservacion1"
+											value="#{loc.observacion1}" autoResize="false"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this" />
+										</p:inputTextarea>
+										<p:message for="txtObservacion1" />
+									</p:column>
+
+								</p:row>
+								<p:row>
+									<p:column style="font-weight: bold;">NC</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaDocumentacion2"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'DOCUMENTACION',2)}">
+											<p:outputLabel id="outputDocumentacion2"
+												value="#{loc.metaDocumentacion2} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaDocumentacion2"
+												display="outputDocumentacion2" id="txtMetaDocumentacion2S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaDocumentacion2"
+													update="pnlMetaDocumentacion2" />
+											</p:slider>
+											<h:inputHidden id="txtMetaDocumentacion2"
+												value="#{loc.metaDocumentacion2}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaSocializacion2"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Socializacion',2)}">
+											<p:outputLabel id="outputSocializacion2"
+												value="#{loc.metaSocializacion2} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaSocializacion2"
+												display="outputSocializacion2" id="txtMetaSocializacion2S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaSocializacion2"
+													update="pnlMetaSocializacion2" />
+											</p:slider>
+											<h:inputHidden id="txtMetaSocializacion2"
+												value="#{loc.metaSocializacion2}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaImplementacion2"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Implementacion',2)}">
+											<p:outputLabel id="outputImplementacion2"
+												value="#{loc.metaImplementacion2} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaImplementacion2"
+												display="outputImplementacion2" id="txtMetaImplementacion2S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaImplementacion2"
+													update="pnlMetaImplementacion2" />
+											</p:slider>
+											<h:inputHidden id="txtMetaImplementacion2"
+												value="#{loc.metaImplementacion2}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaAuditoria2"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Auditoria',2)}">
+											<p:outputLabel id="outputAuditoria2"
+												value="#{loc.metaAuditoria2} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaAuditoria2" display="outputAuditoria2"
+												id="txtMetaAuditoria2S" minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd" process="@this, pnlMetaAuditoria2"
+													update="pnlMetaAuditoria2" />
+											</p:slider>
+											<h:inputHidden id="txtMetaAuditoria2"
+												value="#{loc.metaAuditoria2}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="vertical-align:top;">
+										<p:inputTextarea rows="2" id="txtObservacion2"
+											value="#{loc.observacion2}" autoResize="false"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this" />
+										</p:inputTextarea>
+										<p:message for="txtObservacion2" />
+
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column style="font-weight: bold;">CP</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaDocumentacion3"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'DOCUMENTACION',3)}">
+											<p:outputLabel id="outputDocumentacion3"
+												value="#{loc.metaDocumentacion3} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaDocumentacion3"
+												display="outputDocumentacion3" id="txtMetaDocumentacion3S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaDocumentacion3"
+													update="pnlMetaDocumentacion3" />
+											</p:slider>
+											<h:inputHidden id="txtMetaDocumentacion3"
+												value="#{loc.metaDocumentacion3}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaSocializacion3"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Socializacion',3)}">
+											<p:outputLabel id="outputSocializacion3"
+												value="#{loc.metaSocializacion3} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaSocializacion3"
+												display="outputSocializacion3" id="txtMetaSocializacion3S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaSocializacion3"
+													update="pnlMetaSocializacion3" />
+											</p:slider>
+											<h:inputHidden id="txtMetaSocializacion3"
+												value="#{loc.metaSocializacion3}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaImplementacion3"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Implementacion',3)}">
+											<p:outputLabel id="outputImplementacion3"
+												value="#{loc.metaImplementacion3} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaImplementacion3"
+												display="outputImplementacion3" id="txtMetaImplementacion3S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaImplementacion3"
+													update="pnlMetaImplementacion3" />
+											</p:slider>
+											<h:inputHidden id="txtMetaImplementacion3"
+												value="#{loc.metaImplementacion3}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaAuditoria3"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Auditoria',3)}">
+											<p:outputLabel id="outputAuditoria3"
+												value="#{loc.metaAuditoria3} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaAuditoria3" display="outputAuditoria3"
+												id="txtMetaAuditoria3S" minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd" process="@this, pnlMetaAuditoria3"
+													update="pnlMetaAuditoria3" />
+											</p:slider>
+											<h:inputHidden id="txtMetaAuditoria3"
+												value="#{loc.metaAuditoria3}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="vertical-align:top;">
+										<p:inputTextarea rows="2" id="txtObservacion3"
+											value="#{loc.observacion3}" autoResize="false"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this" />
+										</p:inputTextarea>
+										<p:message for="txtObservacion3" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column style="font-weight: bold;">CS</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaDocumentacion4"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'DOCUMENTACION',4)}">
+											<p:outputLabel id="outputDocumentacion4"
+												value="#{loc.metaDocumentacion4} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaDocumentacion4"
+												display="outputDocumentacion4" id="txtMetaDocumentacion4S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaDocumentacion4"
+													update="pnlMetaDocumentacion4" />
+											</p:slider>
+											<h:inputHidden id="txtMetaDocumentacion4"
+												value="#{loc.metaDocumentacion4}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaSocializacion4"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Socializacion',4)}">
+											<p:outputLabel id="outputSocializacion4"
+												value="#{loc.metaSocializacion4} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaSocializacion4"
+												display="outputSocializacion4" id="txtMetaSocializacion4S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaSocializacion4"
+													update="pnlMetaSocializacion4" />
+											</p:slider>
+											<h:inputHidden id="txtMetaSocializacion4"
+												value="#{loc.metaSocializacion4}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaImplementacion4"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Implementacion',4)}">
+											<p:outputLabel id="outputImplementacion4"
+												value="#{loc.metaImplementacion4} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaImplementacion4"
+												display="outputImplementacion4" id="txtMetaImplementacion4S"
+												minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd"
+													process="@this, pnlMetaImplementacion4"
+													update="pnlMetaImplementacion4" />
+											</p:slider>
+											<h:inputHidden id="txtMetaImplementacion4"
+												value="#{loc.metaImplementacion4}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="text-align:center">
+										<p:outputPanel id="pnlMetaAuditoria4"
+											style="vertical-align:top !important; height:100%; width:100%;"
+											styleClass="#{administrarEtapa.getColorCeldaDiagnostico(loc,'Auditoria',4)}">
+											<p:outputLabel id="outputAuditoria4"
+												value="#{loc.metaAuditoria4} %"
+												style="font-weight:bold; font-size:14px" />
+											<p:slider for="txtMetaAuditoria4" display="outputAuditoria4"
+												id="txtMetaAuditoria4S" minValue="0" maxValue="100"
+												style="width: 100%; background-color:green"
+												displayTemplate="({value}%)">
+
+												<p:ajax event="slideEnd" process="@this, pnlMetaAuditoria4"
+													update="pnlMetaAuditoria4" />
+											</p:slider>
+											<h:inputHidden id="txtMetaAuditoria4"
+												value="#{loc.metaAuditoria4}" />
+										</p:outputPanel>
+									</p:column>
+									<p:column style="vertical-align:top;">
+										<p:inputTextarea rows="2" id="txtObservacion4"
+											value="#{loc.observacion4}" autoResize="false"
+											style="font-size:14px; width:100%; min-height:50px">
+											<p:ajax event="change" process="@this" />
+										</p:inputTextarea>
+										<p:message for="txtObservacion4" />
+									</p:column>
+								</p:row>
+
+
+
+
+
+							</p:panelGrid>
+						</p:column>
+
+						<p:column headerText="Archivos soporte"
+							style="font-size:13px; vertical-align:middle !important"
+							width="150px;">
+
+							<div align="center">
+								<p:outputPanel>
+									<p:commandButton title="VER/AGREGAR ARCHIVOS SOPORTE"
+										style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:18px; height:18px; vertical-align:bottom; border:0; background-color:transparent"
+										action="#{administrarEtapa.asignarDocumentoDiagnostico(loc)}"
+										value="" process="@this"
+										update=":formDocumento, :form:messages" />
+								</p:outputPanel>
+
+								<p:outputLabel value="Sin archivos"
+									rendered="#{!(loc.tDocumentos!=null and loc.tDocumentos.size()>0)}"
+									style="font-weight:bold; font-size:14px; color:red" />
+
+								<p:outputLabel
+									value="#{loc.tDocumentos.size()} archivo(s) agregado(s)"
+									rendered="#{loc.tDocumentos!=null and loc.tDocumentos.size()>0}"
+									style="font-weight:bold; font-size:14px; color:green" />
+							</div>
+
+
+						</p:column>
+
+
+
+
+					</p:dataTable>
+					<br />
+					<div align="center">
+						<p:panelGrid columns="3" style="width:60%; vertical-align:top;"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							rendered="#{1==2 and administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}">
+
+							<p:outputLabel value="Persona entrevistada:" for="txtPersona"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:outputLabel value="Cargo persona entevistada:" for="txtCargo"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:outputLabel value="Firma entrevistado:" for="sigFirma"
+								style="font-weight:bold; font-size:14px" />
+
+
+
+							<p:inputText label="Persona entrevistada " id="txtPersona"
+								style="width:100%; font-size:14px;" required="true"
+								value="#{administrarEtapa.personaDiagnostico.personaEntrevistada}">
+
+								<p:ajax event="change" process="@this" />
+
+							</p:inputText>
+
+							<p:inputText label="Cargo persona entrevistada" id="txtCargo"
+								style="width:100%; font-size:14px;" required="true"
+								value="#{administrarEtapa.personaDiagnostico.cargoEntrevistado}">
+
+								<p:ajax event="change" process="@this" />
+							</p:inputText>
+
+							<p:message for="txtPersona" />
+							<p:message for="txtCargo" />
+
+
+
+						</p:panelGrid>
+					</div>
+
+					<p:outputLabel value="#{mensaje.informacionRequerida}"
+						rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+						style="font-size:10px" />
+
+
+					<p:spacer height="10" />
+					<div align="center">
+
+
+						<p:commandButton id="btnCrear" style="font-size:14px;"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							process=":form"
+							action="#{administrarEtapa.actualizarValidarDiagnostico()}"
+							value="Guardar e imprimir"
+							update=":form, :formDiagnosticoCompleto, :formDiagnosticoIncompleto" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnBorrar"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.diagnosticoExistente}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelEliminar')}"
+							process="@this"
+							value="Eliminar auditoría proyecto/cliente guardada"
+							update=":form" />
+
+						<p:spacer width="10" />
+						<p:commandButton id="btnVerGraficoEstados" 
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							process="@this"
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and 1==2}"
+							action="#{consultarFuncionesAPI.abrirModal('panelGrafico')}"
+							value="Ver gráfico hallazgos" update=":formGraficoDiagnostico" />
+
+						<p:spacer width="10" rendered="1==2" />
+						<p:commandButton id="btnImprimir"
+							rendered="#{1==2 and administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.isDiagnosticoCompleto()}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{consultarFuncionesAPI.abrirModal('panelImprimir')}"
+							value="Imprimir Diagnóstico" update=":form" />
+						<p:spacer width="10" rendered="1==2" />
+						<p:commandButton id="btnCorreo"
+							rendered="#{1==2 and administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null and administrarEtapa.diagnosticoExistente}"
+							style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+							action="#{administrarEtapa.enviarCorreoDiagnostico()}"
+							process="@this"
+							value="Enviar correo informativo sobre diagnóstico"
+							update=":form" />
+
+						<p:spacer width="10" rendered="1==2" />
+
+
+						<p:blockUI
+							rendered="#{administrarEtapa.proyectoCliente!=null and administrarEtapa.proyectoCliente.id!=null}"
+							block=":form"
+							trigger="btnCrear, btnBorrar, btnCorreo, lstProyecto">
+							<p:graphicImage value="../imagenes/cargando.gif" />
+						</p:blockUI>
+					</div>
+
+
+				</p:outputPanel>
+			</p:outputPanel>
+		</h:form>
+		<ui:include src="/etapas/verGraficoDiagnostico.xhtml" />
+		<ui:include src="/etapas/guardarDianosticoIncompleto.xhtml" />
+		<ui:include src="/etapas/guardarDianosticoCompleto.xhtml" />
+		<ui:include src="/etapas/eliminarDiagnostico.xhtml" />
+		<ui:include src="/etapas/mostrarResumenGuardadoDiagnostico.xhtml" />
+
+
+		<ui:include src="/etapas/crearDocumento.xhtml" />
+		<ui:include src="/etapas/eliminarDocumentoDiagnostico.xhtml" />
+
+
+	</ui:define>
+</ui:composition>

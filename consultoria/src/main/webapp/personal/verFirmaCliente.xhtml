@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="formVer">
+		<p:dialog header="Ver firma cliente" closable="false" height="400"
+			width="500" widgetVar="panelVerCliente" resizable="true"
+			responsive="true">
+			<p:outputPanel id="outputpanelEliminacion">
+
+
+				<p:panelGrid columns="2" cellpadding="0" cellspacing="0"
+					styleClass="ui-panelgrid-blank" layout="grid">
+
+
+					<p:outputLabel value="Foto"
+						rendered="#{administrarPersonal.clienteTransaccion.archivo!=null}"
+						style="font-weight:bold; font-size:14px" />
+					<p:outputPanel
+						rendered="#{administrarPersonal.clienteTransaccion.archivo!=null}">
+						<img
+							src="../imagenes/fotosClientes/#{administrarPersonal.clienteTransaccion.tFotoDecodificada}"
+							style="height: auto; width: 200px" />
+
+					</p:outputPanel>
+
+				</p:panelGrid>
+
+				<p:spacer height="5" />
+				<div align="center">
+
+
+
+					<p:commandButton id="btnCancelarEliminarConsultor"
+						style="font-size:14px; font-weight: normal !important;"
+						action="#{administrarPersonal.cancelarClienteTransaccion('MODAL_VER_CLIENTE')}"
+						process="@this" value="#{mensaje.cancelar}" update=":form">
+
+					</p:commandButton>
+
+				</div>
+			</p:outputPanel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

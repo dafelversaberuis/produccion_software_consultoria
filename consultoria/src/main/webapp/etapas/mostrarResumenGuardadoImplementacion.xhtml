@@ -17,10 +17,17 @@
 
 
 
-					<p:commandButton id="btnResumen1" ajax="false" immediate="true" disabled="true"
-						style="font-size:16px; font-weight: normal !important; width:100%"
-						action="#{administrarEtapa.imprimirCronograma()}"
-						value="IMPRIMIR INFORME DE IMPLEMENTACION" />
+						
+							<p:commandButton id="btnResumen1" ajax="false" immediate="true"
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						action="#{administrarEtapa.imprimirImplementacion()}"
+						value="IMPRIMIR TODO EL INFORME DE IMPLEMENTACION (IMPRIME LOS SI)" />
+						
+					<p:commandButton id="btnResumen4" 
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						action="#{administrarEtapa.abrirFiltros()}" update=":formResumenFiltros" process="@this"
+						value="IMPRIMIR CON FILTROS (IMPRIME LOS SI)" />	
+						
 
 
 

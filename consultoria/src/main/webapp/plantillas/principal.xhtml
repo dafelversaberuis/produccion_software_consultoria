@@ -66,12 +66,25 @@
 
 				<li class=""><a href="#" class="">#{mensaje.etapas}</a>
 					<ul class="">
+					
+					<h:panelGroup
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+
+
+							<li><p:commandLink value="Diagnóstico" title="Diagnóstico"
+									action="/etapas/realizarDiagnosticoReal.xhtml?faces-redirect=true"
+									ajax="false" /></li>
+
+
+						</h:panelGroup>
+						
+						
 
 						<h:panelGroup
 							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
-							<li><p:commandLink value="Auditoría / Diagnóstico / Evaluación" title="Auditoría/Diagnóstico/Evaluación"
+							<li><p:commandLink value="Auditoría" title="Auditoría"
 									action="/etapas/realizarDiagnosticoInicial.xhtml?faces-redirect=true"
 									ajax="false" /></li>
 

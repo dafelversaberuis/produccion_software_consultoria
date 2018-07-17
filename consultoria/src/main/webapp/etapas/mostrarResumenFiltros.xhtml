@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formResumenFiltros">
+
+		<p:dialog
+			header="ESCOJA LOS FILTROS QUE DESEA APLICAR EN LA IMPRESION"
+			height="400" widgetVar="panelResumenFiltros" resizable="true"
+			closable="false" responsive="true">
+			<p:panel id="pnlResumenFiltros">
+
+				<p:panelGrid styleClass="ui-panelgrid-blank" layout="grid"
+					style="width:100%" cellpadding="0" columns="1">
+
+
+
+
+					<p:outputLabel value="Filtro de etapa:"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:selectOneMenu style="width:100%; font-size:14px; height:20px"
+						value="#{administrarEtapa.atapaEscojida}">
+
+
+						<f:selectItem itemValue="" itemLabel="SIN FILTRO..." />
+						<f:selectItems value="#{administrarEtapa.filtrosEtapas}" />
+
+						<p:ajax process="@this" update="@this" />
+
+
+
+					</p:selectOneMenu>
+
+
+					<p:outputLabel value="Filtro responsable documentación:"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:selectOneMenu style="width:100%; font-size:14px; height:20px"
+						value="#{administrarEtapa.responsableDocu}">
+
+
+						<f:selectItem itemValue="" itemLabel="SIN FILTRO..." />
+						<f:selectItems
+							value="#{administrarEtapa.filtrosResponsableDocumentacion}" />
+
+						<p:ajax process="@this" update="@this" />
+
+
+
+					</p:selectOneMenu>
+
+
+					<p:outputLabel value="Filtro responsable socialización"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:selectOneMenu style="width:100%; font-size:14px; height:20px"
+						value="#{administrarEtapa.responsableSocia}">
+
+
+						<f:selectItem itemValue="" itemLabel="SIN FILTRO..." />
+						<f:selectItems
+							value="#{administrarEtapa.filtrosResponsableSocializacion}" />
+
+						<p:ajax process="@this" update="@this" />
+
+
+
+					</p:selectOneMenu>
+
+
+					<p:outputLabel value="Filtro responsable implementación"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:selectOneMenu style="width:100%; font-size:14px; height:20px"
+						value="#{administrarEtapa.responsableImp}">
+
+
+						<f:selectItem itemValue="" itemLabel="SIN FILTRO..." />
+						<f:selectItems
+							value="#{administrarEtapa.filtrosResponsableImplementacion}" />
+
+						<p:ajax process="@this" update="@this" />
+
+
+
+					</p:selectOneMenu>
+
+
+					<p:outputLabel value="Filtro responsable auditoría"
+						style="font-weight:bold; font-size:14px" />
+
+
+					<p:selectOneMenu style="width:100%; font-size:14px; height:20px"
+						value="#{administrarEtapa.responsableAud}">
+
+
+						<f:selectItem itemValue="" itemLabel="SIN FILTRO..." />
+						<f:selectItems
+							value="#{administrarEtapa.filtrosResponsableAuditoria}" />
+
+						<p:ajax process="@this" update="@this" />
+
+
+
+					</p:selectOneMenu>
+
+					<p:panelGrid styleClass="ui-panelgrid-blank" layout="grid"
+						style="width:100%" cellpadding="0" columns="2">
+
+						<p:outputLabel value="Fecha desde realización/sgmto(revisa toda fase):"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:calendar id="calFechaDesdeSeguimiento"
+							label="Fecha desde realización/sgmto"
+							value="#{administrarEtapa.fechaDesdeFiltro}" pattern="dd/MM/yyyy"
+							mask="true" style="font-size:14px;  height:10px">
+							<p:ajax event="dateSelect" process="@this" />
+							<p:ajax event="change" process="@this" />
+
+						</p:calendar>
+						<p:spacer width="1" />
+						<p:message for="calFechaDesdeSeguimiento" />
+
+
+						<p:outputLabel value="Fecha desde realización/sgmto(revisa toda fase):"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:calendar id="calFechaHastaSeguimiento"
+							label="Fecha hasta realización/sgmto"
+							value="#{administrarEtapa.fechaHastaFiltro}" pattern="dd/MM/yyyy"
+							mask="true" style="font-size:14px;  height:10px">
+							<p:ajax event="dateSelect" process="@this" />
+							<p:ajax event="change" process="@this" />
+
+						</p:calendar>
+						<p:spacer width="1" />
+						<p:message for="calFechaHastaSeguimiento" />
+
+					</p:panelGrid>
+
+
+				</p:panelGrid>
+
+				<p:panelGrid styleClass="ui-panelgrid-blank" layout="grid"
+					style="width:100%" cellpadding="0" columns="2">
+
+
+
+					<p:commandButton id="btnResumenFiltros" ajax="false"
+						immediate="true"
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						update=":form:messages"
+						action="#{administrarEtapa.imprimirCronogramaFiltros()}"
+						value="IMPRIMIR (IMPRIME LOS SI)" />
+
+
+					<p:commandButton process="@this"
+						update=":form, :formResumenFiltros:pnlResumenFiltros"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{consultarFuncionesAPI.cerrarModal('panelResumenFiltros')}"
+						value="Cerrar ventana y continuar trabajando en este informe" />
+
+
+				</p:panelGrid>
+
+				<p:blockUI block=":formResumenFiltros:pnlResumenFiltros"
+					trigger="btnResumenFiltros">
+					<p:graphicImage value="../imagenes/cargando.gif" />
+				</p:blockUI>
+
+
+			</p:panel>
+		</p:dialog>
+
+
+	</h:form>
+</ui:composition>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirInformeDiagnosticoV1G" language="groovy" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="bcb2e825-cef4-45b6-8931-7c5f78f9611f">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -39,7 +39,7 @@
 					<textElement>
 						<font size="9" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("1") ? "FORTALEZAS" : ( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("2") ? "RECOMENDACIONES" : "NO CONFORMIDADES" ) )]]></textFieldExpression>
+					<textFieldExpression><![CDATA[( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("1") ? "FORTALEZAS" : ( $F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("2") ? "RECOMENDACIONES" :  ($F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("3") ? "NO CONFORMIDADES" :   ($F{tHallazgoSeleccionado}!=null && $F{tHallazgoSeleccionado}.equals("4") ? "NO APLICA":"CUMPLE"))))]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement uuid="1c4ad0fa-6d88-4ae5-b3d5-2611de48924f" x="4" y="14" width="54" height="20"/>
@@ -151,7 +151,7 @@
 				<textElement textAlignment="Justified">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{porHallazgo_COUNT}+" - "+$F{evidenciaEncontrada}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{evidenciaEncontrada}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" x="4" y="3" width="54" height="17"/>
@@ -357,12 +357,12 @@
 			</image>
 			<staticText>
 				<reportElement uuid="6bb61dfa-0df3-4309-94df-b565f4d5cf42" positionType="Float" x="210" y="166" width="181" height="32">
-					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("D"))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("D") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("Z"))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[FIRMA CONSULTOR/REPRESENTANTE ISOLUCIONES.]]></text>
+				<text><![CDATA[FIRMA]]></text>
 			</staticText>
 			<image scaleImage="RealSize" hAlign="Center" vAlign="Bottom" onErrorType="Blank">
 				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="218" y="107" width="161" height="55">
@@ -372,7 +372,7 @@
 			</image>
 			<line>
 				<reportElement uuid="cabc1a06-4f3e-449b-a8c4-b6018d22f982" positionType="Float" x="210" y="162" width="171" height="1">
-					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("D"))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("S") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("D") || $P{pPersonaDiagnostico}.requiereFirma.trim().equals("Z"))]]></printWhenExpression>
 				</reportElement>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -392,6 +392,12 @@
 			<line>
 				<reportElement uuid="0bd2a2b0-d2a2-46c1-9826-473e32c9c6b3" positionType="Float" x="0" y="70" width="190" height="1"/>
 			</line>
+			<image scaleImage="RealSize" hAlign="Center" vAlign="Bottom" onErrorType="Blank">
+				<reportElement uuid="7800c6d7-d0c4-43bc-8aeb-e55cde8afc4f" positionType="Float" x="219" y="106" width="159" height="55">
+					<printWhenExpression><![CDATA[$P{pPersonaDiagnostico}!=null && $P{pPersonaDiagnostico}.requiereFirma!=null && ($P{pPersonaDiagnostico}.requiereFirma.trim().equals("Z"))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(javax.xml.bind.DatatypeConverter.parseBase64Binary($P{pProyectoCliente}.cliente.tFotoDecodificada))]]></imageExpression>
+			</image>
 		</band>
 	</summary>
 	<noData>

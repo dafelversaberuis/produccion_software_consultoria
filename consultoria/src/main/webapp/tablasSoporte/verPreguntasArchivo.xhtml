@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="formArchivo2">
+
+		<p:dialog header="PREGUNTAS DEL ARCHIVO" width="1024" height="500"
+			widgetVar="panelVerArchivo2" resizable="true" closable="false"
+			responsive="true">
+			<p:outputPanel id="pnlArchivo">
+
+				<p:accordionPanel id="pnlDtlPersonas">
+					<p:tab title="PREGUNTAS DEL ARCHIVO"
+						titleStyle="font-size:16px; text-align:center" closable="true">
+
+						<p:dataTable var="loc" id="dtlPersonas"
+							rowStyleClass="#{loc.tConcepto!='OK' ? 'amarillo':null}"
+							value="#{hacerMantenimiento.preguntasArchivo}" reflow="true"
+							rows="10" paginator="true" paginatorPosition="bottom"
+							draggableColumns="true" style="width:95%"
+							emptyMessage="NO EXISTEN PREGUNTAS">
+
+							<p:column headerText=""
+								style="font-size:12px; text-align:center; width:50px">
+
+								<p:selectBooleanCheckbox value="#{loc.tApto}"
+									disabled="#{loc.tConcepto!='OK'}">
+
+									<p:ajax process="@this" />
+								</p:selectBooleanCheckbox>
+
+
+							</p:column>
+
+
+							<p:column headerText="*Pregunta" sortBy="#{loc.pregunta}"
+								style="font-size:14px">
+
+
+
+								<p:inputTextarea value="#{loc.pregunta}" rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+							</p:column>
+
+
+							<p:column headerText="Posible evidencia" style="font-size:14px">
+
+
+
+
+								<p:inputTextarea value="#{loc.posibleEvidencia}" rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+							</p:column>
+
+
+
+
+
+							<p:column headerText="Numeral" style="font-size:14px; "
+								sortBy="#{loc.numeral}">
+
+
+
+								<p:inputTextarea value="#{loc.numeral}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+
+
+							<p:column headerText="Predet hallazgo fortaleza"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.hallazgoPredeterminadoFortaleza}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet hallazgo recomendación"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.hallazgoPredeterminadoRecomendacion}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							<p:column headerText="Predet hallazgo NC"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.hallazgoPredeterminadoNoConformidad}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet hallazgo Cumple"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.hallazgoPredeterminadoCumple}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet hallazgo NA"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.hallazgoPredeterminadoNoAplica}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet acciones realizar recomendación"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.accionRealizarPredeterminadoRecomendacion}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet acciones realizar NC"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.accionRealizarPredeterminadoNoConformidad}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet responsable recomendación"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.responsablePredeterminadoRecomendacion}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet responsable NC"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.responsablePredeterminadoNoConformidad}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet análisis causas NC"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.analisisCausaPredeterminadoNoConformidad}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+							
+							<p:column headerText="Predet evidencia no encontrada NC"
+								style="font-size:14px; ">
+								<p:inputTextarea value="#{loc.evidenciaNoEncontradaPredeterminadoNoConformidad}" rows="2" readonly="true"
+									autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+							</p:column>
+
+
+
+							<p:column headerText="Observaciones" filterMatchMode="contains"
+								filterStyle="display:none" sortBy="#{loc.tConcepto}"
+								filterBy="#{loc.tConcepto}" style="font-size:14px">
+
+
+								<p:outputLabel value="#{loc.tConcepto}"
+									style="font-weight:normal; font-size:12px" />
+
+							</p:column>
+
+
+
+
+						</p:dataTable>
+
+						<p:spacer height="10" />
+						<div align="center">
+
+							<p:commandButton id="btnCrearA" style="font-size:14px;"
+								action="#{hacerMantenimiento.crearPreguntaProyecto2()}"
+								value="#{mensaje.guardar}"
+								update=":formAsignarPregunta:pnlPreguntas, :form:messages, :formArchivo2:pnlArchivo" />
+
+							<p:spacer width="10" />
+
+							<p:commandButton id="btnBorrarA"
+								style="font-size:14px; font-weight: normal; text-decoration: none !important;"
+								action="#{consultarFuncionesAPI.cerrarModal('panelVerArchivo2')}"
+								process="@this" value="#{mensaje.regresar}" update="@this">
+
+							</p:commandButton>
+
+						</div>
+						<p:outputLabel value="#{mensaje.informacionRequerida}"
+							style="font-size:10px" />
+
+						<p:blockUI block=":formArchivo2:pnlArchivo"
+							trigger="btnCrearA, btnBorrarA">
+
+							<p:graphicImage value="../imagenes/cargando.gif" />
+
+
+						</p:blockUI>
+
+					</p:tab>
+				</p:accordionPanel>
+			</p:outputPanel>
+		</p:dialog>
+	</h:form>
+
+</ui:composition>

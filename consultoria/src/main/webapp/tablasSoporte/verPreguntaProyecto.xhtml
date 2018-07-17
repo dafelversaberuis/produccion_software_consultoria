@@ -7,9 +7,9 @@
 
 	<h:form id="formVerHijo">
 
-		<p:dialog header="#{mensaje.informacionCompleta}" height="400" width="600"
-			widgetVar="panelVerHijo" resizable="true" closable="false"
-			responsive="true">
+		<p:dialog header="#{mensaje.informacionCompleta}" height="400"
+			width="600" widgetVar="panelVerHijo" resizable="true"
+			closable="false" responsive="true">
 			<p:panel id="pnlVer">
 				<div align="center">
 
@@ -21,19 +21,19 @@
 							style="font-weight:bold; font-size:14px;" />
 						<p:inputText id="txtNombrePregunta" disabled="true"
 							value="#{hacerMantenimiento.preguntaProyectoTransaccion.pregunta}"
-							 label="#{mensaje.pregunta}"
-							style="font-size:14px; width:100%" />
-						
+							label="#{mensaje.pregunta}" style="font-size:14px; width:100%" />
+
 
 
 						<p:outputLabel for="txtPosibleEvidencia"
 							value="#{mensaje.posibleEvidencia}"
 							style="font-weight:bold; font-size:14px" />
-					
-							
-						<p:inputTextarea cols="3" style="font-size:14px; width:100%" id="txtPosibleEvidencia" disabled="true"
-								value="#{hacerMantenimiento.preguntaProyectoTransaccion.posibleEvidencia}" />	
-						
+
+
+						<p:inputTextarea cols="3" style="font-size:14px; width:100%"
+							id="txtPosibleEvidencia" disabled="true"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.posibleEvidencia}" />
+
 
 
 						<p:outputLabel for="lstEstado" value="#{mensaje.estado}"
@@ -44,8 +44,116 @@
 							label="#{mensaje.estado}">
 							<f:selectItems value="#{consultarFuncionesAPI.itemsEstados}" />
 						</p:selectOneMenu>
-						
 
+
+						<p:outputLabel for="txtHF" value="Predet. Hallazgo fortaleza"
+							style="font-weight:bold; font-size:14px" />
+
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtHF"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.hallazgoPredeterminadoFortaleza}" />
+
+
+
+
+
+
+
+
+						<p:outputLabel for="txtHR" value="Predet. Hallazgo recomendación"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtHR"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.hallazgoPredeterminadoRecomendacion}" />
+
+
+						<p:outputLabel for="txtHNC" value="Predet. Hallazgo NC"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtHNC"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.hallazgoPredeterminadoNoConformidad}" />
+
+
+
+
+
+						<p:outputLabel for="txtHC" value="Predet. Hallazgo cumple"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtHC"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.hallazgoPredeterminadoCumple}" />
+
+
+
+
+						<p:outputLabel for="txtHNA" value="Predet. Hallazgo No aplica"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtHNA"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.hallazgoPredeterminadoNoAplica}" />
+
+
+
+
+
+						<p:outputLabel for="txtARR"
+							value="Predet. Acciones realizar recomendación"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtARR"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.accionRealizarPredeterminadoRecomendacion}" />
+
+
+
+						<p:outputLabel for="txtARNC" value="Predet. Acciones realizar NC"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtARNC"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.accionRealizarPredeterminadoNoConformidad}" />
+
+
+
+
+
+
+
+
+						<p:outputLabel for="txtRR"
+							value="Predet. Responsable recomendación"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtRR"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.responsablePredeterminadoRecomendacion}" />
+
+
+
+
+						<p:outputLabel for="txtRNC" value="Predet. Responsable NC"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtRNC"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.responsablePredeterminadoNoConformidad}" />
+
+
+
+
+
+
+
+
+
+						<p:outputLabel for="txtACNC" value="Predet. Análisis causas NC"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtACNC"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.analisisCausaPredeterminadoNoConformidad}" />
+
+						<p:outputLabel for="txtENENC"
+							value="Predet. Evidencia no encontrada NC"
+							style="font-weight:bold; font-size:14px" />
+						<p:inputTextarea cols="3" disabled="true"
+							style="font-size:14px; width:100%; min-height:80px" id="txtENENC"
+							value="#{hacerMantenimiento.preguntaProyectoTransaccion.evidenciaNoEncontradaPredeterminadoNoConformidad}" />
 
 
 					</p:panelGrid>
@@ -71,9 +179,8 @@
 
 				</div>
 
-				
-				<p:blockUI block=":formVerHijo:pnlVer"
-					trigger="btnCancelarVer">
+
+				<p:blockUI block=":formVerHijo:pnlVer" trigger="btnCancelarVer">
 					<p:graphicImage value="../imagenes/cargando.gif" />
 				</p:blockUI>
 

@@ -38,7 +38,8 @@
 
 			<div align="center" class="titulo"></div>
 
-			<p:outputPanel id="pnlCliente" rendered="#{administrarPersonal.vistaActual==null or administrarPersonal.vistaActual == 'agrupadores'}">
+			<p:outputPanel id="pnlCliente"
+				rendered="#{administrarPersonal.vistaActual==null or administrarPersonal.vistaActual == 'agrupadores'}">
 
 				<p:spacer height="10" />
 
@@ -288,6 +289,17 @@
 
 								<p:tooltip for="btnIrEditar" value="#{mensaje.editar}"
 									trackMouse="true" />
+									
+									
+									<p:commandButton id="btnIrDeatalle"
+									style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
+									value=""
+									action="#{administrarPersonal.asignarCliente(loc,'MODAL_VER_CLIENTE')}"
+									process=":form:pnlDtlClientes" update=":formVer" />
+
+
+								<p:tooltip for="btnIrDeatalle"
+									value="Ver firma" trackMouse="true" />
 
 								<p:commandButton id="btnIrEliminar"
 									style="background-origin: content-box; background-image: url('../imagenes/borrar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
@@ -337,7 +349,7 @@
 		<ui:include src="/personal/crearPlanCliente.xhtml" />
 		<ui:include src="/personal/eliminarPlanCliente.xhtml" />
 
-
+		<ui:include src="/personal/verFirmaCliente.xhtml" />
 
 		<p:spacer height="800" />
 

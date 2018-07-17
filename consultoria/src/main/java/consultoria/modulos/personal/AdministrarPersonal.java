@@ -593,6 +593,12 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 		this.consultorTransaccion.settFile(null);
 		this.consultorTransaccion.setArchivo(null);
 	}
+	
+	
+	public void limpiarFotoCargada2() {
+		this.clienteTransaccion.settFile(null);
+		this.clienteTransaccion.setArchivo(null);
+	}
 
 	/**
 	 * Recibir foto y asignara aobjeto
@@ -604,6 +610,20 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 		try {
 			this.consultorTransaccion.settFile(event.getFile());
 			this.consultorTransaccion.setArchivo(event.getFile().getContents());
+
+			this.mostrarMensajeGlobal("archivoRecibido", "advertencia");
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+
+	}
+	
+	
+	public void recibirFoto2(FileUploadEvent event) {
+
+		try {
+			this.clienteTransaccion.settFile(event.getFile());
+			this.clienteTransaccion.setArchivo(event.getFile().getContents());
 
 			this.mostrarMensajeGlobal("archivoRecibido", "advertencia");
 		} catch (Exception e) {
@@ -1371,6 +1391,9 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 			} else if (aVista != null && aVista.equals("MODAL_CLAVE_CLIENTE")) {
 				this.cerrarModal("panelClaveCliente");
 
+			}else if (aVista != null && aVista.equals("MODAL_VER_CLIENTE")) {
+				this.cerrarModal("panelVerCliente");
+
 			} else if (aVista != null && aVista.equals("MODAL_ELIMINAR_CLIENTE")) {
 				this.cerrarModal("panelEliminacionCliente");
 
@@ -1487,7 +1510,17 @@ public class AdministrarPersonal extends ConsultarFuncionesAPI implements Serial
 				}
 
 				this.abrirModal("panelEdicionCliente");
-			} else if (aVista != null && aVista.equals("MODAL_CLAVE_CLIENTE")) {
+			} else if (aVista != null && aVista.equals("MODAL_VER_CLIENTE")) {
+
+		
+
+				if (this.clienteTransaccion.getArchivo() != null) {
+					this.guardarImagenEnDisco(this.clienteTransaccion.getId(), this.clienteTransaccion.gettFotoDecodificada(), "fotosClientes");
+					this.clienteTransaccion.settFotoDecodificada("foto" + this.clienteTransaccion.getId() + ".png");
+				}
+				this.abrirModal("panelVerCliente");
+
+			}else if (aVista != null && aVista.equals("MODAL_CLAVE_CLIENTE")) {
 				this.abrirModal("panelClaveCliente");
 			} else {
 				this.abrirModal("panelEliminacionCliente");

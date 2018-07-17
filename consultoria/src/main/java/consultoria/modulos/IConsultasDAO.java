@@ -499,8 +499,6 @@ public interface IConsultasDAO {
 			sql.append("  WHERE d.id_objetivo = o.id");
 			sql.append("  AND o.id_informacion_etapa = ii.id");
 
-
-
 			sql.append("  AND d.nombre_indicador IS NOT NULL AND ii.id_proyecto_cliente = ?");
 			prametros.add(aIndicador.getObjetivo().getInformacionEtapaIndicador().getProyectoCliente().getId());
 
@@ -512,10 +510,8 @@ public interface IConsultasDAO {
 				registro = new Indicador();
 				registro.setId((Integer) rs.getObject("id"));
 
-
 				registro.setNombreIndicador((String) rs.getObject("nombre_indicador"));
 				registro.setFormula((String) rs.getObject("formula"));
-		
 
 				registro.getObjetivo().setObjetivo((String) rs.getObject("objetivo"));
 
@@ -1417,7 +1413,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito, i.nombre_indicador, i.formula, o.objetivo, d.id_indicador");
+			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito, i.nombre_indicador, i.formula, o.objetivo, d.id_indicador, p.numero_etapa");
 			sql.append("  FROM cronograma d");
 			sql.append("  INNER JOIN tareas_proyecto p ON p.id = d.id_tarea");
 			sql.append("  LEFT JOIN indicadores_objetivo i ON i.id = d.id_indicador");
@@ -1443,6 +1439,7 @@ public interface IConsultasDAO {
 				registro.getTareaProyecto().setTarea((String) rs.getObject("tarea"));
 				registro.getTareaProyecto().setId((Integer) rs.getObject("id_tarea"));
 				registro.getTareaProyecto().setRequisito((String) rs.getObject("requisito"));
+				registro.getTareaProyecto().setNumeroEtapa((Integer) rs.getObject("numero_etapa"));
 
 				registro.setRecomendaciones((String) rs.getObject("recomendaciones"));
 				registro.setMetaDocumentacion((BigDecimal) rs.getObject("meta_documentacion"));
@@ -1479,6 +1476,21 @@ public interface IConsultasDAO {
 				registro.getIndicador().setFormula((String) rs.getObject("formula"));
 				registro.getIndicador().getObjetivo().setObjetivo((String) rs.getObject("objetivo"));
 
+				registro.setImprimir((String) rs.getObject("imprimir"));
+				if (registro.getImprimir() == null) {
+					registro.setImprimir("SI");
+				}
+
+				if (registro.getTareaProyecto().getNumeroEtapa() == null || registro.getTareaProyecto().getNumeroEtapa().intValue() == 2 || registro.getTareaProyecto().getNumeroEtapa().intValue() == 1) {
+					registro.getTareaProyecto().settDescripcionNumeroEtapa("Planificación");
+				} else if (registro.getTareaProyecto().getNumeroEtapa().intValue() == 3) {
+					registro.getTareaProyecto().settDescripcionNumeroEtapa("Documentación");
+				} else if (registro.getTareaProyecto().getNumeroEtapa().intValue() == 4) {
+					registro.getTareaProyecto().settDescripcionNumeroEtapa("Implementación");
+				} else if (registro.getTareaProyecto().getNumeroEtapa().intValue() == 5) {
+					registro.getTareaProyecto().settDescripcionNumeroEtapa("Seguimiento y auditoría(Indicadores)");
+				}
+
 				listado.add(registro);
 			}
 
@@ -1506,7 +1518,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito, p.explicacion_documentacion");
+			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito, p.explicacion_documentacion, p.numero_etapa");
 			sql.append("  FROM documentacion d");
 			sql.append("  INNER JOIN tareas_proyecto p ON p.id = d.id_tarea");
 			sql.append("  WHERE 1=1 ");
@@ -1530,6 +1542,7 @@ public interface IConsultasDAO {
 				registro.getTareaProyecto().setId((Integer) rs.getObject("id_tarea"));
 				registro.getTareaProyecto().setRequisito((String) rs.getObject("requisito"));
 				registro.getTareaProyecto().setExplicacionDocumentacion((String) rs.getObject("explicacion_documentacion"));
+				registro.getTareaProyecto().setNumeroEtapa((Integer) rs.getObject("numero_etapa"));
 
 				registro.setRecomendacionesCliente((String) rs.getObject("recomendaciones_cliente"));
 				registro.setRecomendacionesConsultor((String) rs.getObject("recomendaciones_consultor"));
@@ -1573,7 +1586,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito");
+			sql.append("  SELECT d.*, p.tarea, p.posicion, p.requisito, p.numero_etapa");
 			sql.append("  FROM planificacion d");
 			sql.append("  INNER JOIN tareas_proyecto p ON p.id = d.id_tarea_proyecto");
 			sql.append("  WHERE 1=1 ");
@@ -1596,6 +1609,7 @@ public interface IConsultasDAO {
 				registro.setObservaciones((String) rs.getObject("observaciones"));
 				registro.getTareaProyecto().setId((Integer) rs.getObject("id_tarea_proyecto"));
 				registro.getTareaProyecto().setRequisito((String) rs.getObject("requisito"));
+				registro.getTareaProyecto().setNumeroEtapa((Integer) rs.getObject("numero_etapa"));
 
 				listadoPlanificacion.add(registro);
 			}
@@ -1648,6 +1662,12 @@ public interface IConsultasDAO {
 				persona.setConclusiones((String) rs.getObject("conclusiones"));
 				persona.setFecha((Date) rs.getObject("fecha"));
 
+				persona.setFirma2((String) rs.getObject("firma2"));
+				persona.setRequiereFirma2((String) rs.getObject("requiere_firma2"));
+
+				persona.setFirma3((String) rs.getObject("firma3"));
+				persona.setRequiereFirma3((String) rs.getObject("requiere_firma3"));
+
 			}
 
 		} catch (Exception e) {
@@ -1681,7 +1701,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT d.*, p.pregunta, p.posible_evidencia, p.posicion, p.numeral");
+			sql.append("  SELECT d.*, p.pregunta, p.posible_evidencia, p.posicion, p.numeral, p.hallazgo_pred_fortaleza, p.hallazgo_pred_recomendacion, p.hallazgo_pred_no_conformidad, p.hallazgo_pred_cumple, p.hallazgo_pred_no_aplica, p.ac_pred_no_conformidad, p.ar_pred_no_conformidad, p.ene_pred_no_conformidad, p.r_pred_no_conformidad, p.ar_pred_recomendacion, p.r_pred_recomendacion");
 			sql.append("  FROM diagnostico d");
 			sql.append("  INNER JOIN preguntas_proyecto p ON p.id = d.id_pregunta_proyecto");
 			sql.append("  WHERE 1=1 ");
@@ -1693,7 +1713,7 @@ public interface IConsultasDAO {
 
 			sql.append("  ORDER BY posicion");
 
-			rs = conexion.consultarBD(sql.toString(), prametros); 
+			rs = conexion.consultarBD(sql.toString(), prametros);
 
 			while (rs.next()) {
 				registro = new Diagnostico();
@@ -1702,6 +1722,28 @@ public interface IConsultasDAO {
 
 				registro.getProyectoCliente().setId((Integer) rs.getObject("id_proyecto_cliente"));
 
+				
+				
+				
+				
+				registro.getPreguntaProyecto().setHallazgoPredeterminadoFortaleza((String) rs.getObject("hallazgo_pred_fortaleza"));
+				registro.getPreguntaProyecto().setHallazgoPredeterminadoRecomendacion((String) rs.getObject("hallazgo_pred_recomendacion"));
+				registro.getPreguntaProyecto().setHallazgoPredeterminadoNoConformidad((String) rs.getObject("hallazgo_pred_no_conformidad"));
+				
+				registro.getPreguntaProyecto().setHallazgoPredeterminadoCumple((String) rs.getObject("hallazgo_pred_cumple"));
+				registro.getPreguntaProyecto().setHallazgoPredeterminadoNoAplica((String) rs.getObject("hallazgo_pred_no_aplica"));
+				
+				registro.getPreguntaProyecto().setAnalisisCausaPredeterminadoNoConformidad((String) rs.getObject("ac_pred_no_conformidad"));
+				registro.getPreguntaProyecto().setAccionRealizarPredeterminadoNoConformidad((String) rs.getObject("ar_pred_no_conformidad"));
+				registro.getPreguntaProyecto().setEvidenciaNoEncontradaPredeterminadoNoConformidad((String) rs.getObject("ene_pred_no_conformidad"));
+				registro.getPreguntaProyecto().setResponsablePredeterminadoNoConformidad((String) rs.getObject("r_pred_no_conformidad"));
+				
+				registro.getPreguntaProyecto().setAccionRealizarPredeterminadoRecomendacion((String) rs.getObject("ar_pred_recomendacion"));
+				registro.getPreguntaProyecto().setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));  
+				
+				
+				
+				
 				registro.getPreguntaProyecto().setPosibleEvidencia((String) rs.getObject("posible_evidencia"));
 				registro.getPreguntaProyecto().setPosicion((Integer) rs.getObject("posicion"));
 				registro.getPreguntaProyecto().setPregunta((String) rs.getObject("pregunta"));
@@ -1709,10 +1751,37 @@ public interface IConsultasDAO {
 
 				registro.setAnalisisCausa((String) rs.getObject("analisis_causas"));
 				registro.setAccionesRealizar((String) rs.getObject("accciones_realizar"));
-				
-				
+
+				registro.setEvidenciaNoEncontrada((String) rs.getObject("evidencia_no_encontrada"));
+				registro.setResponsable((String) rs.getObject("responsable"));
+
 				registro.getPreguntaProyecto().setNumeral((String) rs.getObject("numeral"));
-				
+
+				registro.setMetaDocumentacion1((BigDecimal) rs.getObject("meta_documentacion1"));
+				registro.setMetaSocializacion1((BigDecimal) rs.getObject("meta_socializacion1"));
+				registro.setMetaImplementacion1((BigDecimal) rs.getObject("meta_implementacion1"));
+				registro.setMetaAuditoria1((BigDecimal) rs.getObject("meta_auditoria1"));
+				registro.setObservacion1((String) rs.getObject("observacion1"));
+
+				registro.setMetaDocumentacion2((BigDecimal) rs.getObject("meta_documentacion2"));
+				registro.setMetaSocializacion2((BigDecimal) rs.getObject("meta_socializacion2"));
+				registro.setMetaImplementacion2((BigDecimal) rs.getObject("meta_implementacion2"));
+				registro.setMetaAuditoria2((BigDecimal) rs.getObject("meta_auditoria2"));
+				registro.setObservacion2((String) rs.getObject("observacion2"));
+
+				registro.setMetaDocumentacion3((BigDecimal) rs.getObject("meta_documentacion3"));
+				registro.setMetaSocializacion3((BigDecimal) rs.getObject("meta_socializacion3"));
+				registro.setMetaImplementacion3((BigDecimal) rs.getObject("meta_implementacion3"));
+				registro.setMetaAuditoria3((BigDecimal) rs.getObject("meta_auditoria3"));
+				registro.setObservacion3((String) rs.getObject("observacion3"));
+
+				registro.setMetaDocumentacion4((BigDecimal) rs.getObject("meta_documentacion4"));
+				registro.setMetaSocializacion4((BigDecimal) rs.getObject("meta_socializacion4"));
+				registro.setMetaImplementacion4((BigDecimal) rs.getObject("meta_implementacion4"));
+				registro.setMetaAuditoria4((BigDecimal) rs.getObject("meta_auditoria4"));
+				registro.setObservacion4((String) rs.getObject("observacion4"));
+
+				registro.setDiagnostico((String) rs.getObject("diagnostico"));
 
 				listadoDiagnostico.add(registro);
 			}
@@ -1802,6 +1871,10 @@ public interface IConsultasDAO {
 
 				proyecto.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 				proyecto.getProyecto().setNombre((String) rs.getObject("nombre"));
+				proyecto.getProyecto().setObjetivos((String) rs.getObject("objetivos"));
+				proyecto.getProyecto().setAlcance((String) rs.getObject("alcance"));
+				proyecto.getProyecto().setDocumentosReferencia((String) rs.getObject("documentos_referencia"));
+				proyecto.getProyecto().setObservaciones((String) rs.getObject("observaciones"));
 
 				proyecto.setFechaInicio((Date) rs.getObject("fecha_inicio"));
 				proyecto.setFechaFin((Date) rs.getObject("fecha_fin"));
@@ -2019,14 +2092,27 @@ public interface IConsultasDAO {
 				pregunta.setEstado((String) rs.getObject("estado"));
 				pregunta.setFechaEstado((Date) rs.getObject("fecha_estado"));
 				pregunta.setPosicion((Integer) rs.getObject("posicion"));
-				
-				
+
 				// proyecto
 				pregunta.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 
-				
 				pregunta.setNumeral((String) rs.getObject("numeral"));
 				
+				pregunta.setHallazgoPredeterminadoFortaleza((String) rs.getObject("hallazgo_pred_fortaleza"));
+				pregunta.setHallazgoPredeterminadoRecomendacion((String) rs.getObject("hallazgo_pred_recomendacion"));
+				pregunta.setHallazgoPredeterminadoNoConformidad((String) rs.getObject("hallazgo_pred_no_conformidad"));
+				
+				pregunta.setHallazgoPredeterminadoCumple((String) rs.getObject("hallazgo_pred_cumple"));
+				pregunta.setHallazgoPredeterminadoNoAplica((String) rs.getObject("hallazgo_pred_no_aplica"));
+				
+				pregunta.setAnalisisCausaPredeterminadoNoConformidad((String) rs.getObject("ac_pred_no_conformidad"));
+				pregunta.setAccionRealizarPredeterminadoNoConformidad((String) rs.getObject("ar_pred_no_conformidad"));
+				pregunta.setEvidenciaNoEncontradaPredeterminadoNoConformidad((String) rs.getObject("ene_pred_no_conformidad"));
+				pregunta.setResponsablePredeterminadoNoConformidad((String) rs.getObject("r_pred_no_conformidad"));
+				
+				pregunta.setAccionRealizarPredeterminadoRecomendacion((String) rs.getObject("ar_pred_recomendacion"));
+				pregunta.setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));  
+
 				preguntas.add(pregunta);
 			}
 
@@ -2101,6 +2187,16 @@ public interface IConsultasDAO {
 				// proyecto
 				tarea.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 
+				if (tarea.getNumeroEtapa() == null || tarea.getNumeroEtapa().intValue() == 2 || tarea.getNumeroEtapa().intValue() == 1) {
+					tarea.settDescripcionNumeroEtapa("Planificación");
+				} else if (tarea.getNumeroEtapa().intValue() == 3) {
+					tarea.settDescripcionNumeroEtapa("Documentación");
+				} else if (tarea.getNumeroEtapa().intValue() == 4) {
+					tarea.settDescripcionNumeroEtapa("Implementación");
+				} else if (tarea.getNumeroEtapa().intValue() == 5) {
+					tarea.settDescripcionNumeroEtapa("Seguimiento y auditoría(Indicadores)");
+				}
+
 				tareas.add(tarea);
 			}
 
@@ -2169,8 +2265,25 @@ public interface IConsultasDAO {
 
 				// proyecto
 				pregunta.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
-				
+
 				pregunta.setNumeral((String) rs.getObject("numeral"));
+				
+				
+				pregunta.setHallazgoPredeterminadoFortaleza((String) rs.getObject("hallazgo_pred_fortaleza"));
+				pregunta.setHallazgoPredeterminadoRecomendacion((String) rs.getObject("hallazgo_pred_recomendacion"));
+				pregunta.setHallazgoPredeterminadoNoConformidad((String) rs.getObject("hallazgo_pred_no_conformidad"));
+				
+				pregunta.setHallazgoPredeterminadoCumple((String) rs.getObject("hallazgo_pred_cumple"));
+				pregunta.setHallazgoPredeterminadoNoAplica((String) rs.getObject("hallazgo_pred_no_aplica"));
+				
+				pregunta.setAnalisisCausaPredeterminadoNoConformidad((String) rs.getObject("ac_pred_no_conformidad"));
+				pregunta.setAccionRealizarPredeterminadoNoConformidad((String) rs.getObject("ar_pred_no_conformidad"));
+				pregunta.setEvidenciaNoEncontradaPredeterminadoNoConformidad((String) rs.getObject("ene_pred_no_conformidad"));
+				pregunta.setResponsablePredeterminadoNoConformidad((String) rs.getObject("r_pred_no_conformidad"));
+				
+				pregunta.setAccionRealizarPredeterminadoRecomendacion((String) rs.getObject("ar_pred_recomendacion"));
+				pregunta.setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));  
+				
 
 				preguntas.add(pregunta);
 			}
@@ -2231,6 +2344,11 @@ public interface IConsultasDAO {
 				proyecto.setId((Integer) rs.getObject("id"));
 				proyecto.setNombre((String) rs.getObject("nombre"));
 				proyecto.setIndicativoVigencia((String) rs.getObject("indicativo_vigencia"));
+
+				proyecto.setObjetivos((String) rs.getObject("objetivos"));
+				proyecto.setAlcance((String) rs.getObject("alcance"));
+				proyecto.setDocumentosReferencia((String) rs.getObject("documentos_referencia"));
+				proyecto.setObservaciones((String) rs.getObject("observaciones"));
 
 				proyectos.add(proyecto);
 
@@ -2430,7 +2548,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT *");
+			sql.append("  SELECT p.*, encode(archivo::bytea, 'base64') foto_decodificada");
 			sql.append("  FROM clientes p");
 			sql.append("  WHERE 1=1 ");
 
@@ -2467,7 +2585,8 @@ public interface IConsultasDAO {
 				cliente.setCorreoElectronico((String) rs.getObject("correo_electronico"));
 				cliente.setClave((String) rs.getObject("clave"));
 				cliente.setTelefono((String) rs.getObject("telefono"));
-
+				cliente.settFotoDecodificada((String) rs.getObject("foto_decodificada"));
+				cliente.setArchivo(rs.getBytes("archivo"));
 				clientes.add(cliente);
 			}
 
@@ -2550,7 +2669,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT p.*, c.cliente, c.nit, cr.nombres, cr.apellidos, pr.nombre, c.correo_electronico, cr.correo_electronico correo_consultor, c.representante, encode(cr.archivo::bytea, 'base64') foto_decodificada ");
+			sql.append("  SELECT p.*, c.cliente, c.nit, cr.nombres, cr.apellidos, pr.nombre, c.correo_electronico, cr.correo_electronico correo_consultor, c.representante, encode(cr.archivo::bytea, 'base64') foto_decodificada, encode(c.archivo::bytea, 'base64') foto_decodificada2, pr.objetivos, pr.alcance, pr.documentos_referencia, pr.observaciones ");
 			sql.append("  FROM proyectos_cliente p");
 			sql.append("  INNER JOIN clientes c ON c.id = p.id_cliente");
 			sql.append("  INNER JOIN proyectos pr ON pr.id = p.id_proyecto");
@@ -2627,15 +2746,22 @@ public interface IConsultasDAO {
 				proyecto.getCliente().setNit((String) rs.getObject("nit"));
 				proyecto.getCliente().setRepresentante((String) rs.getObject("representante"));
 
+				proyecto.getCliente().settFotoDecodificada((String) rs.getObject("foto_decodificada2"));
+
 				proyecto.getConsultor().setId((Integer) rs.getObject("id_consultor"));
 				proyecto.getConsultor().setNombres((String) rs.getObject("nombres"));
 				proyecto.getConsultor().setApellidos((String) rs.getObject("apellidos"));
 				proyecto.getConsultor().setCorreoElectronico((String) rs.getObject("correo_consultor"));
-				
+
 				proyecto.getConsultor().settFotoDecodificada((String) rs.getObject("foto_decodificada"));
 
 				proyecto.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 				proyecto.getProyecto().setNombre((String) rs.getObject("nombre"));
+
+				proyecto.getProyecto().setObjetivos((String) rs.getObject("objetivos"));
+				proyecto.getProyecto().setAlcance((String) rs.getObject("alcance"));
+				proyecto.getProyecto().setDocumentosReferencia((String) rs.getObject("documentos_referencia"));
+				proyecto.getProyecto().setObservaciones((String) rs.getObject("observaciones"));
 
 				proyecto.setFechaInicio((Date) rs.getObject("fecha_inicio"));
 				proyecto.setFechaFin((Date) rs.getObject("fecha_fin"));

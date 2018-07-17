@@ -62,6 +62,26 @@
 									style="font-weight:normal" value="Cliente" />	
 
 							</p:column>
+							
+							<p:column headerText="*Etapa" style="font-size:14px"
+								sortBy="#{loc.numeroEtapa}">
+								<p:outputLabel rendered="#{loc.numeroEtapa == 1 or loc.numeroEtapa == 2 }"
+									style="font-weight:normal" value="Planificación" />
+
+								<p:outputLabel rendered="#{loc.numeroEtapa == 3}"
+									style="font-weight:normal" value="Documentación" />
+									
+								<p:outputLabel rendered="#{loc.numeroEtapa == 4}"
+									style="font-weight:normal" value="Implementación" />	
+									
+								<p:outputLabel rendered="#{loc.numeroEtapa == 5}"
+									style="font-weight:normal" value="Seguimiento y auditoría(Indicadores)" />		
+									
+									<p:outputLabel rendered="#{loc.numeroEtapa == 0 }"
+									style="font-weight:normal" value="----palabra errada---" />
+
+
+							</p:column>
 
 
 							<p:column headerText="*Entregables" style="font-size:14px; "

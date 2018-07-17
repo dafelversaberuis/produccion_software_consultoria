@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirInformeRadicado" language="groovy" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="bcb2e825-cef4-45b6-8931-7c5f78f9611f">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -18,11 +18,13 @@
 	<parameter name="pNombreCompletoConsultor" class="java.lang.String"/>
 	<parameter name="pProyectoCliente" class="java.lang.Object"/>
 	<parameter name="pEstadosGrafica" class="java.util.List"/>
+	<parameter name="pAuditoriaViejo" class="java.lang.String"/>
 	<field name="numeral" class="java.lang.String"/>
 	<field name="fortaleza" class="java.lang.Integer"/>
 	<field name="recomendacion" class="java.lang.Integer"/>
 	<field name="noConformidad" class="java.lang.Integer"/>
 	<field name="valoresGrafico" class="java.util.List"/>
+	<field name="valoresGrafico2" class="java.util.List"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -120,7 +122,7 @@
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["(F) FORTALEZA = "+$F{fortaleza}+" PST"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["(F) FORTALEZA = "+$F{fortaleza}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="892a9638-3e2f-44da-9de1-75a459fdcd26" positionType="Float" x="188" y="23" width="1" height="20"/>
@@ -150,21 +152,21 @@
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["(R) RECOMEDACIÓN = "+$F{fortaleza}+" PST"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["(R) RECOMENDACIÓN = "+$F{recomendacion}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="e8398d3c-fc99-4d51-ba76-868bcbfcfd2a" positionType="Float" x="396" y="26" width="172" height="17"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["(NC) NO CONFORMIDAD = "+$F{noConformidad}+" PST"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["(NC) NO CONFORMIDAD = "+$F{noConformidad}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" positionType="Float" x="0" y="46" width="572" height="4"/>
+				<reportElement uuid="b3558634-48ae-45f8-b3c7-65a61ef8c2b5" positionType="Float" x="0" y="50" width="572" height="4"/>
 				<subreportParameter name="pNumeral">
 					<subreportParameterExpression><![CDATA[$F{numeral}]]></subreportParameterExpression>
 				</subreportParameter>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$F{valoresGrafico})]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[( $P{pAuditoriaViejo}!=null && $P{pAuditoriaViejo}.equals("S") ? new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$F{valoresGrafico2}) : new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.List)$F{valoresGrafico}) )]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporteRadicadoGrafica.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
@@ -176,7 +178,7 @@
 				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[**Para el cálculo de PST se cuenta 1 valor para cada norma-cliente-numeral así esta combinación tenga n veces un hallazgo]]></text>
+				<text><![CDATA[**Para el cálculo se cuenta 1 valor para cada norma-cliente-numeral así esta combinación tenga n veces un hallazgo/fase]]></text>
 			</staticText>
 		</band>
 	</pageFooter>

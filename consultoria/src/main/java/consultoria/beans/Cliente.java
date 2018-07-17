@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.primefaces.model.UploadedFile;
+
 import consultoria.generales.IConstantes;
 
 public class Cliente implements Serializable {
@@ -30,6 +32,12 @@ public class Cliente implements Serializable {
 	private EstructuraTabla				estructuraTabla;
 
 	private Integer						TPlanClienteSeleccionado;
+	
+	
+	private String						tFotoDecodificada;
+
+	private byte[]						archivo;
+	private UploadedFile			tFile;
 
 	public Cliente() {
 		this.estructuraTabla = new EstructuraTabla();
@@ -49,6 +57,8 @@ public class Cliente implements Serializable {
 		this.estructuraTabla.getPersistencia().put("correo_electronico", this.correoElectronico);
 		this.estructuraTabla.getPersistencia().put("clave", this.clave);
 		this.estructuraTabla.getPersistencia().put("telefono", this.telefono);
+		
+		this.estructuraTabla.getPersistencia().put("archivo", this.archivo);
 
 	}
 
@@ -161,6 +171,33 @@ public class Cliente implements Serializable {
 	public void setTPlanClienteSeleccionado(Integer tPlanClienteSeleccionado) {
 		TPlanClienteSeleccionado = tPlanClienteSeleccionado;
 	}
+
+	public String gettFotoDecodificada() {
+		return tFotoDecodificada;
+	}
+
+	public void settFotoDecodificada(String tFotoDecodificada) {
+		this.tFotoDecodificada = tFotoDecodificada;
+	}
+
+	public byte[] getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(byte[] archivo) {
+		this.archivo = archivo;
+	}
+
+	public UploadedFile gettFile() {
+		return tFile;
+	}
+
+	public void settFile(UploadedFile tFile) {
+		this.tFile = tFile;
+	}
+	
+	
+	
 
 	
 

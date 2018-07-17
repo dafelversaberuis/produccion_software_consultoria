@@ -550,12 +550,25 @@
 								paginator="true" paginatorPosition="bottom" rows="5"
 								emptyMessage="#{mensaje.noExistenciaRegistros}">
 
-
+								<f:facet name="header">
+									<p:outputPanel style="text-align:right">
+										<p:inputText id="globalFilter" immediate="true"
+											onkeyup="PF('dtlRegistros').filter()"
+											style="width:300px; height:35px"
+											placeholder="Filtre por responsable(Escriba texto)" />
+									</p:outputPanel>
+								</f:facet>
 
 								<p:columnGroup type="header">
 
 									<p:row>
+										<p:column rowspan="2" headerText="Imprimir" width="115" />
 										<p:column rowspan="2" headerText="Requisito(s)" width="115" />
+										<p:column rowspan="2" headerText="Etapa" width="300"
+											filterBy="#{loc.tareaProyecto.tDescripcionNumeroEtapa}"
+											filterMatchMode="contains">
+
+										</p:column>
 										<p:column rowspan="2" headerText="Actividad/Exigencia"
 											width="300" />
 										<p:column rowspan="2" headerText="Producto/Entregables"
@@ -581,26 +594,34 @@
 										<p:column width="150" headerText="Estado" />
 										<p:column width="150" headerText="Fecha Inicia" />
 										<p:column width="150" headerText="Fecha Finaliza" />
-										<p:column width="300" headerText="Responsable *" />
+										<p:column width="300" headerText="Responsable *"
+											filterBy="#{loc.responsableDocumentacion}"
+											filterMatchMode="contains" />
 										<p:column width="150" headerText="Fecha Seguimiento" />
 
 
 										<p:column width="150" headerText="Estado" />
 										<p:column width="150" headerText="Fecha Inicia" />
 										<p:column width="150" headerText="Fecha Finaliza" />
-										<p:column width="300" headerText="Responsable *" />
+										<p:column width="300" headerText="Responsable *"
+											filterBy="#{loc.responsableSocializacion}"
+											filterMatchMode="contains" />
 										<p:column width="150" headerText="Fecha Seguimiento" />
 
 										<p:column width="150" headerText="Estado" />
 										<p:column width="150" headerText="Fecha Inicia" />
 										<p:column width="150" headerText="Fecha Finaliza" />
-										<p:column width="300" headerText="Responsable *" />
+										<p:column width="300" headerText="Responsable *"
+											filterBy="#{loc.responsableImplementacion}"
+											filterMatchMode="contains" />
 										<p:column width="150" headerText="Fecha Seguimiento" />
 
 										<p:column width="150" headerText="Estado" />
 										<p:column width="150" headerText="Fecha Inicia" />
 										<p:column width="150" headerText="Fecha Finaliza" />
-										<p:column width="300" headerText="Responsable *" />
+										<p:column width="300" headerText="Responsable *"
+											filterBy="#{loc.responsableAuditoria}"
+											filterMatchMode="contains" />
 										<p:column width="150" headerText="Fecha Seguimiento" />
 
 
@@ -608,11 +629,39 @@
 
 								</p:columnGroup>
 
+								<p:column headerText=""
+									style="font-size:12px; text-align:center; width:50px">
+
+
+
+
+									<p:inputTextarea rows="2" value="#{loc.imprimir}"
+										autoResize="false"
+										style="font-size:14px; width:100%; min-height:50px">
+
+										<p:ajax event="change" process="@this" listener="#{administrarEtapa.validar(loc)}" update="@this"/>
+									</p:inputTextarea>
+
+
+
+
+
+								</p:column>
+
 
 								<p:column style="vertical-align:top">
 									<p:inputTextarea value="#{loc.tareaProyecto.requisito}"
 										rows="2" readonly="true" autoResize="false"
 										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+								</p:column>
+								<p:column style="vertical-align:top">
+									<p:inputTextarea
+										value="#{loc.tareaProyecto.tDescripcionNumeroEtapa}" rows="2"
+										readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+
 
 								</p:column>
 								<p:column style="vertical-align:top">
@@ -973,6 +1022,7 @@
 		</h:form>
 		<ui:include src="/etapas/guardarCronograma.xhtml" />
 		<ui:include src="/etapas/mostrarResumenGuardadoCronograma.xhtml" />
+		<ui:include src="/etapas/mostrarResumenFiltros.xhtml" />
 		<ui:include src="/etapas/eliminarCronograma.xhtml" />
 
 		<ui:include src="/etapas/crearDocumentoCronograma.xhtml" />

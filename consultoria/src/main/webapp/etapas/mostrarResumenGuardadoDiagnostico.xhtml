@@ -18,28 +18,49 @@
 
 
 					<p:commandButton id="btnResumen1" process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('G')}"
 						value="IMPRIMIR INFORME AUDITORIA/EVALUACION (SIN NO APLICA NI CUMPLE)" />
-						
+
+
+					<p:commandButton id="btnResumenX" process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('J')}"
+						value="IMPRIMIR INFORME AUDITORIA/EVALUACION" />
+
 					<p:commandButton id="btnResumen6" process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('P')}"
-						value="IMPRIMIR PLAN DE ACCION (APLICA PARA RECOMENDACIONES Y NO CONFORMIDADES)" />	
+						value="IMPRIMIR PLAN DE ACCION (APLICA PARA RECOMENDACIONES Y NO CONFORMIDADES)" />
 
 					<p:commandButton id="btnResumen4" process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: bold !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('N')}"
 						value="IMPRIMIR LISTA DE CHEQUEO (SIN NO APLICA)" />
 
 					<p:commandButton id="btnResumen5" process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
 						update=":form, :formResumen:pnlResumen" immediate="true"
 						style="font-size:16px; font-weight: normal !important; width:100%"
 						action="#{administrarEtapa.decidirReporte('S')}"
 						value="IMPRIMIR LISTA DE CHEQUEO (CON NO APLICA)" />
+
+
+
+					<p:commandButton process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='S'}"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: normal !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('S')}"
+						value="IMPRIMIR DIAGNOSTICO" />
 
 					<p:commandButton id="btnResumen2" process="@this"
 						update=":form, :formResumen:pnlResumen"
@@ -47,7 +68,7 @@
 						action="#{administrarEtapa.elaborarNuevamenteDiagnostico()}"
 						value="Cerrar ventana y eleaborar un nuevo Diagnóstico-Auditoria " />
 
-					<p:commandButton id="btnResumen3" process="@this"  
+					<p:commandButton id="btnResumen3" process="@this"
 						update=":form, :formResumen:pnlResumen"
 						style="font-size:16px; font-weight: normal !important; width:100%"
 						action="#{consultarFuncionesAPI.cerrarModal('panelResumen')}"

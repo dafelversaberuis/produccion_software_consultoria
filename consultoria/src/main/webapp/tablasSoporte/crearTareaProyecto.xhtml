@@ -69,10 +69,47 @@
 									update="@this, :formAsignarTarea:pnlCrearTarea" />
 
 							</p:selectOneMenu>
-							<p:spacer width="1" />
+
+
+							<p:outputLabel value="Etapa  *" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
+								style="font-weight:bold; font-size:14px" />
+
+
+
+							<p:selectOneMenu label="Etapa" title="Etapa" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
+								style="width:94%; font-size:14px;" id="lstEtapa"
+								required="true" 
+								value="#{hacerMantenimiento.tareaProyecto.numeroEtapa}">
+								<f:selectItem itemValue="" itemLabel="Seleccione.." />
+								<f:selectItem itemValue="2" itemLabel="Planificación" />
+								<f:selectItem itemValue="3" itemLabel="Documentación" />
+								<f:selectItem itemValue="4" itemLabel="Implementación" />
+								<f:selectItem itemValue="5"
+									itemLabel="Seguimiento y auditoría(Indicadores)" />
+
+
+								
+
+							</p:selectOneMenu>
+
+
+
+							<p:spacer width="1" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"/>
+							<p:spacer width="1" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"/>
+
+
+
+
 							<p:spacer width="1" />
 							<p:message for="lstFormaAgregar" />
-							<p:spacer width="1" />
+							
+							
+							<p:spacer width="1" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"/>
+							<p:message for="lstEtapa" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"/>
+
+
+							<p:spacer width="1" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"/>
+							<p:spacer width="1" rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='C'}"/>
 
 							<p:outputLabel for="txtNombreTarea" value="Actividad"
 								rendered="#{hacerMantenimiento.tareaProyecto.tFormaAgregar==null or hacerMantenimiento.tareaProyecto.tFormaAgregar=='I'}"
@@ -84,8 +121,8 @@
 								value="#{hacerMantenimiento.tareaProyecto.tarea}" rows="2"
 								id="txtNombreTarea" autoResize="false" required="true"
 								style="font-size:14px; width:100%; min-height:50px" />
-								
-							
+
+
 
 
 
@@ -277,9 +314,9 @@
 
 
 							</p:column>
-							
-							
-						
+
+
+
 
 
 							<p:column headerText="Responsable" style="font-size:14px"
@@ -292,6 +329,23 @@
 
 								<p:outputLabel rendered="#{det.responsable == 'CL'}"
 									style="font-weight:normal" value="Cliente" />
+
+							</p:column>
+							
+							<p:column headerText="Etapa" style="font-size:14px"
+								sortBy="#{det.numeroEtapa}">
+								<p:outputLabel rendered="#{det.numeroEtapa == 1 or det.numeroEtapa == 2 or det.numeroEtapa == null}"
+									style="font-weight:normal" value="Planificación" />
+
+								<p:outputLabel rendered="#{det.numeroEtapa == 3}"
+									style="font-weight:normal" value="Documentación" />
+									
+								<p:outputLabel rendered="#{det.numeroEtapa == 4}"
+									style="font-weight:normal" value="Implementación" />	
+									
+								<p:outputLabel rendered="#{det.numeroEtapa == 5}"
+									style="font-weight:normal" value="Seguimiento y auditoría(Indicadores)" />		
+
 
 							</p:column>
 

@@ -174,6 +174,12 @@
 
 									<p:row>
 
+										<p:column rowspan="2" headerText="Imprimir"
+											style="font-size:14px" width="115" />
+
+										<p:column rowspan="2" headerText="Requisito(s)"
+											style="font-size:14px" width="115" />
+
 										<p:column rowspan="2" headerText="Actividad/Exigencia"
 											style="font-size:14px" width="250" />
 										<p:column rowspan="2" headerText="Producto/Entregables"
@@ -190,7 +196,7 @@
 											width="250" style="font-size:14px" />
 										<p:column rowspan="2" headerText="Comentarios cliente"
 											width="250" style="font-size:14px" />
-										<p:column width="450" colspan="3" headerText="Fechas"
+										<p:column width="750" colspan="4" headerText="Fechas"
 											style="font-size:14px" />
 
 										<p:column rowspan="2" headerText="Indicador que aplica"
@@ -203,12 +209,45 @@
 											style="font-size:14px" />
 										<p:column width="150" headerText="Fecha hasta programada"
 											style="font-size:14px" />
+										<p:column width="300" headerText="Responsable *"
+											filterBy="#{loc.responsableImplementacion}"
+											filterMatchMode="contains" />
 										<p:column width="150"
 											headerText="Fecha Realización / Seguimiento"
 											style="font-size:14px" />
+
+
 									</p:row>
 
 								</p:columnGroup>
+
+
+								<p:column style="font-size:12px; text-align:center; width:50px">
+
+
+
+
+									<p:inputTextarea rows="2" value="#{loc.imprimir}"
+										autoResize="false"
+										style="font-size:14px; width:100%; min-height:50px">
+
+										<p:ajax event="change" process="@this"
+											listener="#{administrarEtapa.validar(loc)}" update="@this" />
+									</p:inputTextarea>
+
+
+
+
+
+								</p:column>
+
+
+								<p:column style="vertical-align:top">
+									<p:inputTextarea value="#{loc.tareaProyecto.requisito}"
+										rows="2" readonly="true" autoResize="false"
+										style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+								</p:column>
 
 
 
@@ -307,6 +346,15 @@
 									</p:calendar>
 									<p:message for="calFechaFinImplementacion" />
 								</p:column>
+								<p:column style="vertical-align:top;">
+									<p:inputTextarea rows="2" id="txtResponsableImplementacion"
+										value="#{loc.responsableImplementacion}" autoResize="false"
+										required="true"
+										style="font-size:14px; width:100%; min-height:50px">
+										<p:ajax event="change" process="@this" />
+									</p:inputTextarea>
+									<p:message for="txtResponsableImplementacion" />
+								</p:column>
 								<p:column style="vertical-align:top; text-align:center">
 									<p:calendar id="calFechaSeguimientoImplementacion"
 										label="Fecha realización/segumiento"
@@ -328,7 +376,7 @@
 										<f:selectItems value="#{administrarEtapa.itemsIndicadores}" />
 
 
-										<p:ajax event="change" process="@this" update="@this"/>
+										<p:ajax event="change" process="@this" update="@this" />
 									</p:selectOneMenu>
 								</p:column>
 
@@ -388,6 +436,7 @@
 		<ui:include src="/etapas/mostrarResumenGuardadoImplementacion.xhtml" />
 		<ui:include src="/etapas/crearDocumentoCronograma.xhtml" />
 		<ui:include src="/etapas/eliminarDocumentoCroograma.xhtml" />
+		<ui:include src="/etapas/mostrarResumenFiltrosImplementacion.xhtml" />
 
 
 	</ui:define>

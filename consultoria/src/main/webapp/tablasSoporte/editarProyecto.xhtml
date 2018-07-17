@@ -7,7 +7,7 @@
 
 	<h:form id="formEditar">
 
-		<p:dialog header="#{mensaje.editarProyecto}" widgetVar="panelEdicion"
+		<p:dialog header="#{mensaje.editarProyecto}" widgetVar="panelEdicion" height="400" 
 			resizable="true" closable="false" responsive="true">
 			<p:panel id="pnlEditar">
 				<div align="center">
@@ -34,6 +34,62 @@
 							<f:selectItems value="#{consultarFuncionesAPI.itemsEstados}" />
 						</p:selectOneMenu>
 						<p:message for="lstVigencia" />
+						
+						
+						
+						<p:outputLabel for="txtObjetivos" value="Objetivos"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:inputTextarea id="txtObjetivos" required="true"
+									label="Objetivos"
+									value="#{hacerMantenimiento.proyectoTransaccion.objetivos}"
+									style="width:100%; font-size:14px; height:10px" cols="3" />
+
+
+<p:message for="txtObjetivos" />
+
+
+								<p:outputLabel for="txtAlcance" value="Alcance"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:inputTextarea id="txtAlcance" required="true" label="Alcance"
+									value="#{hacerMantenimiento.proyectoTransaccion.alcance}"
+									style="width:100%; font-size:14px; height:10px" cols="3" />
+									
+									
+							
+								
+						
+								<p:message for="txtAlcance" />
+
+								<p:outputLabel for="txtDocumentosReferencia"
+									value="Documentos de referencia"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:inputTextarea id="txtDocumentosReferencia" required="true"
+									label="Documentos de referencia"
+									value="#{hacerMantenimiento.proyectoTransaccion.documentosReferencia}"
+									style="width:100%; font-size:14px; height:10px" cols="3" />
+									
+									
+										<p:message for="txtDocumentosReferencia" />
+									
+								<p:outputLabel for="txtObservaciones"
+									value="Observaciones"
+									style="font-weight:bold; font-size:14px" />
+
+								<p:inputTextarea id="txtObservaciones" required="true"
+									label="Observaciones"
+									value="#{hacerMantenimiento.proyectoTransaccion.observaciones}"
+									style="width:100%; font-size:14px; height:10px" cols="3" />	
+
+
+								
+							
+								<p:message for="txtObservaciones" />
+						
+						
+						
 
 
 

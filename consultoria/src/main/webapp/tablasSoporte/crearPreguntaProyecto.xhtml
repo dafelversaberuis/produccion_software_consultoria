@@ -40,44 +40,331 @@
 					<p:tab title="#{mensaje.crearPregunta}" id="tabPregunta"
 						titleStyle="font-size:16px" closable="true">
 
-						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank"
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							columnClasses="columna1,columna2,columna1,columna2"
 							style="width:100%">
+
+							<p:outputLabel value="Forma de agregar  *"
+								style="font-weight:bold; font-size:14px" />
+
+							<p:selectOneMenu label="Forma de agregar"
+								title="Forma de agregar" style="width:94%; font-size:14px;"
+								id="lstFormaAgregar" required="true"
+								requiredMessage="#{mensaje.campoRequerido}"
+								value="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar}">
+								<f:selectItem itemValue="I" itemLabel="Por interfaz" />
+								<f:selectItem itemValue="C" itemLabel="Por archivo plano excel" />
+
+
+								<p:ajax event="change" process="@this"
+									update="@this, :formAsignarPregunta:pnlCrearPregunta" />
+
+							</p:selectOneMenu>
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+
+							<p:spacer width="1" />
+							<p:message for="lstFormaAgregar" />
+							<p:spacer width="1" />
+							<p:spacer width="1" />
+
 							<p:outputLabel for="txtNombrePregunta"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
 								value="#{mensaje.pregunta}"
 								style="font-weight:bold; font-size:14px;" />
 							<p:inputText id="txtNombrePregunta"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
 								value="#{hacerMantenimiento.preguntaProyecto.pregunta}"
 								required="true" label="#{mensaje.pregunta}"
 								style="font-size:14px; width:100%" />
-
-							<p:message for="txtNombrePregunta" />
-
-
 							<p:outputLabel for="txtNumeral" value="Numeral:"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
 								style="font-weight:bold; font-size:14px" />
-							<p:inputText id="txtNumeral" 
+							<p:inputText id="txtNumeral"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
 								value="#{hacerMantenimiento.preguntaProyecto.numeral}"
 								label="Numeral" style="width:100px; font-size:14px" />
 
-						
-							<p:message for="txtNumeral" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+							<p:message for="txtNombrePregunta"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+							<p:message for="txtNumeral"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
 
 
 							<p:outputLabel for="txtPosibleEvidencia"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
 								value="#{mensaje.posibleEvidencia}"
 								style="font-weight:bold; font-size:14px" />
 
-							<p:inputTextarea cols="3" style="font-size:14px; width:100%"
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
 								id="txtPosibleEvidencia" required="true"
 								value="#{hacerMantenimiento.preguntaProyecto.posibleEvidencia}" />
 
 
+							<p:outputLabel for="txtHF"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Hallazgo fortaleza"
+								style="font-weight:bold; font-size:14px" />
 
-							<p:message for="txtPosibleEvidencia" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtHF"
+								value="#{hacerMantenimiento.preguntaProyecto.hallazgoPredeterminadoFortaleza}" />
 
 
 
 
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtPosibleEvidencia"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtHF"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+
+
+							<p:outputLabel for="txtHR"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Hallazgo recomendación"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtHR"
+								value="#{hacerMantenimiento.preguntaProyecto.hallazgoPredeterminadoRecomendacion}" />
+							<p:outputLabel for="txtHNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Hallazgo NC"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtHNC"
+								value="#{hacerMantenimiento.preguntaProyecto.hallazgoPredeterminadoNoConformidad}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtHR"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtHNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+
+
+							<p:outputLabel for="txtHC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Hallazgo cumple"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtHC"
+								value="#{hacerMantenimiento.preguntaProyecto.hallazgoPredeterminadoCumple}" />
+								
+							<p:outputLabel for="txtHNA"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Hallazgo No aplica"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtHNA"
+								value="#{hacerMantenimiento.preguntaProyecto.hallazgoPredeterminadoNoAplica}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtHC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtHNA"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+
+
+
+
+
+							<p:outputLabel for="txtARR"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Acciones realizar recomendación"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtARR"
+								value="#{hacerMantenimiento.preguntaProyecto.accionRealizarPredeterminadoRecomendacion}" />
+							<p:outputLabel for="txtARNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Acciones realizar NC"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtARNC"
+								value="#{hacerMantenimiento.preguntaProyecto.accionRealizarPredeterminadoNoConformidad}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtARR"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtARNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+
+
+
+							<p:outputLabel for="txtRR"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Responsable recomendación"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtRR"
+								value="#{hacerMantenimiento.preguntaProyecto.responsablePredeterminadoRecomendacion}" />
+							<p:outputLabel for="txtRNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Responsable NC"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtRNC"
+								value="#{hacerMantenimiento.preguntaProyecto.responsablePredeterminadoNoConformidad}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtRR"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtRNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+
+
+
+
+							<p:outputLabel for="txtACNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Análisis causas NC"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtACNC"
+								value="#{hacerMantenimiento.preguntaProyecto.analisisCausaPredeterminadoNoConformidad}" />
+							<p:outputLabel for="txtENENC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								value="Predet. Evidencia no encontrada NC"
+								style="font-weight:bold; font-size:14px" />
+							<p:inputTextarea cols="3"
+								style="font-size:14px; width:100%; min-height:80px"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}"
+								id="txtENENC"
+								value="#{hacerMantenimiento.preguntaProyecto.evidenciaNoEncontradaPredeterminadoNoConformidad}" />
+
+
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtACNC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+							<p:spacer width="1"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+							<p:message for="txtENENC"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar==null or hacerMantenimiento.preguntaProyecto.tFormaAgregar=='I'}" />
+
+
+
+
+
+
+							<p:panelGrid columns="1" style="width:100%;"
+								rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar!=null and hacerMantenimiento.preguntaProyecto.tFormaAgregar=='C'}"
+								styleClass="ui-panelgrid-blank">
+
+
+
+								<a style="text-decoration: underline; color: #0000FF;"
+									href="#{hacerMantenimiento.host}/tablasSoporte/formato_preguntas_auditoria_x_norma.csv">DESCARGUE
+									PLANTILLA AQUI</a>
+
+							</p:panelGrid>
+
+							<p:outputPanel id="pnlCargado">
+
+								<p:panelGrid columns="6" style="width:100%;"
+									rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar!=null and hacerMantenimiento.preguntaProyecto.tFormaAgregar=='C'}"
+									styleClass="ui-panelgrid-blank">
+
+									<p:outputLabel value="#{mensaje.archivo} *"
+										rendered="#{hacerMantenimiento.preguntaProyecto.tFormaAgregar!=null and hacerMantenimiento.preguntaProyecto.tFormaAgregar=='C'}"
+										style="font-weight:bold; font-size:14px" />
+
+
+									<p:fileUpload id="fileCrear" cancelLabel="true"
+										dragDropSupport="true" style="width:100%;"
+										rendered="#{hacerMantenimiento.preguntaProyecto.tFile==null}"
+										fileUploadListener="#{hacerMantenimiento.recibirArchivoCSV2}"
+										multiple="false" fileLimit="1"
+										fileLimitMessage="Sólo 1 archivo"
+										label="#{mensaje.busqueArchivo}" required="true"
+										requiredMessage="Campo requerido" mode="advanced"
+										update=":form:messages, pnlCargado" auto="true"
+										sizeLimit="1000000"
+										invalidSizeMessage="Excede el tamaño  permitido de 1024KB!"
+										invalidFileMessage="Extensión de archivo incorrecta, solo archivos CSV de excel"
+										allowTypes="/(\.|\/)(csv)$/" />
+
+
+									<p:outputLabel
+										value="#{hacerMantenimiento.preguntaProyecto.tFile.fileName}"
+										rendered="#{hacerMantenimiento.preguntaProyecto.archivo != null}" />
+
+									<p:commandLink value="#{mensaje.limpiar}"
+										style="font-weight:bold; font-size:14px"
+										action="#{hacerMantenimiento.limpiarArchivoCargadoCSV2()}"
+										process="@this" update="pnlCargado"
+										rendered="#{hacerMantenimiento.preguntaProyecto.archivo != null}" />
+
+									<p:graphicImage value="../imagenes/ayuda.png"
+										id="ayudaCargarArchivo2" />
+									<p:tooltip value="Solo archivos CSV (REVISE EL FORMATO)"
+										trackMouse="true" for="ayudaCargarArchivo2" />
+								</p:panelGrid>
+
+
+							</p:outputPanel>
 						</p:panelGrid>
 
 						<p:spacer height="10" />
@@ -86,7 +373,7 @@
 								style="font-size:14px; font-weight: normal !important;"
 								action="#{hacerMantenimiento.crearPreguntaProyecto()}"
 								process=":formAsignarPregunta" value="#{mensaje.guardar}"
-								update=":formAsignarPregunta, :form" />
+								update=":formAsignarPregunta, :form, :formArchivo2" />
 
 						</div>
 
@@ -130,24 +417,34 @@
 							</f:facet>
 
 
-<p:column headerText="Numeral" 
-								sortBy="#{det.numeral}" filterBy="#{det.numeral}"
-								filterMatchMode="contains" 
+							<p:column headerText="Numeral" sortBy="#{det.numeral}"
+								filterBy="#{det.numeral}" filterMatchMode="contains"
 								style="font-size:14px; width:10%">
-								<p:outputLabel value="#{det.numeral}"
-									style="font-weight:normal"  />
-								
+								<p:outputLabel value="#{det.numeral}" style="font-weight:normal" />
+
 							</p:column>
 
 							<p:column headerText="#{mensaje.pregunta}"
 								sortBy="#{det.pregunta}" filterBy="#{det.pregunta}"
 								filterMatchMode="contains" filterStyle="display:none"
 								style="font-size:14px">
-								<p:outputLabel value="#{det.pregunta}"
-									style="font-weight:normal" rendered="#{det.estado == 'A'}" />
-								<p:outputLabel style="font-weight:normal"
-									value="#{det.pregunta} #{mensaje.preguntaInactiva}: "
+
+
+								<p:inputTextarea value="#{det.pregunta}" rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px"
+									rendered="#{det.estado == 'A'}" />
+
+
+								<p:inputTextarea
+									value="#{det.pregunta} #{mensaje.preguntaInactiva}: " rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px"
 									rendered="#{det.estado == 'I'}" />
+
+
+
+
 
 
 								<p:outputLabel value="#{det.fechaEstado}"
@@ -157,17 +454,65 @@
 									<f:convertDateTime pattern=" dd/MM/yyyy" />
 								</p:outputLabel>
 							</p:column>
-							
-							
-							
-							
+
+
+
+
 							<p:column headerText="Posible evidencia"
-								sortBy="#{det.posibleEvidencia}" filterBy="#{det.posibleEvidencia}"
+								sortBy="#{det.posibleEvidencia}"
+								filterBy="#{det.posibleEvidencia}" filterMatchMode="contains"
+								filterStyle="display:none" style="font-size:14px">
+
+
+
+								<p:inputTextarea value="#{det.posibleEvidencia}" rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+							</p:column>
+
+							<p:column headerText="Hallazgo predet. NC"
+								sortBy="#{det.hallazgoPredeterminadoNoConformidad}"
+								filterBy="#{det.hallazgoPredeterminadoNoConformidad}"
 								filterMatchMode="contains" filterStyle="display:none"
 								style="font-size:14px">
-								<p:outputLabel value="#{det.posibleEvidencia}"
-									style="font-weight:normal"  />
-								
+
+
+
+								<p:inputTextarea
+									value="#{det.hallazgoPredeterminadoNoConformidad}" rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+							</p:column>
+
+							<p:column headerText="Hallazgo predet. Fortaleza"
+								sortBy="#{det.hallazgoPredeterminadoFortaleza}"
+								filterBy="#{det.hallazgoPredeterminadoFortaleza}"
+								filterMatchMode="contains" filterStyle="display:none"
+								style="font-size:14px">
+
+
+
+								<p:inputTextarea value="#{det.hallazgoPredeterminadoFortaleza}"
+									rows="2" readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
+							</p:column>
+
+							<p:column headerText="Hallazgo predet. Recomedación"
+								sortBy="#{det.hallazgoPredeterminadoRecomendacion}"
+								filterBy="#{det.hallazgoPredeterminadoRecomendacion}"
+								filterMatchMode="contains" filterStyle="display:none"
+								style="font-size:14px">
+
+
+
+								<p:inputTextarea
+									value="#{det.hallazgoPredeterminadoRecomendacion}" rows="2"
+									readonly="true" autoResize="false"
+									style="font-size:14px; width:100%; background-color:#D3D3D3; min-height:50px" />
+
 							</p:column>
 
 
@@ -179,7 +524,7 @@
 									style="font-weight:normal" value="#{mensaje.ESTADO_INACTIVO}" />
 							</p:column>
 
-<!--  
+							<!--  
 							<p:column headerText="#{mensaje.posicion} relativa"
 								style="font-size:14px; width:130px; text-align:right"
 								sortBy="#{det.posicion}" filterBy="#{det.posicion}"
@@ -189,13 +534,14 @@
 							</p:column>
 							
 							-->
-							
+
 							<p:column headerText="#{mensaje.posicion} real"
 								style="font-size:14px; width:130px; text-align:right"
 								sortBy="#{det.posicion}" filterBy="#{det.posicion}"
 								filterMatchMode="contains" filterStyle="display:none">
 
-								<p:outputLabel style="font-weight:normal" value="#{det.posicion}" />
+								<p:outputLabel style="font-weight:normal"
+									value="#{det.posicion}" />
 							</p:column>
 
 
