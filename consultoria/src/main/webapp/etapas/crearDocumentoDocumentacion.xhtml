@@ -19,7 +19,7 @@
 						<span class="ui-message-warn-detail"
 							style="font-size: 12px; width: 100%; font-weight: bold;">
 							<b><span style="font-size: 14px">Información
-									importante:</span></b><br />***ESTOS DOCUMENTOS LOS VISUALIZA ISOLUCIONES
+									importante:</span></b><br />***ESTOS DOCUMENTOS LOS VISUALIZA LA EMPRESA
 							Y CLIENTE.
 						</span>
 					</div>
@@ -63,7 +63,7 @@
 							style="font-weight:bold; font-size:14px" />
 
 						<p:outputLabel
-							value="Ejemplos para Isoluciones/Consultores(No los ve el cliente)"
+							value="Ejemplos para Consultores(No los ve el cliente)"
 							rendered="#{administrarEtapa.tipoDocumentoSeleccionado!='CLIENTE'}"
 							style="font-weight:bold; font-size:14px; color: orange" />
 
@@ -255,14 +255,14 @@
 								filterBy="#{loc.descargable}" style="font-size:12px">
 
 								<p:outputLabel
-									value="#{loc.consultor.nombres} #{loc.consultor.apellidos}(Consultor Isoluciones)"
+									value="#{loc.consultor.nombres} #{loc.consultor.apellidos}(Consultor)"
 									rendered="#{loc.consultor!=null and loc.consultor.id!=null}"
 									style="font-weight:normal; font-size:12px" />
 								<p:outputLabel value="#{loc.proyectoCliente.cliente.cliente}"
 									rendered="#{loc.proyectoCliente!=null and loc.proyectoCliente.id!=null and !(loc.personal!=null and loc.personal.id!=null)}"
 									style="font-weight:normal; font-size:12px" />
 
-								<p:outputLabel value="(Consultor Isoluciones.)"
+								<p:outputLabel value="(Consultor.)"
 									rendered="#{loc.personal!=null and loc.personal.id!=null}"
 									style="font-weight:normal; font-size:12px" />
 

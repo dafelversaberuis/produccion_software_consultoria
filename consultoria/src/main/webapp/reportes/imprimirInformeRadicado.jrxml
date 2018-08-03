@@ -58,58 +58,58 @@
 			<rectangle>
 				<reportElement uuid="384a7038-e912-494c-872d-54c0e4bbdfcc" x="0" y="0" width="572" height="76"/>
 			</rectangle>
-			<rectangle>
-				<reportElement uuid="59df9c64-68bf-4085-b6fb-b31023249677" x="197" y="0" width="261" height="76"/>
-			</rectangle>
 			<staticText>
-				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="197" y="32" width="261" height="20"/>
-				<textElement textAlignment="Center">
+				<reportElement uuid="7602f13d-4fec-424a-ba60-2e21fbca2188" x="515" y="42" width="53" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PÁGINA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a8914b93-3606-438c-a09f-96ba169b558c" x="4" y="1" width="454" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INFORME DE INDICADORES DE AUDITORÍA]]></text>
 			</staticText>
-			<rectangle>
-				<reportElement uuid="552b7d2f-e580-4158-bb36-091ac6b01179" x="458" y="0" width="114" height="41"/>
-			</rectangle>
+			<line>
+				<reportElement uuid="483c2688-eb44-426f-8e2a-5e245bf75bc7" x="458" y="1" width="1" height="75"/>
+			</line>
+			<textField>
+				<reportElement uuid="848d857e-c10c-4d7a-86a0-0c569cdf7e87" x="470" y="51" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" DE"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="316873c3-d2e3-48d1-a9c7-4e5983a341af" x="0" y="24" width="571" height="1"/>
+			</line>
 			<staticText>
-				<reportElement uuid="6fba74c2-3694-4ee6-960e-99d1547250be" x="514" y="5" width="53" height="20"/>
+				<reportElement uuid="6fba74c2-3694-4ee6-960e-99d1547250be" x="514" y="4" width="53" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VERSIÓN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5334f247-1d82-452e-ad09-d0ccd397f86e" x="494" y="14" width="73" height="20"/>
+				<reportElement uuid="5334f247-1d82-452e-ad09-d0ccd397f86e" x="494" y="13" width="73" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[01]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="7602f13d-4fec-424a-ba60-2e21fbca2188" x="515" y="51" width="53" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PÁGINA:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="848d857e-c10c-4d7a-86a0-0c569cdf7e87" x="470" y="60" width="80" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" DE"]]></textFieldExpression>
-			</textField>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement uuid="d77b52cd-3c97-41ab-b8eb-8704969e663a" x="4" y="25" width="454" height="49"/>
+				<imageExpression><![CDATA[$P{pRutaLogo}]]></imageExpression>
+			</image>
 			<textField evaluationTime="Report">
-				<reportElement uuid="57dbcaa2-c43a-4761-84fa-d66f01be287e" x="550" y="60" width="40" height="20"/>
+				<reportElement uuid="57dbcaa2-c43a-4761-84fa-d66f01be287e" x="550" y="51" width="40" height="20"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
-				<reportElement uuid="d77b52cd-3c97-41ab-b8eb-8704969e663a" x="6" y="5" width="189" height="69"/>
-				<imageExpression><![CDATA[$P{pRutaLogo}]]></imageExpression>
-			</image>
 		</band>
 	</pageHeader>
 	<detail>

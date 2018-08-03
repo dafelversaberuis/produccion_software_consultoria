@@ -310,10 +310,10 @@ a:focus {
 /*------------------------------------------*/
 
 .overlay {
-	background-image: url(../img/thumbs/overlay.png);
-	background-color: rgba(0, 0, 0, 0.4); 
+	/*background-image: url(../img/thumbs/overlay.png);
+	background-color: rgba(0, 0, 0, 0.1); 
 	background-repeat: repeat;
-	height: 100%;
+	height: 100%;*/
 }
 
 /*------------------------------------------*/

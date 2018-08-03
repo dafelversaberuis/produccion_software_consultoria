@@ -235,7 +235,7 @@
 									update=":formAsignarPregunta, :form" />
 
 
-								<p:commandButton id="btnIrTareas"
+								<p:commandButton id="btnIrTareas" rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S'}"
 									title="Actividades para las etapas de planificación y documentación"
 									style="background-origin: content-box; background-image: url('../imagenes/a_mayuscula.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 									action="#{hacerMantenimiento.asignarProyecto(loc,'VISTA_TAREAS')}"

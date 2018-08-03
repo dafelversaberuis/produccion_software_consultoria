@@ -190,6 +190,22 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	private Date												fechaDesdeFiltro;
 	private Date												fechaHastaFiltro;
 
+	public String getLogoSoftware() {
+
+		String logo = "iconsulting_software";
+		try {
+
+			ParametroAuditoria pa = IConsultasDAO.getParametroAuditoria();
+			if (pa != null && pa.getGenerico() != null && pa.getGenerico().equals("S")) {
+				logo = "generico";
+			}
+
+		} catch (Exception e) {
+
+		}
+		return logo;
+	}
+
 	public String asignarDiagnosticoAud(String aEsDiagnostico) {
 		this.esDiagnostico = aEsDiagnostico;
 		return "";
@@ -358,7 +374,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			List<String> aCorreos = new ArrayList<String>();
 			aCorreos.add(this.proyectoCliente.getCliente().getCorreoElectronico());
 			aCorreos.add(this.proyectoCliente.getConsultor().getCorreoElectronico());
-			IEmail.enviarCorreoMasivo(this.getMensaje("mensajeCita", this.proyectoCliente.getCliente().getCliente(), this.proyectoCliente.getProyecto().getNombre(), this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos(), this.getFechaHoraColombia(this.citaSeleccionada.getFechaInicio()) + " a " + this.getFechaHoraColombia(this.citaSeleccionada.getFechaFin()), getEstadoTexto(this.citaSeleccionada.getEstado())), "RECORDATORIO CITA CONSULTORIA ISOLUCIONES", aCorreos);
+			IEmail.enviarCorreoMasivo(this.getMensaje("mensajeCita", this.proyectoCliente.getCliente().getCliente(), this.proyectoCliente.getProyecto().getNombre(), this.proyectoCliente.getConsultor().getNombres() + " " + this.proyectoCliente.getConsultor().getApellidos(), this.getFechaHoraColombia(this.citaSeleccionada.getFechaInicio()) + " a " + this.getFechaHoraColombia(this.citaSeleccionada.getFechaFin()), getEstadoTexto(this.citaSeleccionada.getEstado())), "RECORDATORIO CITA CONSULTORIA EMPRESA", aCorreos);
 
 			this.mostrarMensajeGlobalPersonalizado("CORREOS RECORDATORIOS ENVIADOS A CONSULTOR Y CLIENTE", "exito");
 
@@ -2654,6 +2670,40 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		}
 	}
 
+	public void guardarFirmaComoImagen4(String aSignature, String aNombreFirma) {
+		try {
+			FirmaComoImagen firma = new FirmaComoImagen();
+			byte[] archivo = firma.getImagenComoByte(aSignature);
+			File outputfile = new File(this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas4/" + aNombreFirma + ".png");
+
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(archivo));
+			if (img != null) {
+				ImageIO.write(img, "png", outputfile);
+			}
+
+		} catch (Exception e) {
+			// IConstantes.log.error(e, e);
+
+		}
+	}
+
+	public void guardarFirmaComoImagen5(String aSignature, String aNombreFirma) {
+		try {
+			FirmaComoImagen firma = new FirmaComoImagen();
+			byte[] archivo = firma.getImagenComoByte(aSignature);
+			File outputfile = new File(this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas5/" + aNombreFirma + ".png");
+
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(archivo));
+			if (img != null) {
+				ImageIO.write(img, "png", outputfile);
+			}
+
+		} catch (Exception e) {
+			// IConstantes.log.error(e, e);
+
+		}
+	}
+
 	/**
 	 * Obtiene la decisi�n a tomar de imprimir
 	 * 
@@ -2674,6 +2724,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 		else if (aDecision != null && aDecision.equals("P")) {
 			// NUEVO PLAN DE ACCION
 			this.personaDiagnostico.settTipoReporte("P");
+
+		} else if (aDecision != null && aDecision.equals("CA")) {
+			// NUEVO PLAN DE ACCION
+			this.personaDiagnostico.settTipoReporte("CA");
 
 		} else {
 			// LISTA CHEQUEO
@@ -3344,10 +3398,19 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				this.guardarFirmaComoImagen3(this.personaDiagnostico.getFirma3(), "cliente" + this.proyectoCliente.getId());
 			}
 
+			if (this.personaDiagnostico.getFirma4() != null) {
+				this.guardarFirmaComoImagen4(this.personaDiagnostico.getFirma4(), "cliente" + this.proyectoCliente.getId());
+			}
+
+			if (this.personaDiagnostico.getFirma5() != null) {
+				this.guardarFirmaComoImagen5(this.personaDiagnostico.getFirma5(), "cliente" + this.proyectoCliente.getId());
+			}
+
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			int sw = 0;
 			int swNuevo = 0;
 			int swnNoConforme = 0;
+			int swnNoConformeSolo = 0;
 
 			for (Diagnostico d : this.diagnostico) {
 
@@ -3358,6 +3421,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				sw = 0;
 				swNuevo = 0;
 				swnNoConforme = 0;
+				swnNoConformeSolo = 0;
 				d.settHallazgoSeleccionado(null);
 				for (EstadoDiagnostico e : d.gettEstadosDiagnostico()) {
 					if (e.istSeleccionado() && e.getEstado().getId().intValue() == 7) {
@@ -3383,6 +3447,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 
 						d.settHallazgoSeleccionado("3");
 						swnNoConforme = 1;
+						swnNoConformeSolo = 1;
 						d.settTipo("CERRADA");
 
 					}
@@ -3407,12 +3472,19 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					} else if (this.personaDiagnostico.gettTipoReporte().equals("J")) {
 						diagnosticoImpresion.add(d);
 					}
-				} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("P")) {
+				} else if (this.personaDiagnostico.gettTipoReporte() != null && (this.personaDiagnostico.gettTipoReporte().equals("P"))) {
 					if (swnNoConforme == 1) {
 						// plan de accion solo no conformes Y RECOMEDACIONES
 						diagnosticoImpresion.add(d);
 					}
-				} else {
+				}else if (this.personaDiagnostico.gettTipoReporte() != null && (this.personaDiagnostico.gettTipoReporte().equals("CA"))) {
+					if (swnNoConformeSolo == 1) {
+						// plan de accion solo no conformes 
+						diagnosticoImpresion.add(d);
+					}
+				}
+				
+				else {
 					if (this.personaDiagnostico.gettAperece() != null && this.personaDiagnostico.gettAperece().equals("N")) {
 						if (sw == 0) {
 							diagnosticoImpresion.add(d);
@@ -3464,6 +3536,10 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 				reporte = "imprimirInformePlanAccionDiagnostico.jasper";
 				// el nuevo reporte PLAN DE ACCION
 
+			} else if (this.personaDiagnostico.gettTipoReporte() != null && this.personaDiagnostico.gettTipoReporte().equals("CA")) {
+				reporte = "imprimirInformeSolicitudAccionCorrectiva.jasper";
+				// el nuevo reporte PLAN DE ACCION
+
 			} else {
 				reporte = "imprimirInformeDiagnosticoV1.jasper";
 				// el anterior
@@ -3481,6 +3557,8 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 			parametros.put("rutaFirmas", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas/");
 			parametros.put("rutaFirmas2", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas2/");
 			parametros.put("rutaFirmas3", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas3/");
+			parametros.put("rutaFirmas4", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas4/");
+			parametros.put("rutaFirmas5", this.getPath(IConstantes.PAQUETE_IMAGENES) + "/fotosFirmas5/");
 			parametros.put("pProyectoCliente", this.proyectoCliente);
 			parametros.put("pCliente", this.proyectoCliente.getCliente());
 
@@ -3975,6 +4053,14 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 	 */
 	public void limpiarFirmaEntrevistado3() {
 		this.personaDiagnostico.setFirma3(null);
+	}
+
+	public void limpiarFirmaEntrevistado4() {
+		this.personaDiagnostico.setFirma4(null);
+	}
+
+	public void limpiarFirmaEntrevistado5() {
+		this.personaDiagnostico.setFirma5(null);
 	}
 
 	/**
@@ -4908,7 +4994,7 @@ public class AdministrarEtapa extends ConsultarFuncionesAPI implements Serializa
 					aDiagnostico.setAnalisisCausa("-");
 					aDiagnostico.setAccionesRealizar("-");
 					aDiagnostico.setEvidenciaNoEncontrada("-");
-					aDiagnostico.setResponsable("LIDER SOSTENIBILIDAD");
+					aDiagnostico.setResponsable("-");
 
 					if (aEstado.getEstado().getId().intValue() == IConstantes.ID_ESTADO_RECOMENDACION.intValue()) {
 

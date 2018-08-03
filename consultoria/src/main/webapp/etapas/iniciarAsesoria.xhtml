@@ -16,14 +16,14 @@
 						style="font-size: 14px">INSTRUCCIONES:</span></b><br />(A)Entre el
 					cliente/consultor se debe preparar/cuadrar/iniciar la asesoría
 					física o virtual(usando cualquier software: skype, teamviewer o
-					videochat que ofrece Isoluciones)<br />(B)-El cliente debe
+					videochat que ofrece la empresa)<br />(B)-El cliente debe
 					seleccionar el plan del cual se descontarán los minutos<br />(C)
 					Cuando el ambiente de trabajo esté preparado y listo el cliente
 					debe presionar 'Aniciar asesoría' donde ésta inicia y acepta las
 					instrucciones<br />(D)Cuando el tiempo disponible venza o el
 					cliente presione 'finalizar asesoría' ésta terminará <br />(E)El
 					tiempo disponible se irá descontando de los disponibles(A menos que
-					Isoluciones decida ofrecerlo gratis)<br />(F) En caso de cerrar
+					la empresa decida ofrecerlo gratis)<br />(F) En caso de cerrar
 					interfaz o la internet cae el software respeta los tiempos
 					trasncurridos hasta el incidente
 				</span>
@@ -151,8 +151,13 @@
 	<h:form id="formPoll">
 
 		<p:outputPanel rendered="#{administrarEtapa.asesoriaIniciada}">
+			
+			<!-- QUITADO TEMPRALMENTE
 			<p:poll interval="1" listener="#{administrarEtapa.procesarTiempo()}"
 				update=":formConferencia:pnlOutputTiempoGastado" />
+				
+				
+				-->
 		</p:outputPanel>
 	</h:form>
 </ui:composition>

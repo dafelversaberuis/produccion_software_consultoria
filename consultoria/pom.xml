@@ -170,6 +170,8 @@
 		</dependency>
 
 
+<!-- QUITADO TEMPORALMENTE
+
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
@@ -180,6 +182,8 @@
 			<artifactId>quartz-jobs</artifactId>
 			<version>2.2.3</version>
 		</dependency>
+		
+		-->
 
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
@@ -198,8 +202,8 @@
 		</dependency>
 
 
-
-		<!-- push y chat tambien en web xml -->
+<!--
+ quitado temporalmente push y chat tambien en web xml 
 
 		<dependency>
 			<groupId>org.atmosphere</groupId>
@@ -212,7 +216,10 @@
 			<version>2.4.3</version>
 		</dependency>
 
-		<!-- push y chat -->
+	
+		
+		-->
+		
 		
 		
 			<!-- javacsv -->

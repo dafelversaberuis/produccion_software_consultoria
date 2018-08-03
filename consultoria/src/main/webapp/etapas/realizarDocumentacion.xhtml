@@ -179,14 +179,14 @@
 										<p:column rowspan="2" headerText="Observaciones cliente"
 											width="300" />
 										<p:column rowspan="2"
-											headerText="Observaciones/Recomendaciones Isoluciones"
+											headerText="Observaciones/Recomendaciones empresa"
 											width="300" />
 
 										<p:column rowspan="2" headerText="Explicación ejemplos"
 											width="300" />
 
 										<p:column width="300" colspan="2" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}"
-											headerText="Documentos ejemplo para consultores/Isoluciones(No los visualiza el cliente)" />
+											headerText="Documentos ejemplo para consultores(No los visualiza el cliente)" />
 
 										<p:column width="600" colspan="4"
 											headerText="Documentos elaborados por y para cliente" />
@@ -286,7 +286,7 @@
 								<p:column style="vertical-align:middle; text-align:center" rendered="#{administrarSesionCliente.personalSesion.tipoUsuario!='CL'}">
 									<div align="center">
 										<p:commandButton
-											title="DOCUMENTOS EJEMPLO ELABORADOS POR ISOLUCIONES"
+											title="DOCUMENTOS EJEMPLO ELABORADOS POR LA EMPRESA"
 											style="background-origin: content-box; background-image: url('../imagenes/buscar.png'); background-size: cover; background-repeat:no-repeat; width:16px; height:16px; vertical-align:bottom; border:0; background-color:transparent"
 											action="#{administrarEtapa.asignarDocumentacion(loc,'ISOLUCIONES')}"
 											value="" process="@this" update=":formDocumento" />

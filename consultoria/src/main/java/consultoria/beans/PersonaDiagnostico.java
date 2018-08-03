@@ -27,6 +27,15 @@ public class PersonaDiagnostico implements Serializable {
 
 	private String						firma3;
 	private String						requiereFirma3;
+	
+	
+	private String						firma4;
+	private String						firma5;
+	private String						requiereFirma4;
+	
+	
+	
+	
 
 	public PersonaDiagnostico() {
 		this.proyectoCliente = new ProyectoCliente();
@@ -57,6 +66,10 @@ public class PersonaDiagnostico implements Serializable {
 
 		this.estructuraTabla.getPersistencia().put("firma3", this.firma3);
 		this.estructuraTabla.getPersistencia().put("requiere_firma3", this.requiereFirma3);
+		
+		this.estructuraTabla.getPersistencia().put("firma4", this.firma4);
+		this.estructuraTabla.getPersistencia().put("firma5", this.firma5);
+		this.estructuraTabla.getPersistencia().put("requiere_firma4", this.requiereFirma4);
 
 	}
 
@@ -171,6 +184,32 @@ public class PersonaDiagnostico implements Serializable {
 	public void setRequiereFirma3(String requiereFirma3) {
 		this.requiereFirma3 = requiereFirma3;
 	}
+
+	public String getFirma4() {
+		return firma4;
+	}
+
+	public void setFirma4(String firma4) {
+		this.firma4 = firma4;
+	}
+
+	public String getFirma5() {
+		return firma5;
+	}
+
+	public void setFirma5(String firma5) {
+		this.firma5 = firma5;
+	}
+
+	public String getRequiereFirma4() {
+		return requiereFirma4;
+	}
+
+	public void setRequiereFirma4(String requiereFirma4) {
+		this.requiereFirma4 = requiereFirma4;
+	}
+	
+	
 	
 	
 

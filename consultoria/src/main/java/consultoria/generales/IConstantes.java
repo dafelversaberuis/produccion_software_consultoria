@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import org.apache.log4j.Logger;
 
+import consultoria.beans.ParametroAuditoria;
+import consultoria.modulos.IConsultasDAO;
+
 public interface IConstantes {
 
 	// manejo de logs
@@ -11,7 +14,7 @@ public interface IConstantes {
 
 	// validaciones anotaciones beans
 
-	public static String				NOMBRE_SOFTWARE									= "Isoluciones - Consulting Software";
+	public static String				NOMBRE_SOFTWARE									= "iConsulting Software";
 	public static String				VALIDACION_MAXIMA_LONGITUD			= "Máximo {max} caracteres";
 	public static String				VALIDACION_FECHA_FUTURA					= "Debe ser mayor a hoy";
 	public static String				VALIDACION_MINIMA_LONGITUD			= "Mínimo {min} caracteres";
@@ -77,10 +80,12 @@ public interface IConstantes {
 
 	public static final String	PAQUETE_MODULO_REPORTES					= "/reportes/";
 
-	public static final String	HOST														= "http://nuevaversion-produccionconsultoria.193b.starter-ca-central-1.openshiftapps.com/consultoria";
+
+	public static final String	HOST														= getLogoSoftware().equals("generico") ? "http://auditoriaiconsulting1-aic.7e14.starter-us-west-2.openshiftapps.com/consultoria" : "http://nuevaversion-produccionconsultoria.193b.starter-ca-central-1.openshiftapps.com/consultoria";
+	//public static final String	HOST														= getLogoSoftware().equals("generico") ? "http://iconsulting-consultoriagen.193b.starter-ca-central-1.openshiftapps.com/consultoria" : "http://nuevaversion-produccionconsultoria.193b.starter-ca-central-1.openshiftapps.com/consultoria";
 	// public static final String HOST = "http://localhost:8080/consultoria";
 	public static final String	PAQUETE_IMAGENES								= "/imagenes/";
-	public static final String	LOGO1														= "iconsulting_software.png";
+	public static final String	LOGO1														= getLogoSoftware().equals("generico") ? "generico.png" : "iconsulting_software.png";
 	public static final String	LOGO2														= "calidad.png";
 
 	public static String				PAGINA_NO_LOGUEO								= "/index.xhtml?faces-redirect=true";
@@ -92,5 +97,21 @@ public interface IConstantes {
 	public static Integer				META_INFERIOR_DIAGNOSTICO				= 0;
 	public static Integer				META_INTERMEDIA_DIAGNOSTICO			= 50;
 	public static Integer				META_SUPERIOR_DIAGNOSTICO				= 100;
+
+	public static String getLogoSoftware() {
+
+		String logo = "iconsulting_software";
+		try {
+
+			ParametroAuditoria pa = IConsultasDAO.getParametroAuditoria();
+			if (pa != null && pa.getGenerico() != null && pa.getGenerico().equals("S")) {
+				logo = "generico";
+			}
+
+		} catch (Exception e) {
+
+		}
+		return logo;
+	}
 
 }

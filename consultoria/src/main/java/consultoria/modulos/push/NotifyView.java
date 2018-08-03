@@ -5,8 +5,13 @@ import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 
-import org.primefaces.push.EventBus;
-import org.primefaces.push.EventBusFactory;
+
+///TODO LO COMENTADO ES TEMPORAL
+
+
+//
+//import org.primefaces.push.EventBus;
+//import org.primefaces.push.EventBusFactory;
 
 @ManagedBean
 public class NotifyView implements Serializable {
@@ -49,13 +54,13 @@ public class NotifyView implements Serializable {
 		this.canal = canal;
 	}
 
-	public void send() {
-		try {
-			EventBus eventBus = EventBusFactory.getDefault().eventBus();
-			eventBus.publish(CHANNEL, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACION:", detail));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public void send() {
+//		try {
+//			EventBus eventBus = EventBusFactory.getDefault().eventBus();
+//			eventBus.publish(CHANNEL, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACION:", detail));
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

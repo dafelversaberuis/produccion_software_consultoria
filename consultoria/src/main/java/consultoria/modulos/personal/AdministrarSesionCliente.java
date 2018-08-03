@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 
 import consultoria.beans.Cliente;
 import consultoria.beans.Consultor;
+import consultoria.beans.ParametroAuditoria;
 import consultoria.beans.Personal;
 import consultoria.generales.ConsultarFuncionesAPI;
 import consultoria.generales.IConstantes;
@@ -24,6 +25,8 @@ public class AdministrarSesionCliente extends ConsultarFuncionesAPI implements S
 	private static final long	serialVersionUID	= -8153708434415072107L;
 	private Personal					personalSesion;
 	private Personal					personal;
+	
+	private String generico;
 
 	public void init() {
 
@@ -143,6 +146,9 @@ public class AdministrarSesionCliente extends ConsultarFuncionesAPI implements S
 		return pagina;
 
 	}
+	
+	
+
 
 	/**
 	 * Permite el acceso del personal
@@ -319,5 +325,26 @@ public class AdministrarSesionCliente extends ConsultarFuncionesAPI implements S
 	public void setPersonal(Personal personal) {
 		this.personal = personal;
 	}
+
+	public String getGenerico() {
+		try {
+			if (this.generico == null) {
+				ParametroAuditoria pa = IConsultasDAO.getParametroAuditoria();
+				if (pa != null && pa.getGenerico() != null && pa.getGenerico().equals("S")) {
+					generico = "S";
+				}
+			}
+		} catch (Exception e) {
+			IConstantes.log.error(e, e);
+		}
+		return generico;
+	}
+
+	public void setGenerico(String generico) {
+		
+		this.generico = generico;
+	}
+	
+	
 
 }

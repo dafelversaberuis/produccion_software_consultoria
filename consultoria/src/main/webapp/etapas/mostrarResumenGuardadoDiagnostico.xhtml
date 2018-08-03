@@ -16,6 +16,13 @@
 					style="width:100%" cellpadding="0" columns="1">
 
 
+<p:commandButton id="btnResumen7" process="@this" ajax="false"
+						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"
+						update=":form, :formResumen:pnlResumen" immediate="true"
+						style="font-size:16px; font-weight: bold !important; width:100%"
+						action="#{administrarEtapa.decidirReporte('CA')}"
+						value="IMPRIMIR SOLICITUD ACCION CORRECTIVA(SOLO NO CONFORMIDADES)" />
+
 
 					<p:commandButton id="btnResumen1" process="@this" ajax="false"
 						rendered="#{administrarEtapa.esDiagnostico!=null and administrarEtapa.esDiagnostico=='N'}"

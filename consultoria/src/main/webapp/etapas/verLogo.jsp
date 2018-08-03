@@ -14,9 +14,9 @@
 
 <html>
 <head>
-<title>ISOLUCIONES S.A.S</title>
+<title>iConsulting</title>
 <meta name="Description"
-	content="Isoluciones, Innovación en Gestión Empresarial">
+	content="Innovación en Gestión Empresarial">
 
 
 <? header("Cache-Control: no-cache, must-revalidate");?>

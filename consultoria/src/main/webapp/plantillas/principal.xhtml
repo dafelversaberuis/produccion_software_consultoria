@@ -9,9 +9,9 @@
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1, maximum-scale=1" />
 	<meta name="author" content="Quimerapps" />
-	<title>Isoluciones - Consulting Software</title>
-	<meta name="description" content="Isoluciones - Consulting Software" />
-	<meta name="keywords" content="Isoluciones - Consulting Software" />
+	<title>iConsulting Software</title>
+	<meta name="description" content="iConsulting Software" />
+	<meta name="keywords" content="iConsulting Software" />
 	<link
 		href='http://fonts.googleapis.com/css?family=Roboto:100,300,300italic,400,700|Julius+Sans+One|Roboto+Condensed:300,400'
 		rel='stylesheet' type='text/css' />
@@ -42,8 +42,8 @@
 
 			<h1 id="logo" style="font-size: 0 !important;">
 				<a href="/consultoria/home.jsf"><img
-					src="/consultoria/imagenes/iconsulting_software.png"
-					alt="Isoluciones - Consulting Software"
+					src="/consultoria/imagenes/#{administrarEtapa.getLogoSoftware()}.png"
+					alt="iConsulting Software"
 					style="height: 80px; width: auto" /> </a>
 			</h1>
 
@@ -68,7 +68,7 @@
 					<ul class="">
 					
 					<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 							<li><p:commandLink value="Diagnóstico" title="Diagnóstico"
@@ -92,7 +92,7 @@
 						</h:panelGroup>
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 
@@ -126,7 +126,7 @@
 						
 						
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 							<li><p:commandLink value="Implementación"
 									title="Implementación"
@@ -137,7 +137,7 @@
 
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 
@@ -150,7 +150,7 @@
 
 
 						<h:panelGroup
-							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
+							rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and (administrarSesionCliente.personalSesion.tipoUsuario=='CL' or administrarSesionCliente.personalSesion.tipoUsuario=='CO' or administrarSesionCliente.personalSesion.tipoUsuario=='A')}">
 
 
 
@@ -172,7 +172,7 @@
 						<ul class="">
 
 							<h:panelGroup
-								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
 
 								<li><p:commandLink value="IVA / Impuestos"
 										title="IVA / Impuestos"
@@ -183,7 +183,7 @@
 
 
 							<h:panelGroup
-								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.getGenerico()!='S' and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
 
 								<li><p:commandLink value="Planes consultoría"
 										title="Planes consultoría"
@@ -193,7 +193,7 @@
 							</h:panelGroup>
 
 							<h:panelGroup
-								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A'}">
+								rendered="#{administrarSesionCliente!=null and administrarSesionCliente.personalSesion!=null and administrarSesionCliente.personalSesion.tipoUsuario=='A' and 1==2}">
 
 								<li><p:commandLink
 										value="Objetivos, alcance, documentos referencia auditoría"

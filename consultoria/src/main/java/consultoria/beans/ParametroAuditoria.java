@@ -12,8 +12,9 @@ public class ParametroAuditoria implements Serializable {
 	private String						objetivos;
 	private String						alcance;
 	private String						documentosReferencia;
-	private String 						observaciones;
-	
+	private String						observaciones;
+
+	private String						generico;
 
 	private EstructuraTabla		estructuraTabla;
 
@@ -29,6 +30,7 @@ public class ParametroAuditoria implements Serializable {
 		this.estructuraTabla.getPersistencia().put("alcance", this.alcance);
 		this.estructuraTabla.getPersistencia().put("documentos_referencia", this.documentosReferencia);
 		this.estructuraTabla.getPersistencia().put("observaciones", this.observaciones);
+		this.estructuraTabla.getPersistencia().put("generico", this.generico);
 
 	}
 
@@ -79,8 +81,13 @@ public class ParametroAuditoria implements Serializable {
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
 	}
-	
-	
-	
+
+	public String getGenerico() {
+		return generico;
+	}
+
+	public void setGenerico(String generico) {
+		this.generico = generico;
+	}
 
 }

@@ -6,10 +6,19 @@ import org.primefaces.push.Encoder;
 /**
  * A Simple {@link org.primefaces.push.Encoder} that decode a {@link Message} into a simple JSON object.
  */
-public final class MessageEncoder implements Encoder<Message, String> {
- 
-    //@Override
-    public String encode(Message message) {
-        return new JSONObject(message).toString();
-    }
+
+
+///TODO LO COMENTADO ES TEMPORAL
+
+public final class MessageEncoder {
+	 
+
 }
+
+//public final class MessageEncoder implements Encoder<Message, String> {
+// 
+//    //@Override
+//    public String encode(Message message) {
+//        return new JSONObject(message).toString();
+//    }
+//}

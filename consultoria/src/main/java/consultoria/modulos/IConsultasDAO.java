@@ -259,7 +259,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT c.*, cl.cliente, cl.representante, cl.nit, pr.nombre FROM cita c");
+			sql.append("  SELECT c.*, cl.cliente, cl.representante, cl.nit, pr.nombre, cl.direccion FROM cita c");
 			sql.append("  INNER JOIN proyectos_cliente p ON  p.id = c.id_proyecto_cliente");
 			sql.append("  INNER JOIN clientes cl ON  cl.id = p.id_cliente");
 			sql.append("  INNER JOIN proyectos pr ON  pr.id = p.id_proyecto WHERE 1=1");
@@ -295,6 +295,7 @@ public interface IConsultasDAO {
 				cita.getProyectoCliente().getCliente().setNit((String) rs.getObject("nit"));
 				cita.getProyectoCliente().getCliente().setRepresentante((String) rs.getObject("representante"));
 				cita.getProyectoCliente().getCliente().setCliente((String) rs.getObject("cliente"));
+				cita.getProyectoCliente().getCliente().setDireccion((String) rs.getObject("direccion"));
 
 				cita.setEvent(new DefaultScheduleEvent(cita.getTituloCita(), (Date) rs.getObject("fecha_inicio"), (Date) rs.getObject("fecha_fin")));
 				cita.setFechaInicio((Date) rs.getObject("fecha_inicio"));
@@ -1668,6 +1669,10 @@ public interface IConsultasDAO {
 				persona.setFirma3((String) rs.getObject("firma3"));
 				persona.setRequiereFirma3((String) rs.getObject("requiere_firma3"));
 
+				persona.setFirma4((String) rs.getObject("firma4"));
+				persona.setFirma5((String) rs.getObject("firma5"));
+				persona.setRequiereFirma4((String) rs.getObject("requiere_firma4"));
+
 			}
 
 		} catch (Exception e) {
@@ -1722,28 +1727,21 @@ public interface IConsultasDAO {
 
 				registro.getProyectoCliente().setId((Integer) rs.getObject("id_proyecto_cliente"));
 
-				
-				
-				
-				
 				registro.getPreguntaProyecto().setHallazgoPredeterminadoFortaleza((String) rs.getObject("hallazgo_pred_fortaleza"));
 				registro.getPreguntaProyecto().setHallazgoPredeterminadoRecomendacion((String) rs.getObject("hallazgo_pred_recomendacion"));
 				registro.getPreguntaProyecto().setHallazgoPredeterminadoNoConformidad((String) rs.getObject("hallazgo_pred_no_conformidad"));
-				
+
 				registro.getPreguntaProyecto().setHallazgoPredeterminadoCumple((String) rs.getObject("hallazgo_pred_cumple"));
 				registro.getPreguntaProyecto().setHallazgoPredeterminadoNoAplica((String) rs.getObject("hallazgo_pred_no_aplica"));
-				
+
 				registro.getPreguntaProyecto().setAnalisisCausaPredeterminadoNoConformidad((String) rs.getObject("ac_pred_no_conformidad"));
 				registro.getPreguntaProyecto().setAccionRealizarPredeterminadoNoConformidad((String) rs.getObject("ar_pred_no_conformidad"));
 				registro.getPreguntaProyecto().setEvidenciaNoEncontradaPredeterminadoNoConformidad((String) rs.getObject("ene_pred_no_conformidad"));
 				registro.getPreguntaProyecto().setResponsablePredeterminadoNoConformidad((String) rs.getObject("r_pred_no_conformidad"));
-				
+
 				registro.getPreguntaProyecto().setAccionRealizarPredeterminadoRecomendacion((String) rs.getObject("ar_pred_recomendacion"));
-				registro.getPreguntaProyecto().setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));  
-				
-				
-				
-				
+				registro.getPreguntaProyecto().setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));
+
 				registro.getPreguntaProyecto().setPosibleEvidencia((String) rs.getObject("posible_evidencia"));
 				registro.getPreguntaProyecto().setPosicion((Integer) rs.getObject("posicion"));
 				registro.getPreguntaProyecto().setPregunta((String) rs.getObject("pregunta"));
@@ -1864,6 +1862,7 @@ public interface IConsultasDAO {
 				proyecto.getCliente().setId((Integer) rs.getObject("id_cliente"));
 				proyecto.getCliente().setCliente((String) rs.getObject("cliente"));
 				proyecto.getCliente().setNit((String) rs.getObject("nit"));
+				proyecto.getCliente().setDireccion((String) rs.getObject("direccion"));
 
 				proyecto.getConsultor().setId((Integer) rs.getObject("id_consultor"));
 				proyecto.getConsultor().setNombres((String) rs.getObject("nombres"));
@@ -1963,6 +1962,7 @@ public interface IConsultasDAO {
 				cliente.setId((Integer) rs.getObject("id"));
 				cliente.setCliente((String) rs.getObject("cliente"));
 				cliente.setNit((String) rs.getObject("nit"));
+				cliente.setDireccion((String) rs.getObject("direccion"));
 				cliente.setRepresentante((String) rs.getObject("representante"));
 				cliente.setCorreoElectronico((String) rs.getObject("correo_electronico"));
 				cliente.setClave((String) rs.getObject("clave"));
@@ -2097,21 +2097,21 @@ public interface IConsultasDAO {
 				pregunta.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 
 				pregunta.setNumeral((String) rs.getObject("numeral"));
-				
+
 				pregunta.setHallazgoPredeterminadoFortaleza((String) rs.getObject("hallazgo_pred_fortaleza"));
 				pregunta.setHallazgoPredeterminadoRecomendacion((String) rs.getObject("hallazgo_pred_recomendacion"));
 				pregunta.setHallazgoPredeterminadoNoConformidad((String) rs.getObject("hallazgo_pred_no_conformidad"));
-				
+
 				pregunta.setHallazgoPredeterminadoCumple((String) rs.getObject("hallazgo_pred_cumple"));
 				pregunta.setHallazgoPredeterminadoNoAplica((String) rs.getObject("hallazgo_pred_no_aplica"));
-				
+
 				pregunta.setAnalisisCausaPredeterminadoNoConformidad((String) rs.getObject("ac_pred_no_conformidad"));
 				pregunta.setAccionRealizarPredeterminadoNoConformidad((String) rs.getObject("ar_pred_no_conformidad"));
 				pregunta.setEvidenciaNoEncontradaPredeterminadoNoConformidad((String) rs.getObject("ene_pred_no_conformidad"));
 				pregunta.setResponsablePredeterminadoNoConformidad((String) rs.getObject("r_pred_no_conformidad"));
-				
+
 				pregunta.setAccionRealizarPredeterminadoRecomendacion((String) rs.getObject("ar_pred_recomendacion"));
-				pregunta.setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));  
+				pregunta.setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));
 
 				preguntas.add(pregunta);
 			}
@@ -2267,23 +2267,21 @@ public interface IConsultasDAO {
 				pregunta.getProyecto().setId((Integer) rs.getObject("id_proyecto"));
 
 				pregunta.setNumeral((String) rs.getObject("numeral"));
-				
-				
+
 				pregunta.setHallazgoPredeterminadoFortaleza((String) rs.getObject("hallazgo_pred_fortaleza"));
 				pregunta.setHallazgoPredeterminadoRecomendacion((String) rs.getObject("hallazgo_pred_recomendacion"));
 				pregunta.setHallazgoPredeterminadoNoConformidad((String) rs.getObject("hallazgo_pred_no_conformidad"));
-				
+
 				pregunta.setHallazgoPredeterminadoCumple((String) rs.getObject("hallazgo_pred_cumple"));
 				pregunta.setHallazgoPredeterminadoNoAplica((String) rs.getObject("hallazgo_pred_no_aplica"));
-				
+
 				pregunta.setAnalisisCausaPredeterminadoNoConformidad((String) rs.getObject("ac_pred_no_conformidad"));
 				pregunta.setAccionRealizarPredeterminadoNoConformidad((String) rs.getObject("ar_pred_no_conformidad"));
 				pregunta.setEvidenciaNoEncontradaPredeterminadoNoConformidad((String) rs.getObject("ene_pred_no_conformidad"));
 				pregunta.setResponsablePredeterminadoNoConformidad((String) rs.getObject("r_pred_no_conformidad"));
-				
+
 				pregunta.setAccionRealizarPredeterminadoRecomendacion((String) rs.getObject("ar_pred_recomendacion"));
-				pregunta.setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));  
-				
+				pregunta.setResponsablePredeterminadoRecomendacion((String) rs.getObject("r_pred_recomendacion"));
 
 				preguntas.add(pregunta);
 			}
@@ -2399,6 +2397,7 @@ public interface IConsultasDAO {
 				parametroAuditoria.setAlcance((String) rs.getObject("alcance"));
 				parametroAuditoria.setDocumentosReferencia((String) rs.getObject("documentos_referencia"));
 				parametroAuditoria.setObservaciones((String) rs.getObject("observaciones"));
+				parametroAuditoria.setGenerico((String) rs.getObject("generico"));
 			}
 
 		} catch (Exception e) {
@@ -2510,6 +2509,7 @@ public interface IConsultasDAO {
 				cliente.setId((Integer) rs.getObject("id"));
 				cliente.setCliente((String) rs.getObject("cliente"));
 				cliente.setNit((String) rs.getObject("nit"));
+				cliente.setDireccion((String) rs.getObject("direccion"));
 				cliente.setRepresentante((String) rs.getObject("representante"));
 				cliente.setCorreoElectronico((String) rs.getObject("correo_electronico"));
 				cliente.setClave((String) rs.getObject("clave"));
@@ -2581,6 +2581,7 @@ public interface IConsultasDAO {
 				cliente.setId((Integer) rs.getObject("id"));
 				cliente.setCliente((String) rs.getObject("cliente"));
 				cliente.setNit((String) rs.getObject("nit"));
+				cliente.setDireccion((String) rs.getObject("direccion"));
 				cliente.setRepresentante((String) rs.getObject("representante"));
 				cliente.setCorreoElectronico((String) rs.getObject("correo_electronico"));
 				cliente.setClave((String) rs.getObject("clave"));
@@ -2669,7 +2670,7 @@ public interface IConsultasDAO {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("  SELECT p.*, c.cliente, c.nit, cr.nombres, cr.apellidos, pr.nombre, c.correo_electronico, cr.correo_electronico correo_consultor, c.representante, encode(cr.archivo::bytea, 'base64') foto_decodificada, encode(c.archivo::bytea, 'base64') foto_decodificada2, pr.objetivos, pr.alcance, pr.documentos_referencia, pr.observaciones ");
+			sql.append("  SELECT p.*, c.direccion, c.cliente, c.nit, cr.nombres, cr.apellidos, pr.nombre, c.correo_electronico, cr.correo_electronico correo_consultor, c.representante, encode(cr.archivo::bytea, 'base64') foto_decodificada, encode(c.archivo::bytea, 'base64') foto_decodificada2, pr.objetivos, pr.alcance, pr.documentos_referencia, pr.observaciones ");
 			sql.append("  FROM proyectos_cliente p");
 			sql.append("  INNER JOIN clientes c ON c.id = p.id_cliente");
 			sql.append("  INNER JOIN proyectos pr ON pr.id = p.id_proyecto");
@@ -2744,6 +2745,7 @@ public interface IConsultasDAO {
 				proyecto.getCliente().setCliente((String) rs.getObject("cliente"));
 				proyecto.getCliente().setCorreoElectronico((String) rs.getObject("correo_electronico"));
 				proyecto.getCliente().setNit((String) rs.getObject("nit"));
+				proyecto.getCliente().setDireccion((String) rs.getObject("direccion"));
 				proyecto.getCliente().setRepresentante((String) rs.getObject("representante"));
 
 				proyecto.getCliente().settFotoDecodificada((String) rs.getObject("foto_decodificada2"));

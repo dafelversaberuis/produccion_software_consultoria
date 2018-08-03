@@ -27,22 +27,21 @@ public class Cliente implements Serializable {
 	private String								tCopiaNit;
 	private String								tEstado;
 
+	private String								direccion;
+
 	private List<ProyectoCliente>	tProyectosCliente;
 
 	private EstructuraTabla				estructuraTabla;
 
-	private Integer						TPlanClienteSeleccionado;
-	
-	
-	private String						tFotoDecodificada;
+	private Integer								TPlanClienteSeleccionado;
 
-	private byte[]						archivo;
-	private UploadedFile			tFile;
+	private String								tFotoDecodificada;
+
+	private byte[]								archivo;
+	private UploadedFile					tFile;
 
 	public Cliente() {
 		this.estructuraTabla = new EstructuraTabla();
-
-
 
 	}
 
@@ -57,7 +56,8 @@ public class Cliente implements Serializable {
 		this.estructuraTabla.getPersistencia().put("correo_electronico", this.correoElectronico);
 		this.estructuraTabla.getPersistencia().put("clave", this.clave);
 		this.estructuraTabla.getPersistencia().put("telefono", this.telefono);
-		
+		this.estructuraTabla.getPersistencia().put("direccion", this.direccion);
+
 		this.estructuraTabla.getPersistencia().put("archivo", this.archivo);
 
 	}
@@ -195,10 +195,13 @@ public class Cliente implements Serializable {
 	public void settFile(UploadedFile tFile) {
 		this.tFile = tFile;
 	}
-	
-	
-	
 
-	
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
 
 }
